@@ -1,0 +1,154 @@
+#pragma once
+
+#include <CDBCMgr/CDBCDefs/LFGRoles.hpp>
+#include <CDBCMgr/CDBCDefs/OcclusionVolume.hpp>
+#include <CDBCMgr/CDBCDefs/OcclusionVolumePoint.hpp>
+#include <CDBCMgr/CDBCDefs/SpellAttributesExtended.hpp>
+#include <CDBCMgr/CDBCDefs/ZoneLight.hpp>
+#include <CDBCMgr/CDBCDefs/ZoneLightPoint.hpp>
+#include <Client/CNetClient.hpp>
+#include <Data/Structs.hpp>
+#include <GameObjects/CGPlayer.hpp>
+#include <WorldData/OcclusionVolumeData.hpp>
+#include <WorldData/ZoneLightData.hpp>
+
+#include <cstdint>
+#include <unordered_map>
+#include <vector>
+
+struct CDataStore;
+
+class DataContainer
+{
+public:
+    static DataContainer& GetInstance();
+
+    void ResetData();
+
+    void AddLuaFunction(const char* name, void* ptr);
+    std::unordered_map<const char*, void*>& GetLuaFunctionMap();
+
+    void AddGlueLuaFunction(const char* name, void* ptr);
+    std::unordered_map<const char*, void*>& GetGlueLuaFunctionMap();
+
+    void AddPacketHandler(uint32_t opcode, CNetClientCustomPacket packetData);
+    std::unordered_map<uint32_t, CNetClientCustomPacket>& GetPacketHandlerMap();
+
+    void AddGlueCVar(const CustomCVar& entry);
+    std::vector<CustomCVar>& GetGlueCVarVector();
+
+    void SetupFrameEventVector(const char** list, size_t count);
+    void RegisterCustomEvent(const char* entry);
+    std::vector<const char*>& GetFrameEventVector();
+
+    void LoadLFGRolesDB();
+    void UnloadLFGRolesDB();
+    void GetLFGRolesRow(LFGRolesRow& row, int32_t index);
+
+    void LoadOcclusionVolumeDB();
+    void UnloadOcclusionVolumeDB();
+    void GetOcclusionVolumeRow(OcclusionVolumeRow& row, int32_t index);
+    int32_t GetOcclusionVolumeRowMinIndex() const;
+    int32_t GetOcclusionVolumeRowMaxIndex() const;
+
+    void LoadOcclusionVolumePointDB();
+    void UnloadOcclusionVolumePointDB();
+    void GetOcclusionVolumePointRow(OcclusionVolumePointRow& row, int32_t index);
+    int32_t GetOcclusionVolumePointRowMinIndex() const;
+    int32_t GetOcclusionVolumePointRowMaxIndex() const;
+
+    void LoadSpellAttributesExtendedDB();
+    void UnloadSpellAttributesExtendedDB();
+    void GetSpellAttributesExtendedRow(SpellAttributesExtendedRow& row, int32_t index);
+
+    void LoadZoneLightDB();
+    void UnloadZoneLightDB();
+    void GetZoneLightRow(ZoneLightRow& row, int32_t index);
+    int32_t GetZoneLightRowMinIndex() const;
+    int32_t GetZoneLightRowMaxIndex() const;
+
+    void LoadZoneLightPointDB();
+    void UnloadZoneLightPointDB();
+    void GetZoneLightPointRow(ZoneLightPointRow& row, int32_t index);
+    int32_t GetZoneLightPointRowMinIndex() const;
+    int32_t GetZoneLightPointRowMaxIndex() const;
+
+    std::vector<const char*>& GetSpellVariableData();
+
+    uint32_t* GetRaceTablePtr();
+    uint32_t* GetMemoryTablePtr();
+    uint8_t* GetClassRoleMaskTablePtr();
+
+    uint32_t GetYearOffsetMultiplier() const;
+    void SetYearOffsetMultiplier();
+
+    void AddOcclusionVolume(OcclusionVolumeData& occlusionData);
+    void ClearOcclusionVolume();
+    OcclusionVolumeData* GetOcclusionVolumeData();
+    size_t GetOcclusionVolumeDataSize() const;
+
+    void AddZoneLight(ZoneLightData& lightData);
+    void ClearZoneLight();
+    std::vector<ZoneLightData>& GetZoneLightData();
+    bool GetShouldFillZoneLightData() const;
+    void SetShouldFillZoneLightData(bool result = true);
+
+    int32_t GetCustomCombatRating(int8_t index) const;
+    void SetCustomCombatRating(int8_t index, int32_t value);
+
+    std::vector<DBClientEntry>& GetDBCDataVector();
+    void SetupDBCDataVector();
+
+    bool ReloadCDBCByName(std::string& name);
+
+private:
+    std::unordered_map<const char*, void*> m_luaFunctions;
+    std::unordered_map<const char*, void*> m_glueLuaFunctions;
+    std::unordered_map <uint32_t, CNetClientCustomPacket> m_packetData;
+
+    std::vector<DBClientEntry> m_dbcData;
+    std::vector<const char*> m_customFrameEventData;
+
+    LFGRoles& m_lfgRolesCDBC;
+    OcclusionVolume& m_occlusionVolumeCDBC;
+    OcclusionVolumePoint& m_occlusionVolumePointCDBC;
+    SpellAttributesExtended& m_spellAttributesExtendedCDBC;
+    ZoneLight& m_zoneLightCDBC;
+    ZoneLightPoint& m_zoneLightPointCDBC;
+
+    std::vector<const char*> m_spellVariables;
+
+    std::vector<uint32_t> m_raceNameTable;
+    std::vector<uint32_t> m_memoryTable;
+
+    // Just for clarity's sake, class role masks go as followed
+    // ID0, War, Pal, Hun, Rog, Pri, DK, Sha, Mag, Warl, ID10, Dru
+    // bitmasks: 1 - leader, 2 - tank, 4 - healer, 8 - dps
+    // so for example warrior is: leader + tank + dps -> 0x01 + 0x02 + 0x08 = 0x0B
+    // this table is only ever used if you don't use custom dbc
+    std::vector<uint8_t> m_classRoleMask =
+    {
+        0x00, 0x0B, 0x0F, 0x09, 0x09, 0x0D, 0x0B, 0x0D,	0x09, 0x09, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
+
+    uint32_t m_yearOffsetMult = 0;
+
+    std::vector<OcclusionVolumeData> m_occlusionVolumeData;
+    std::vector<ZoneLightData> m_zoneLightData;
+
+    std::vector<CustomCVar> m_customGlueCVars;
+    std::vector<const char*> m_frameEvent;
+
+    CGPlayerCustomFields m_playerFields;
+
+    bool m_shouldFillZoneLightData = false;
+
+    DataContainer();
+    DataContainer(const DataContainer&) = delete;
+    ~DataContainer();
+
+    DataContainer& operator=(const DataContainer&) = delete;
+};
+
+#define sDC DataContainer::GetInstance()

@@ -1,0 +1,51 @@
+#pragma once
+
+#include <Data/Structs.hpp>
+#include <GameObjects/CGObject.hpp>
+#include <WorldData/CMovement.hpp>
+
+struct UnitBytes0
+{
+    uint8_t m_unitRace;
+    uint8_t m_unitClass;
+    uint8_t m_unitGender;
+    uint8_t m_unitPowerType;
+};
+
+struct UnitFields
+{
+    uint32_t m_padding0x00[17];
+    UnitBytes0 m_bytes0;
+    uint32_t m_currHealth;
+    uint32_t m_currPowers[7];
+    uint32_t m_maxHealth;
+    uint32_t m_maxPowers[7];
+    uint32_t m_padding0x88[14];
+    uint32_t m_level;
+    uint32_t m_padding0xC4[93];
+};
+
+struct CGUnit : CGObject
+{
+    UnitFields* m_unitFields;
+    uint32_t m_padding0xD4;
+    CMovement* m_movementInfo;
+    uint32_t m_padding0xDC[612];
+    uint32_t m_currentCastId;
+    uint32_t m_padding0x0A70[4];
+    uint32_t m_currentChannelId;
+    uint32_t m_padding0x0A84[353];
+
+    static int32_t EquippedItemMeetsSpellRequirements(CGUnit* thisUnit, SpellRow* spellRow, int32_t requirementFlags);
+    static char* GetFrameScriptText(CGUnit* thisUnit, const char* format, int32_t a3);
+    static uint32_t GetShapeshiftFormID(CGUnit* thisUnit);
+    static bool HasAuraMatchingSpellClass(CGUnit* thisUnit, int32_t aura, SpellRow* spell);
+    static bool IsShapeshifted(CGUnit* thisUnit);
+
+    uint8_t GetClass() const;
+    uint8_t GetGender() const;
+    uint8_t GetPowerType() const;
+    uint8_t GetRace() const;
+
+    uint32_t GetLevel() const;
+};

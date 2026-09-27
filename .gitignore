@@ -1,0 +1,10 @@
+build/
+out/
+.vs/
+*.user
+*.dll
+*.pdb
+*.lib
+*.exp
+*.ilk
+*.obj
