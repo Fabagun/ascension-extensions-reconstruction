@@ -818,12 +818,13 @@ namespace
             if (!bag)
                 continue;
             void** vt = *reinterpret_cast<void***>(bag);
-            if (!reinterpret_cast<int(__thiscall*)(void*)>(vt[0x24 / 4])(bag))
+            void* inv = reinterpret_cast<void*(__thiscall*)(void*)>(vt[0x24 / 4])(bag);   // the slot list 0x754390 reads
+            if (!inv)
                 continue;
             const uint32_t slots = *reinterpret_cast<const uint32_t*>(*reinterpret_cast<const uint8_t* const*>(bag + 8) + 0x100);
             for (uint32_t k = 0; k < slots; ++k)
             {
-                const uint8_t* it = reinterpret_cast<const uint8_t*(__thiscall*)(void*, uint32_t)>(0x754390)(bag, k);
+                const uint8_t* it = reinterpret_cast<const uint8_t*(__thiscall*)(void*, uint32_t)>(0x754390)(inv, k);
                 if (it && *reinterpret_cast<const uint32_t*>(*reinterpret_cast<const uint8_t* const*>(it + 8) + 0xC) == item)
                     n += *reinterpret_cast<const int32_t*>(*reinterpret_cast<const uint8_t* const*>(it + 8) + 0x38);
             }

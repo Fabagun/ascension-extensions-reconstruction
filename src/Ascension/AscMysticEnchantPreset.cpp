@@ -90,11 +90,12 @@ namespace
             if (!container)
                 continue;
             typedef void*(__thiscall* Inventory_t)(void*);
-            if (!(*reinterpret_cast<Inventory_t**>(container))[0x24 / 4](container))
+            void* inv = (*reinterpret_cast<Inventory_t**>(container))[0x24 / 4](container);
+            if (!inv)
                 continue;
             const uint32_t slots = *reinterpret_cast<const uint32_t*>(*reinterpret_cast<uint8_t**>(container + 8) + 0x100);
             for (uint32_t i = 0; i < slots; ++i)
-                if (uint8_t* it = reinterpret_cast<uint8_t*(__thiscall*)(void*, uint32_t)>(0x754390)(container, i))
+                if (uint8_t* it = reinterpret_cast<uint8_t*(__thiscall*)(void*, uint32_t)>(0x754390)(inv, i))
                     if (entry(it) == item)
                         n += count(it);
         }

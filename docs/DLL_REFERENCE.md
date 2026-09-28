@@ -3301,44 +3301,44 @@ The attach init's own client fixes -- hooks installed by FUN_10a66d40 (hook cens
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x4181B0` | Detour | 1065 |  |
-| `0x424B50` | Detour | 1050 |  |
-| `0x4D5F70` | ReplaceFunction | 1034 |  |
-| `0x53D580` | Detour | 1061 |  |
-| `0x584600` | Detour | 1076 |  |
-| `0x58A550` | Detour | 1051 |  |
-| `0x58CA70` | Detour | 1052 |  |
-| `0x5940E0` | Detour | 1053 |  |
-| `0x598830` | Detour | 1057 |  |
-| `0x5AB120` | Detour | 1038 |  |
-| `0x620EE0` | Detour | 1054 |  |
-| `0x6904D0` | Detour | 1059 |  |
-| `0x6B0F90` | ReplaceFunction | 1035 |  |
-| `0x6B1080` | Detour | 1060 |  |
-| `0x6D23C0` | Detour | 1036 |  |
-| `0x6DC3F0` | Detour | 1074 |  |
-| `0x6E7B00` | Detour | 1037 |  |
-| `0x6F9260` | Detour | 1040 |  |
-| `0x70B960` | Detour | 1055 |  |
-| `0x70CDF0` | Detour | 1067 |  |
-| `0x718A00` | Detour | 1056 |  |
-| `0x71B7F0` | Detour | 1068 |  |
-| `0x720010` | Detour | 1073 |  |
-| `0x729C70` | Detour | 1071 |  |
-| `0x730050` | Detour | 1039 |  |
-| `0x743530` | Detour | 1070 |  |
-| `0x744A50` | Detour | 1047 |  |
-| `0x751F70` | Detour | 1072 |  |
-| `0x754D00` | Detour | 1062 |  |
-| `0x76A630` | Detour | 1058 |  |
-| `0x76DDE0` | ReplaceFunction | 1069 |  |
-| `0x7F3B60` | Detour | 1041 |  |
-| `0x805D70` | Detour | 1075 |  |
-| `0x806030` | Detour | 1042 |  |
-| `0x81B380` | Detour | 1063 |  |
-| `0x81F970` | Detour | 1048 |  |
-| `0x84E400` | Detour | 1066 |  |
-| `0x8A65E0` | Detour | 1064 |  |
+| `0x4181B0` | Detour | 1066 |  |
+| `0x424B50` | Detour | 1051 |  |
+| `0x4D5F70` | ReplaceFunction | 1035 |  |
+| `0x53D580` | Detour | 1062 |  |
+| `0x584600` | Detour | 1077 |  |
+| `0x58A550` | Detour | 1052 |  |
+| `0x58CA70` | Detour | 1053 |  |
+| `0x5940E0` | Detour | 1054 |  |
+| `0x598830` | Detour | 1058 |  |
+| `0x5AB120` | Detour | 1039 |  |
+| `0x620EE0` | Detour | 1055 |  |
+| `0x6904D0` | Detour | 1060 |  |
+| `0x6B0F90` | ReplaceFunction | 1036 |  |
+| `0x6B1080` | Detour | 1061 |  |
+| `0x6D23C0` | Detour | 1037 |  |
+| `0x6DC3F0` | Detour | 1075 |  |
+| `0x6E7B00` | Detour | 1038 |  |
+| `0x6F9260` | Detour | 1041 |  |
+| `0x70B960` | Detour | 1056 |  |
+| `0x70CDF0` | Detour | 1068 |  |
+| `0x718A00` | Detour | 1057 |  |
+| `0x71B7F0` | Detour | 1069 |  |
+| `0x720010` | Detour | 1074 |  |
+| `0x729C70` | Detour | 1072 |  |
+| `0x730050` | Detour | 1040 |  |
+| `0x743530` | Detour | 1071 |  |
+| `0x744A50` | Detour | 1048 |  |
+| `0x751F70` | Detour | 1073 |  |
+| `0x754D00` | Detour | 1063 |  |
+| `0x76A630` | Detour | 1059 |  |
+| `0x76DDE0` | ReplaceFunction | 1070 |  |
+| `0x7F3B60` | Detour | 1042 |  |
+| `0x805D70` | Detour | 1076 |  |
+| `0x806030` | Detour | 1043 |  |
+| `0x81B380` | Detour | 1064 |  |
+| `0x81F970` | Detour | 1049 |  |
+| `0x84E400` | Detour | 1067 |  |
+| `0x8A65E0` | Detour | 1065 |  |
 
 ### AscAttachLate
 
@@ -5936,66 +5936,66 @@ C_MysticEnchant -- transcribed from the original's subsystem at 0x102DD000..0x10
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `C_MysticEnchant.ReforgeItem` | world | (number) → 0..1 | `0x102EE7D0` | AscMysticEnchant.cpp:1776 `ReforgeItem` | ---- bindings ---------------------------------------------------------------------------------- 0x102EE7D0 — sends `0x603` CMSG_REFORGE_RANDOM_ENCHANT_ITEM |
-| `C_MysticEnchant.CanReforgeItem` | world | (number) → 0..2 | `0x102EBD30` | AscMysticEnchant.cpp:1793 `CanReforgeItem` | 0x102EBD30 |
-| `C_MysticEnchant.ReforgeSlot` | world | (number) → 0..1 | `0x102EE960` | AscMysticEnchant.cpp:1806 `ReforgeSlot` | 0x102EE960 — sends `0x60E` CMSG_REFORGE_RANDOM_ENCHANT_SLOT |
-| `C_MysticEnchant.CanReforgeSlot` | world | (number) → 0..2 | `0x102EBE30` | AscMysticEnchant.cpp:1815 `CanReforgeSlot` | 0x102EBE30 |
-| `C_MysticEnchant.GetReforgeCost` | world | () → 2 | `0x102EDA70` | AscMysticEnchant.cpp:1828 `GetReforgeCost` | 0x102EDA70 |
-| `C_MysticEnchant.CollectionReforgeItem` | world | () → 0..1 | `0x102EC720` | AscMysticEnchant.cpp:1834 `CollectionReforgeItem` | 0x102EC720 — sends `0x605` CMSG_COLLECTION_REFORGE_RANDOM_ENCHANT_ITEM |
-| `C_MysticEnchant.CanCollectionReforgeItem` | world | () → 0..6 | `0x102EAD40` | AscMysticEnchant.cpp:1868 `CanCollectionReforgeItem` | 0x102EAD40 |
-| `C_MysticEnchant.CollectionReforgeSlot` | world | () → 0 | `0x102EC8C0` | AscMysticEnchant.cpp:1888 `CollectionReforgeSlot` | 0x102EC8C0 |
-| `C_MysticEnchant.CanCollectionReforgeSlot` | world | () → 0..6 | `0x102EAE70` | AscMysticEnchant.cpp:1895 `CanCollectionReforgeSlot` | 0x102EAE70 |
-| `C_MysticEnchant.CanCollectionReforgeAnySlot` | world | (number) → 0 | `0x102EAAC0` | AscMysticEnchant.cpp:1934 `CanCollectionReforgeAnySlot` | 0x102EAAC0 |
-| `C_MysticEnchant.GetCollectionReforgeChanges` | world | () → 1 | `0x102ED1A0` | AscMysticEnchant.cpp:1973 `GetCollectionReforgeChanges` | 0x102ED1A0 |
-| `C_MysticEnchant.UndoCollectionReforge` | world | (number) → 0 | `0x102EF200` | AscMysticEnchant.cpp:2002 `UndoCollectionReforge` | 0x102EF200 |
-| `C_MysticEnchant.UndoLastCollectionReforge` | world | () → 0 | `0x102EF250` | AscMysticEnchant.cpp:2009 `UndoLastCollectionReforge` | 0x102EF250 |
-| `C_MysticEnchant.SaveCollectionReforge` | world | () → 0..1 | `0x102EEC50` | AscMysticEnchant.cpp:2015 `SaveCollectionReforge` | 0x102EEC50 — sends `0x60F` CMSG_COLLECTION_REFORGE_RANDOM_ENCHANT_SLOT |
-| `C_MysticEnchant.CanSaveCollectionReforge` | world | () → 2 | `0x102EC500` | AscMysticEnchant.cpp:2033 `CanSaveCollectionReforge` | The save checks collect every entry's errors into an unordered_set and report the head of its list -- MSVC's insertion keeps the first error ever inserted at the head. 0x102EC500 |
-| `C_MysticEnchant.GetCollectionReforgeSlotCost` | world | (number) → 0..2 | `0x102ED330` | AscMysticEnchant.cpp:2050 `GetCollectionReforgeSlotCost` | 0x102ED330 |
-| `C_MysticEnchant.GetCollectionReforgeItemCost` | world | (number) → 0..2 | `0x102ED260` | AscMysticEnchant.cpp:2062 `GetCollectionReforgeItemCost` | 0x102ED260 |
-| `C_MysticEnchant.GetSaveCollectionReforgeSlotCost` | world | () → 2 | `0x102EDAF0` | AscMysticEnchant.cpp:2074 `GetSaveCollectionReforgeSlotCost` | 0x102EDAF0 |
-| `C_MysticEnchant.DisenchantItem` | world | () → 0..1 | `0x102ECA60` | AscMysticEnchant.cpp:2092 `DisenchantItem` | 0x102ECA60 — sends `0x607` CMSG_DISENCHANT_RANDOM_ENCHANT_ITEM |
-| `C_MysticEnchant.CanDisenchantItem` | world | () → 0..3 | `0x102EB1A0` | AscMysticEnchant.cpp:2122 `CanDisenchantItem` | 0x102EB1A0 |
-| `C_MysticEnchant.DisenchantSlot` | world | () → 0..1 | `0x102ECC00` | AscMysticEnchant.cpp:2148 `DisenchantSlot` | 0x102ECC00 — sends `0x608` CMSG_DISENCHANT_RANDOM_ENCHANT_SLOT |
-| `C_MysticEnchant.CanDisenchantSlot` | world | () → 0..3 | `0x102EB340` | AscMysticEnchant.cpp:2158 `CanDisenchantSlot` | 0x102EB340 |
-| `C_MysticEnchant.GetDisenchantCost` | world | () → 0..2 | `0x102ED400` | AscMysticEnchant.cpp:2184 `GetDisenchantCost` | 0x102ED400 |
-| `C_MysticEnchant.ApplyItem` | world | () → 0..1 | `0x102EA420` | AscMysticEnchant.cpp:2200 `ApplyItem` | sends `0x60A` CMSG_APPLY_RANDOM_ENCHANT_ITEM |
-| `C_MysticEnchant.CanApplyItem` | world | () → 0..2 | `0x102EA8E0` | AscMysticEnchant.cpp:2218 `CanApplyItem` | 0x102EA8E0 |
-| `C_MysticEnchant.ApplySlot` | world | () → 0 | `0x102EA5B0` | AscMysticEnchant.cpp:2231 `ApplySlot` | 0x102EA5B0 |
-| `C_MysticEnchant.CanApplySlot` | world | () → 0..2 | `0x102EA9D0` | AscMysticEnchant.cpp:2238 `CanApplySlot` | 0x102EA9D0 |
-| `C_MysticEnchant.CanApplyAnySlot` | world | (number) → 0 | `0x102EA670` | AscMysticEnchant.cpp:2251 `CanApplyAnySlot` | 0x102EA670 |
-| `C_MysticEnchant.GetApplyChanges` | world | () → 1 | `0x102ECFB0` | AscMysticEnchant.cpp:2258 `GetApplyChanges` | 0x102ECFB0 |
-| `C_MysticEnchant.UndoApply` | world | (number) → 0 | `0x102EF1D0` | AscMysticEnchant.cpp:2271 `UndoApply` | 0x102EF1D0 |
-| `C_MysticEnchant.UndoLastApply` | world | () → 0 | `0x102EF230` | AscMysticEnchant.cpp:2278 `UndoLastApply` | 0x102EF230 |
-| `C_MysticEnchant.SaveApply` | world | () → 1 | `0x102EEA70` | AscMysticEnchant.cpp:2284 `SaveApply` | 0x102EEA70 — sends `0x610` CMSG_APPLY_RANDOM_ENCHANT_SLOT |
-| `C_MysticEnchant.CanSaveApply` | world | () → 2 | `0x102EBF40` | AscMysticEnchant.cpp:2312 `CanSaveApply` | 0x102EBF40 |
-| `C_MysticEnchant.GetApplyItemCost` | world | (number) → 0..2 | `0x102ED070` | AscMysticEnchant.cpp:2345 `GetApplyItemCost` | 0x102ED070 |
-| `C_MysticEnchant.PurchaseMysticScroll` | world | () → 1 | `0x102EE290` | AscMysticEnchant.cpp:2359 `PurchaseMysticScroll` | sends `0x611` CMSG_PURCHASE_MYSTIC_SCROLL |
-| `C_MysticEnchant.CanPurchaseMysticScroll` | world | () → 2 | `0x102EBB90` | AscMysticEnchant.cpp:2366 `CanPurchaseMysticScroll` | 0x102EBB90 |
-| `C_MysticEnchant.GetMysticScrolls` | world | () → 1 | `0x102ED7B0` | AscMysticEnchant.cpp:2376 `GetMysticScrolls` | 0x102ED7B0 |
-| `C_MysticEnchant.SetMysticScrollFilter` | world | (string, table) → 0 | `0x102EEDB0` | AscMysticEnchant.cpp:2392 `SetMysticScrollFilter` | 0x102EEDB0 |
-| `C_MysticEnchant.GetNumFilteredMysticScrolls` | world | () → 0..1 | `0x102ED930` | AscMysticEnchant.cpp:2400 `GetNumFilteredMysticScrolls` | 0x102ED930 |
-| `C_MysticEnchant.GetFilteredMysticScrollAtIndex` | world | (number) → 0..1 | `0x102ED5C0` | AscMysticEnchant.cpp:2407 `GetFilteredMysticScrollAtIndex` | 0x102ED5C0 |
-| `C_MysticEnchant.GetFilteredMysticScrolls` | world | (number, number) → 0..1 | `0x102ED650` | AscMysticEnchant.cpp:2418 `GetFilteredMysticScrolls` | 0x102ED650 -> FUN_102E4E80 |
-| `C_MysticEnchant.GetMysticScrollCost` | world | () → 1 | `0x102ED760` | AscMysticEnchant.cpp:2438 `GetMysticScrollCost` | 0x102ED760 |
-| `C_MysticEnchant.CanEquipItem` | world | (number) → 0..2 | `0x102EB590` | AscMysticEnchant.cpp:2446 `CanEquipItem` |  |
-| `C_MysticEnchant.CanEquipSlot` | world | (number) → 0..2 | `0x102EB650` | AscMysticEnchant.cpp:2464 `CanEquipSlot` | 0x102EB650 |
-| `C_MysticEnchant.CanEquipEnchant` | world | (number) → 0..2 | `0x102EB520` | AscMysticEnchant.cpp:2477 `CanEquipEnchant` | 0x102EB520 |
-| `C_MysticEnchant.QueryEnchants` | world | (number, number, string, table) → 0..2 | `0x102EE360` | AscMysticEnchant.cpp:2492 `QueryEnchants` | QueryEnchants(pageSize, page, text, {RE_FILTER_x = true}) -> page of enchant infos, page count. 0x102EE360 |
-| `C_MysticEnchant.GetEnchantInfoBySpell` | world | (number) → 0..1 | `0x102ED560` | AscMysticEnchant.cpp:2530 `GetEnchantInfoBySpell` | 0x102ED560 |
-| `C_MysticEnchant.GetEnchantInfoByItem` | world | (number) → 0..1 | `0x102ED500` | AscMysticEnchant.cpp:2541 `GetEnchantInfoByItem` | 0x102ED500 |
-| `C_MysticEnchant.GetProgress` | world | () → 2 | `0x102ED980` | AscMysticEnchant.cpp:2552 `GetProgress` | 0x102ED980 |
-| `C_MysticEnchant.GetAppliedEnchant` | world | (string, number) → 0..1 | `0x102ECD30` | AscMysticEnchant.cpp:2567 `GetAppliedEnchant` | 0x102ECD30 |
-| `C_MysticEnchant.Inspect` | world | (string, boolean) → 0..2 | `0x102EDF00` | AscMysticEnchant.cpp:2641 `Inspect` | 0x102EDF00 — sends `0x613` CMSG_INSPECT_RANDOM_ENCHANTS |
-| `C_MysticEnchant.CanInspect` | world | (string) → 0..2 | `0x102EB710` | AscMysticEnchant.cpp:2599 `CanInspect` | 0x102EB710 |
-| `C_MysticEnchant.HasAnyScroll` | world | () → 1 | `0x102EDDF0` | AscMysticEnchant.cpp:2674 `HasAnyScroll` | 0x102EDDF0 |
-| `C_MysticEnchant.HasAnyCollected` | world | () → 1 | `0x102EDDC0` | AscMysticEnchant.cpp:2679 `HasAnyCollected` | 0x102EDDC0 |
-| `C_MysticEnchant.HasAnySlotEnchanted` | world | () → 1 | `0x102EDE60` | AscMysticEnchant.cpp:2684 `HasAnySlotEnchanted` | 0x102EDE60 |
-| `C_MysticEnchant.HasNearbyMysticAltar` | world | () → 1 | `0x102EDED0` | AscMysticEnchant.cpp:2692 `HasNearbyMysticAltar` | 0x102EDED0 |
-| `C_MysticEnchant.Destroy` | world | (number) → 0..1 | `0x102EC950` | AscMysticEnchant.cpp:2697 `Destroy` | 0x102EC950 — sends `0x617` CMSG_DESTROY_RANDOM_ENCHANT_SLOT |
-| `C_MysticEnchant.CanDestroy` | world | (number) → 0..2 | `0x102EAFD0` | AscMysticEnchant.cpp:2706 `CanDestroy` | 0x102EAFD0 |
-| `C_MysticEnchant.PurchaseMysticExtract` | world | () → 1 | `0x102EE1C0` | AscMysticEnchant.cpp:2719 `PurchaseMysticExtract` | 0x102EE1C0 — sends `0x733` CMSG_PURCHASE_MYSTIC_EXTRACT |
-| `C_MysticEnchant.CanPurchaseMysticExtract` | world | () → 3 | `0x102EBA70` | AscMysticEnchant.cpp:2725 `CanPurchaseMysticExtract` | 0x102EBA70 |
+| `C_MysticEnchant.ReforgeItem` | world | (number) → 0..1 | `0x102EE7D0` | AscMysticEnchant.cpp:1777 `ReforgeItem` | ---- bindings ---------------------------------------------------------------------------------- 0x102EE7D0 — sends `0x603` CMSG_REFORGE_RANDOM_ENCHANT_ITEM |
+| `C_MysticEnchant.CanReforgeItem` | world | (number) → 0..2 | `0x102EBD30` | AscMysticEnchant.cpp:1794 `CanReforgeItem` | 0x102EBD30 |
+| `C_MysticEnchant.ReforgeSlot` | world | (number) → 0..1 | `0x102EE960` | AscMysticEnchant.cpp:1807 `ReforgeSlot` | 0x102EE960 — sends `0x60E` CMSG_REFORGE_RANDOM_ENCHANT_SLOT |
+| `C_MysticEnchant.CanReforgeSlot` | world | (number) → 0..2 | `0x102EBE30` | AscMysticEnchant.cpp:1816 `CanReforgeSlot` | 0x102EBE30 |
+| `C_MysticEnchant.GetReforgeCost` | world | () → 2 | `0x102EDA70` | AscMysticEnchant.cpp:1829 `GetReforgeCost` | 0x102EDA70 |
+| `C_MysticEnchant.CollectionReforgeItem` | world | () → 0..1 | `0x102EC720` | AscMysticEnchant.cpp:1835 `CollectionReforgeItem` | 0x102EC720 — sends `0x605` CMSG_COLLECTION_REFORGE_RANDOM_ENCHANT_ITEM |
+| `C_MysticEnchant.CanCollectionReforgeItem` | world | () → 0..6 | `0x102EAD40` | AscMysticEnchant.cpp:1869 `CanCollectionReforgeItem` | 0x102EAD40 |
+| `C_MysticEnchant.CollectionReforgeSlot` | world | () → 0 | `0x102EC8C0` | AscMysticEnchant.cpp:1889 `CollectionReforgeSlot` | 0x102EC8C0 |
+| `C_MysticEnchant.CanCollectionReforgeSlot` | world | () → 0..6 | `0x102EAE70` | AscMysticEnchant.cpp:1896 `CanCollectionReforgeSlot` | 0x102EAE70 |
+| `C_MysticEnchant.CanCollectionReforgeAnySlot` | world | (number) → 0 | `0x102EAAC0` | AscMysticEnchant.cpp:1935 `CanCollectionReforgeAnySlot` | 0x102EAAC0 |
+| `C_MysticEnchant.GetCollectionReforgeChanges` | world | () → 1 | `0x102ED1A0` | AscMysticEnchant.cpp:1974 `GetCollectionReforgeChanges` | 0x102ED1A0 |
+| `C_MysticEnchant.UndoCollectionReforge` | world | (number) → 0 | `0x102EF200` | AscMysticEnchant.cpp:2003 `UndoCollectionReforge` | 0x102EF200 |
+| `C_MysticEnchant.UndoLastCollectionReforge` | world | () → 0 | `0x102EF250` | AscMysticEnchant.cpp:2010 `UndoLastCollectionReforge` | 0x102EF250 |
+| `C_MysticEnchant.SaveCollectionReforge` | world | () → 0..1 | `0x102EEC50` | AscMysticEnchant.cpp:2016 `SaveCollectionReforge` | 0x102EEC50 — sends `0x60F` CMSG_COLLECTION_REFORGE_RANDOM_ENCHANT_SLOT |
+| `C_MysticEnchant.CanSaveCollectionReforge` | world | () → 2 | `0x102EC500` | AscMysticEnchant.cpp:2034 `CanSaveCollectionReforge` | The save checks collect every entry's errors into an unordered_set and report the head of its list -- MSVC's insertion keeps the first error ever inserted at the head. 0x102EC500 |
+| `C_MysticEnchant.GetCollectionReforgeSlotCost` | world | (number) → 0..2 | `0x102ED330` | AscMysticEnchant.cpp:2051 `GetCollectionReforgeSlotCost` | 0x102ED330 |
+| `C_MysticEnchant.GetCollectionReforgeItemCost` | world | (number) → 0..2 | `0x102ED260` | AscMysticEnchant.cpp:2063 `GetCollectionReforgeItemCost` | 0x102ED260 |
+| `C_MysticEnchant.GetSaveCollectionReforgeSlotCost` | world | () → 2 | `0x102EDAF0` | AscMysticEnchant.cpp:2075 `GetSaveCollectionReforgeSlotCost` | 0x102EDAF0 |
+| `C_MysticEnchant.DisenchantItem` | world | () → 0..1 | `0x102ECA60` | AscMysticEnchant.cpp:2093 `DisenchantItem` | 0x102ECA60 — sends `0x607` CMSG_DISENCHANT_RANDOM_ENCHANT_ITEM |
+| `C_MysticEnchant.CanDisenchantItem` | world | () → 0..3 | `0x102EB1A0` | AscMysticEnchant.cpp:2123 `CanDisenchantItem` | 0x102EB1A0 |
+| `C_MysticEnchant.DisenchantSlot` | world | () → 0..1 | `0x102ECC00` | AscMysticEnchant.cpp:2149 `DisenchantSlot` | 0x102ECC00 — sends `0x608` CMSG_DISENCHANT_RANDOM_ENCHANT_SLOT |
+| `C_MysticEnchant.CanDisenchantSlot` | world | () → 0..3 | `0x102EB340` | AscMysticEnchant.cpp:2159 `CanDisenchantSlot` | 0x102EB340 |
+| `C_MysticEnchant.GetDisenchantCost` | world | () → 0..2 | `0x102ED400` | AscMysticEnchant.cpp:2185 `GetDisenchantCost` | 0x102ED400 |
+| `C_MysticEnchant.ApplyItem` | world | () → 0..1 | `0x102EA420` | AscMysticEnchant.cpp:2201 `ApplyItem` | sends `0x60A` CMSG_APPLY_RANDOM_ENCHANT_ITEM |
+| `C_MysticEnchant.CanApplyItem` | world | () → 0..2 | `0x102EA8E0` | AscMysticEnchant.cpp:2219 `CanApplyItem` | 0x102EA8E0 |
+| `C_MysticEnchant.ApplySlot` | world | () → 0 | `0x102EA5B0` | AscMysticEnchant.cpp:2232 `ApplySlot` | 0x102EA5B0 |
+| `C_MysticEnchant.CanApplySlot` | world | () → 0..2 | `0x102EA9D0` | AscMysticEnchant.cpp:2239 `CanApplySlot` | 0x102EA9D0 |
+| `C_MysticEnchant.CanApplyAnySlot` | world | (number) → 0 | `0x102EA670` | AscMysticEnchant.cpp:2252 `CanApplyAnySlot` | 0x102EA670 |
+| `C_MysticEnchant.GetApplyChanges` | world | () → 1 | `0x102ECFB0` | AscMysticEnchant.cpp:2259 `GetApplyChanges` | 0x102ECFB0 |
+| `C_MysticEnchant.UndoApply` | world | (number) → 0 | `0x102EF1D0` | AscMysticEnchant.cpp:2272 `UndoApply` | 0x102EF1D0 |
+| `C_MysticEnchant.UndoLastApply` | world | () → 0 | `0x102EF230` | AscMysticEnchant.cpp:2279 `UndoLastApply` | 0x102EF230 |
+| `C_MysticEnchant.SaveApply` | world | () → 1 | `0x102EEA70` | AscMysticEnchant.cpp:2285 `SaveApply` | 0x102EEA70 — sends `0x610` CMSG_APPLY_RANDOM_ENCHANT_SLOT |
+| `C_MysticEnchant.CanSaveApply` | world | () → 2 | `0x102EBF40` | AscMysticEnchant.cpp:2313 `CanSaveApply` | 0x102EBF40 |
+| `C_MysticEnchant.GetApplyItemCost` | world | (number) → 0..2 | `0x102ED070` | AscMysticEnchant.cpp:2346 `GetApplyItemCost` | 0x102ED070 |
+| `C_MysticEnchant.PurchaseMysticScroll` | world | () → 1 | `0x102EE290` | AscMysticEnchant.cpp:2360 `PurchaseMysticScroll` | sends `0x611` CMSG_PURCHASE_MYSTIC_SCROLL |
+| `C_MysticEnchant.CanPurchaseMysticScroll` | world | () → 2 | `0x102EBB90` | AscMysticEnchant.cpp:2367 `CanPurchaseMysticScroll` | 0x102EBB90 |
+| `C_MysticEnchant.GetMysticScrolls` | world | () → 1 | `0x102ED7B0` | AscMysticEnchant.cpp:2377 `GetMysticScrolls` | 0x102ED7B0 |
+| `C_MysticEnchant.SetMysticScrollFilter` | world | (string, table) → 0 | `0x102EEDB0` | AscMysticEnchant.cpp:2393 `SetMysticScrollFilter` | 0x102EEDB0 |
+| `C_MysticEnchant.GetNumFilteredMysticScrolls` | world | () → 0..1 | `0x102ED930` | AscMysticEnchant.cpp:2401 `GetNumFilteredMysticScrolls` | 0x102ED930 |
+| `C_MysticEnchant.GetFilteredMysticScrollAtIndex` | world | (number) → 0..1 | `0x102ED5C0` | AscMysticEnchant.cpp:2408 `GetFilteredMysticScrollAtIndex` | 0x102ED5C0 |
+| `C_MysticEnchant.GetFilteredMysticScrolls` | world | (number, number) → 0..1 | `0x102ED650` | AscMysticEnchant.cpp:2419 `GetFilteredMysticScrolls` | 0x102ED650 -> FUN_102E4E80 |
+| `C_MysticEnchant.GetMysticScrollCost` | world | () → 1 | `0x102ED760` | AscMysticEnchant.cpp:2439 `GetMysticScrollCost` | 0x102ED760 |
+| `C_MysticEnchant.CanEquipItem` | world | (number) → 0..2 | `0x102EB590` | AscMysticEnchant.cpp:2447 `CanEquipItem` |  |
+| `C_MysticEnchant.CanEquipSlot` | world | (number) → 0..2 | `0x102EB650` | AscMysticEnchant.cpp:2465 `CanEquipSlot` | 0x102EB650 |
+| `C_MysticEnchant.CanEquipEnchant` | world | (number) → 0..2 | `0x102EB520` | AscMysticEnchant.cpp:2478 `CanEquipEnchant` | 0x102EB520 |
+| `C_MysticEnchant.QueryEnchants` | world | (number, number, string, table) → 0..2 | `0x102EE360` | AscMysticEnchant.cpp:2493 `QueryEnchants` | QueryEnchants(pageSize, page, text, {RE_FILTER_x = true}) -> page of enchant infos, page count. 0x102EE360 |
+| `C_MysticEnchant.GetEnchantInfoBySpell` | world | (number) → 0..1 | `0x102ED560` | AscMysticEnchant.cpp:2531 `GetEnchantInfoBySpell` | 0x102ED560 |
+| `C_MysticEnchant.GetEnchantInfoByItem` | world | (number) → 0..1 | `0x102ED500` | AscMysticEnchant.cpp:2542 `GetEnchantInfoByItem` | 0x102ED500 |
+| `C_MysticEnchant.GetProgress` | world | () → 2 | `0x102ED980` | AscMysticEnchant.cpp:2553 `GetProgress` | 0x102ED980 |
+| `C_MysticEnchant.GetAppliedEnchant` | world | (string, number) → 0..1 | `0x102ECD30` | AscMysticEnchant.cpp:2568 `GetAppliedEnchant` | 0x102ECD30 |
+| `C_MysticEnchant.Inspect` | world | (string, boolean) → 0..2 | `0x102EDF00` | AscMysticEnchant.cpp:2642 `Inspect` | 0x102EDF00 — sends `0x613` CMSG_INSPECT_RANDOM_ENCHANTS |
+| `C_MysticEnchant.CanInspect` | world | (string) → 0..2 | `0x102EB710` | AscMysticEnchant.cpp:2600 `CanInspect` | 0x102EB710 |
+| `C_MysticEnchant.HasAnyScroll` | world | () → 1 | `0x102EDDF0` | AscMysticEnchant.cpp:2675 `HasAnyScroll` | 0x102EDDF0 |
+| `C_MysticEnchant.HasAnyCollected` | world | () → 1 | `0x102EDDC0` | AscMysticEnchant.cpp:2680 `HasAnyCollected` | 0x102EDDC0 |
+| `C_MysticEnchant.HasAnySlotEnchanted` | world | () → 1 | `0x102EDE60` | AscMysticEnchant.cpp:2685 `HasAnySlotEnchanted` | 0x102EDE60 |
+| `C_MysticEnchant.HasNearbyMysticAltar` | world | () → 1 | `0x102EDED0` | AscMysticEnchant.cpp:2693 `HasNearbyMysticAltar` | 0x102EDED0 |
+| `C_MysticEnchant.Destroy` | world | (number) → 0..1 | `0x102EC950` | AscMysticEnchant.cpp:2698 `Destroy` | 0x102EC950 — sends `0x617` CMSG_DESTROY_RANDOM_ENCHANT_SLOT |
+| `C_MysticEnchant.CanDestroy` | world | (number) → 0..2 | `0x102EAFD0` | AscMysticEnchant.cpp:2707 `CanDestroy` | 0x102EAFD0 |
+| `C_MysticEnchant.PurchaseMysticExtract` | world | () → 1 | `0x102EE1C0` | AscMysticEnchant.cpp:2720 `PurchaseMysticExtract` | 0x102EE1C0 — sends `0x733` CMSG_PURCHASE_MYSTIC_EXTRACT |
+| `C_MysticEnchant.CanPurchaseMysticExtract` | world | () → 3 | `0x102EBA70` | AscMysticEnchant.cpp:2726 `CanPurchaseMysticExtract` | 0x102EBA70 |
 
 **Server packets handled**
 
@@ -6032,13 +6032,13 @@ C_MysticEnchantPreset -- transcribed from the original's subsystem at 0x102F1780
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `C_MysticEnchantPreset.Activate` | world | (number) → 0..1 | `0x102F3090` | AscMysticEnchantPreset.cpp:146 `Activate` | sends `0x60C` CMSG_SET_ACTIVE_RANDOM_ENCHANT_PRESET |
-| `C_MysticEnchantPreset.GetPresetData` | world | (number) → 0..2 | `0x102F3490` | AscMysticEnchantPreset.cpp:157 `GetPresetData` | 0x102F3490 |
-| `C_MysticEnchantPreset.GetNumPresets` | world | () → 1 | `0x102F3460` | AscMysticEnchantPreset.cpp:175 `GetNumPresets` | 0x102F3460 |
-| `C_MysticEnchantPreset.Unlock` | world | () → 1 | `0x102F3610` | AscMysticEnchantPreset.cpp:180 `Unlock` | 0x102F3610 — sends `0x615` CMSG_UNLOCK_RANDOM_ENCHANT_PRESET |
-| `C_MysticEnchantPreset.CanSave` | world | (number) → 0 | `0x102F32C0` | AscMysticEnchantPreset.cpp:195 `CanSave` | 0x102F32C0 |
-| `C_MysticEnchantPreset.CanActivate` | world | (number) → 0 | `0x102F31B0` | AscMysticEnchantPreset.cpp:202 `CanActivate` | 0x102F31B0 |
-| `C_MysticEnchantPreset.CanUnlock` | world | () → 2 | `0x102F33C0` | AscMysticEnchantPreset.cpp:209 `CanUnlock` | 0x102F33C0 |
+| `C_MysticEnchantPreset.Activate` | world | (number) → 0..1 | `0x102F3090` | AscMysticEnchantPreset.cpp:147 `Activate` | sends `0x60C` CMSG_SET_ACTIVE_RANDOM_ENCHANT_PRESET |
+| `C_MysticEnchantPreset.GetPresetData` | world | (number) → 0..2 | `0x102F3490` | AscMysticEnchantPreset.cpp:158 `GetPresetData` | 0x102F3490 |
+| `C_MysticEnchantPreset.GetNumPresets` | world | () → 1 | `0x102F3460` | AscMysticEnchantPreset.cpp:176 `GetNumPresets` | 0x102F3460 |
+| `C_MysticEnchantPreset.Unlock` | world | () → 1 | `0x102F3610` | AscMysticEnchantPreset.cpp:181 `Unlock` | 0x102F3610 — sends `0x615` CMSG_UNLOCK_RANDOM_ENCHANT_PRESET |
+| `C_MysticEnchantPreset.CanSave` | world | (number) → 0 | `0x102F32C0` | AscMysticEnchantPreset.cpp:196 `CanSave` | 0x102F32C0 |
+| `C_MysticEnchantPreset.CanActivate` | world | (number) → 0 | `0x102F31B0` | AscMysticEnchantPreset.cpp:203 `CanActivate` | 0x102F31B0 |
+| `C_MysticEnchantPreset.CanUnlock` | world | () → 2 | `0x102F33C0` | AscMysticEnchantPreset.cpp:210 `CanUnlock` | 0x102F33C0 |
 
 **Server packets handled**
 

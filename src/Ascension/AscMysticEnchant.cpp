@@ -251,14 +251,15 @@ namespace
     }
 
     const uint64_t* BagGuids() { return reinterpret_cast<const uint64_t*>(0xC23540); }   // DAT_10BC91E0
-    uint8_t* ContainerItem(uint8_t* container, uint32_t i)
-    {
-        return reinterpret_cast<uint8_t*(__thiscall*)(void*, uint32_t)>(0x754390)(container, i);
-    }
     void* ContainerInventory(uint8_t* container)
     {
         typedef void*(__thiscall* Inventory_t)(void*);
         return (*reinterpret_cast<Inventory_t**>(container))[0x24 / 4](container);
+    }
+    // 0x754390 runs on the container's slot list (vtable +0x24), not on the container object.
+    uint8_t* ContainerItem(uint8_t* container, uint32_t i)
+    {
+        return reinterpret_cast<uint8_t*(__thiscall*)(void*, uint32_t)>(0x754390)(ContainerInventory(container), i);
     }
     uint32_t ContainerSlots(uint8_t* container) { return *reinterpret_cast<const uint32_t*>(*reinterpret_cast<uint8_t**>(container + 8) + 0x100); }
     uint64_t InvSlotGuid(const uint8_t* player, uint32_t slot) { return *reinterpret_cast<const uint64_t*>(*reinterpret_cast<uint8_t* const*>(player + 8) + 0x510 + slot * 8); }
