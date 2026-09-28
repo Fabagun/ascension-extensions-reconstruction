@@ -99,6 +99,7 @@
 #include <Misc/DataContainer.hpp>
 #include <Client/CVar.hpp>
 #include <Client/FrameScript.hpp>
+#include <Ascension/AscClientOptions.hpp>
 #include <cstring>
 #include <string>
 #include <intrin.h>
@@ -877,18 +878,16 @@ namespace
     }
     const uint8_t* ActivePlayer() { return reinterpret_cast<const uint8_t*(__cdecl*)()>(0x4038F0)(); }
 
-    // The five UnitName* CVars, looked up once registered (the original keeps the Register results).
-    int32_t CVarInt(const char* name, void*& cache)
+    // The five UnitName* CVars: output slots the world registration refills each time (0x10114090).
+    int32_t CVarInt(const void* cvar)
     {
-        if (!cache)
-            cache = CVar::Lookup(name);
-        return cache ? *reinterpret_cast<const int32_t*>(static_cast<uint8_t*>(cache) + 0x30) : 0;
+        return cvar ? *reinterpret_cast<const int32_t*>(static_cast<const uint8_t*>(cvar) + 0x30) : 0;
     }
-    void* g_goVar = nullptr;
-    void* g_interactiveVar = nullptr;
-    void* g_questVar = nullptr;
-    void* g_hostileVar = nullptr;
-    void* g_allVar = nullptr;
+    void* g_goVar = nullptr;           // DAT_10D3DA24
+    void* g_interactiveVar = nullptr;  // DAT_10D3DA2C
+    void* g_questVar = nullptr;        // DAT_10D3DC30
+    void* g_hostileVar = nullptr;      // DAT_10D3DC34
+    void* g_allVar = nullptr;          // DAT_10D3DC38
 
     // 0x743530 (__thiscall(object, a), ret 4)
     typedef int(__fastcall* Fn743530_t)(void*, void*, uint32_t);
@@ -896,7 +895,7 @@ namespace
     int __fastcall Detour743530(void* ecx, void* edx, uint32_t a)
     {
         const uint8_t* object = static_cast<const uint8_t*>(ecx);
-        if (*reinterpret_cast<const uint32_t*>(object + 0x14) == 5 && CVarInt("UnitNameGO", g_goVar) == 1)
+        if (*reinterpret_cast<const uint32_t*>(object + 0x14) == 5 && CVarInt(g_goVar) == 1)
         {
             const uint32_t entry = *reinterpret_cast<const uint32_t*>(*reinterpret_cast<const uint8_t* const*>(object + 8) + 0xC);
             const uint8_t* player = ActivePlayer();
@@ -924,10 +923,10 @@ namespace
             if (target[0] != guid[0] || target[1] != guid[1])
                 return 0;
         }
-        if (CVarInt("UnitNameInteractiveNPC", g_interactiveVar) == 1 &&
+        if (CVarInt(g_interactiveVar) == 1 &&
             reinterpret_cast<char(__thiscall*)(const void*, void*)>(0x729530)(ActivePlayer(), unit))
             return 1;
-        if (CVarInt("UnitNameQuestNPC", g_questVar) == 1)
+        if (CVarInt(g_questVar) == 1)
         {
             const uint32_t reaction = *reinterpret_cast<const uint32_t*>(unit + 0x90);
             if (reaction != 0 && reaction != 1)
@@ -937,10 +936,10 @@ namespace
             if (player && QuestRelevant(player, entry, reinterpret_cast<void*>(0xC5D690), 0x67B6A0, 0x40))
                 return 1;
         }
-        if (CVarInt("UnitNameHostileNPC", g_hostileVar) == 1 &&
+        if (CVarInt(g_hostileVar) == 1 &&
             reinterpret_cast<int(__thiscall*)(const void*, void*)>(0x7251C0)(ActivePlayer(), unit) <= 1)
             return 1;
-        return CVarInt("UnitNameAllNPC", g_allVar) == 1 ? 1 : 0;
+        return CVarInt(g_allVar) == 1 ? 1 : 0;
     }
 
     // ---- 0x751F70 (__cdecl, 9 arguments) --------------------------------------------------------------------
@@ -1027,6 +1026,11 @@ namespace
 
     void Init()
     {
+        AscClientOptions::SetOutSlot("UnitNameGO", &g_goVar);
+        AscClientOptions::SetOutSlot("UnitNameInteractiveNPC", &g_interactiveVar);
+        AscClientOptions::SetOutSlot("UnitNameQuestNPC", &g_questVar);
+        AscClientOptions::SetOutSlot("UnitNameHostileNPC", &g_hostileVar);
+        AscClientOptions::SetOutSlot("UnitNameAllNPC", &g_allVar);
         AscRuntime::ReplaceFunction(0x4D5F70, reinterpret_cast<void*>(&FixedColour));
         AscRuntime::ReplaceFunction(0x6B0F90, reinterpret_cast<void*>(&Fixed57));
         g_6D23C0 = reinterpret_cast<Fn6D23C0_t>(AscRuntime::Detour(0x6D23C0, 8, reinterpret_cast<void*>(&Detour6D23C0)));

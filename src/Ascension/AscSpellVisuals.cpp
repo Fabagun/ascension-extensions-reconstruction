@@ -55,12 +55,10 @@ namespace
             return nullptr;
         return *reinterpret_cast<const uint8_t* const*>(rows + (id - minId) * 4);
     }
+    void* g_option = nullptr;   // DAT_10BE4478, refilled by each world registration (0x10114090)
     bool OptionOn()   // DAT_10BE4478 +0x30
     {
-        static CVar* cvar = nullptr;
-        if (!cvar)
-            cvar = CVar::Lookup("hideOtherPlayerHarmfulSpellVisuals");
-        return cvar && *reinterpret_cast<const int32_t*>(reinterpret_cast<const uint8_t*>(cvar) + 0x30) != 0;
+        return g_option && *reinterpret_cast<const int32_t*>(static_cast<const uint8_t*>(g_option) + 0x30) != 0;
     }
 
     // FUN_102cdc10
@@ -301,7 +299,7 @@ namespace
         AscRuntime::OnVisualHide(&HideVisual, 0x10323147);
         AscRuntime::OnBefore724820(&BeforeAuraApply, 0x10323151);
         g_705100 = reinterpret_cast<This1_t>(AscRuntime::Detour(0x705100, 9, reinterpret_cast<void*>(&Detour705100)));
-        AscClientOptions::QueueWorldCVar({"hideOtherPlayerHarmfulSpellVisuals", "0", 1, 1, nullptr});
+        AscClientOptions::QueueWorldCVar({"hideOtherPlayerHarmfulSpellVisuals", "0", 1, 1, nullptr, nullptr, false, &g_option});
     }
     AscBindings::Module s_module(nullptr, 0, &Init);
 }

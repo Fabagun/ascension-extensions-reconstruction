@@ -141,11 +141,10 @@ namespace
         WriteCode32(0x82080B, on ? reinterpret_cast<uint32_t>(&kTen) : 0xA4040C);
     }
 
-    int32_t CVarValue(const char* name, const CVar*& cache)
+    // Output slots the world registration refills each time (0x10114090).
+    int32_t CVarValue(const void* cvar)
     {
-        if (!cache)
-            cache = CVar::Lookup(name);
-        return cache ? *reinterpret_cast<const int32_t*>(reinterpret_cast<const uint8_t*>(cache) + 0x30) : 0;
+        return cvar ? *reinterpret_cast<const int32_t*>(static_cast<const uint8_t*>(cvar) + 0x30) : 0;
     }
     const CVar* g_self = nullptr;       // 0x10BE3838
     const CVar* g_enemy = nullptr;      // 0x10BE383C
@@ -164,8 +163,8 @@ namespace
             PatchRadius(true);
             return;
         }
-        if (CVarValue("aoeRadiusIndicatorSelf", g_self) == 1 || CVarValue("aoeRadiusIndicatorEnemy", g_enemy) == 1 ||
-            CVarValue("aoeRadiusIndicatorFriendly", g_friendly) == 1)
+        if (CVarValue(g_self) == 1 || CVarValue(g_enemy) == 1 ||
+            CVarValue(g_friendly) == 1)
             PatchRadius(false);
     }
 
@@ -184,18 +183,18 @@ namespace
     {
         colour = *reinterpret_cast<const uint32_t*>(0xAD2D3C);
         if (SameGuid(Fields(player), Fields(unit)))
-            return CVarValue("aoeRadiusIndicatorSelf", g_self) != 0;
+            return CVarValue(g_self) != 0;
         typedef int32_t(__thiscall* Reaction_t)(void*, void*);
         if (reinterpret_cast<Reaction_t>(0x7251C0)(player, unit) < 3)
         {
-            if (!CVarValue("aoeRadiusIndicatorEnemy", g_enemy))
+            if (!CVarValue(g_enemy))
                 return false;
             colour = *reinterpret_cast<const uint32_t*>(0xAD2D48);
             return true;
         }
         if (reinterpret_cast<Reaction_t>(0x7251C0)(player, unit) <= 3)
             return false;
-        if (!CVarValue("aoeRadiusIndicatorFriendly", g_friendly))
+        if (!CVarValue(g_friendly))
             return false;
         colour = *reinterpret_cast<const uint32_t*>(0xAD2D40);
         return true;
@@ -382,12 +381,12 @@ namespace
         const Enum_t enumerate = reinterpret_cast<Enum_t>(0x4D4B30);
         enumerate(&EnumDynamic, nullptr);
         enumerate(&EnumUnit, nullptr);
-        if (CVarValue("showQuestUnitCircles", g_quest) != 0)
+        if (CVarValue(g_quest) != 0)
         {
             g_questEntries.clear();
             enumerate(&EnumQuest, nullptr);
         }
-        if (CVarValue("ObjectSelectionCircleSelf", g_circle) == 1)
+        if (CVarValue(g_circle) == 1)
         {
             uint8_t* player = AscScript::ActivePlayer();
             if (player && SameGuid(Fields(player), reinterpret_cast<const uint8_t*>(0xBD07B0)))
@@ -398,14 +397,14 @@ namespace
     void Init()   // FUN_102daaf0
     {
         AscRuntime::OnEnterWorld(&LoadCones);
-        AscClientOptions::QueueWorldCVar({"aoeRadiusIndicatorSelf", "0", 1, 3, nullptr});
-        AscClientOptions::QueueWorldCVar({"aoeRadiusIndicatorEnemy", "0", 1, 3, nullptr});
-        AscClientOptions::QueueWorldCVar({"aoeRadiusIndicatorFriendly", "0", 1, 3, nullptr});
+        AscClientOptions::QueueWorldCVar({"aoeRadiusIndicatorSelf", "0", 1, 3, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_self))});
+        AscClientOptions::QueueWorldCVar({"aoeRadiusIndicatorEnemy", "0", 1, 3, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_enemy))});
+        AscClientOptions::QueueWorldCVar({"aoeRadiusIndicatorFriendly", "0", 1, 3, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_friendly))});
         AscRuntime::OnAfter4F6F90(&Render);
         AscRuntime::OnAlternate6DF050(&Tick);
         g_7460C0 = reinterpret_cast<Fn0_t>(AscRuntime::Detour(0x7460C0, 6, reinterpret_cast<void*>(&Hook7460C0)));
-        AscClientOptions::QueueWorldCVar({"showQuestUnitCircles", "1", 1, 4, nullptr});
-        AscClientOptions::QueueWorldCVar({"ObjectSelectionCircleSelf", "0", 1, 4, nullptr});
+        AscClientOptions::QueueWorldCVar({"showQuestUnitCircles", "1", 1, 4, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_quest))});
+        AscClientOptions::QueueWorldCVar({"ObjectSelectionCircleSelf", "0", 1, 4, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_circle))});
         AscRuntime::ReplaceFunction(0x72B7E0, reinterpret_cast<void*>(&Hook72B7E0));
         g_727400 = reinterpret_cast<Fn727400_t>(AscRuntime::Detour(0x727400, 6, reinterpret_cast<void*>(&Hook727400)));
         AscClientOptions::QueueWorldCVar({"AutoInteractTurnSpeed", "3.15", 1, 3, nullptr});

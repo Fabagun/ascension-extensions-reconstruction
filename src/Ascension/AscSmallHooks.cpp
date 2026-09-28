@@ -124,6 +124,8 @@ namespace
             SendBankManager(1);
     }
 
+    void* g_spellQueueWindow = nullptr;   // 0x10BE4468, refilled by each world registration (0x10114090)
+
     char __cdecl Replace805F60()   // FUN_10322440
     {
         const uint8_t* player = AscScript::ActivePlayer();
@@ -132,8 +134,7 @@ namespace
         const uint32_t castEnd = *reinterpret_cast<const uint32_t*>(player + 0xA7C);
         if (!castEnd)
             return 0;
-        const CVar* window = CVar::Lookup("SpellQueueWindow");   // 0x10BE4468
-        const uint32_t ms = window ? *reinterpret_cast<const uint32_t*>(reinterpret_cast<const uint8_t*>(window) + 0x30) : 0;
+        const uint32_t ms = g_spellQueueWindow ? *reinterpret_cast<const uint32_t*>(static_cast<const uint8_t*>(g_spellQueueWindow) + 0x30) : 0;
         const uint32_t now = reinterpret_cast<uint32_t(__cdecl*)()>(0x86AE20)();
         if (castEnd <= now)
             return 1;
@@ -199,6 +200,7 @@ namespace
         g_5C2030 = reinterpret_cast<Fn2_t>(AscRuntime::Detour(0x5C2030, 9, reinterpret_cast<void*>(&Hook5C2030)));
         AscRuntime::ReplaceFunction(0x6E09E0, reinterpret_cast<void*>(&Hook6E09E0));
         AscClientOptions::CVarSpec queue{"SpellQueueWindow", "400", 1, 3, nullptr};
+        queue.out = &g_spellQueueWindow;
         queue.help = "Sets how early you can pre-activate/queue a spell/ability. (In Milliseconds)";
         AscClientOptions::QueueWorldCVar(queue);
         AscRuntime::ReplaceFunction(0x805F60, reinterpret_cast<void*>(&Replace805F60));

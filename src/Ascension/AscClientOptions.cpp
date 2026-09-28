@@ -300,7 +300,7 @@ namespace
 
     template <class F> void* Cb(F f) { return reinterpret_cast<void*>(f); }
     // In the original's registration order (FUN_10a66100's call sites 0x10A67607 .. 0x10A6B338).
-    const AscClientOptions::CVarSpec kCVars[] = {
+    AscClientOptions::CVarSpec kCVars[] = {
         {"ObjectSelectionCircleTexture", "2", 1, 4, Cb(&OnCircleTexture)},
         {"ObjectSelectionCircleMode", "0", 1, 4, Cb(&OnCircleMode)},
         {"flashWindow", "0", 1, 4, nullptr},             // DAT_10D3D72C
@@ -366,6 +366,13 @@ namespace
 }
 
 void AscClientOptions::QueueWorldCVar(const CVarSpec& spec) { Queued().push_back(spec); }
+
+void AscClientOptions::SetOutSlot(const char* name, void** slot)
+{
+    for (CVarSpec& c : kCVars)
+        if (strcmp(c.name, name) == 0)
+            c.out = slot;
+}
 
 const AscClientOptions::CVarSpec* AscClientOptions::QueuedWorldCVars(size_t& count)
 {

@@ -22,6 +22,7 @@
 // The DLL keeps each CVar's pointer from registration (DAT_10be348c..34b8) and reads +0x2C (float) /
 // +0x30 (int); we look them up by name because the world state re-registers them. Where the original
 // reads a CVar without a null check, a missing one reads as 0 here instead of faulting.
+#include <Ascension/AscClientOptions.hpp>
 #include <Ascension/AscNamePlates.hpp>
 #include <Ascension/AscBindings.hpp>
 #include <Ascension/AscScript.hpp>
@@ -599,6 +600,10 @@ namespace
     // ---- installer (FUN_102bf920) -------------------------------------------------------------------
     void Init()
     {
+        // FUN_102bf920 -> FUN_10114540 x12: no help, flags 0x21, category 4, registered after world load.
+        for (const AscNamePlates::CVarSpec& c : kCVars)
+            AscClientOptions::QueueWorldCVar({c.name, c.defaultValue, 0x21, 4, c.callback});
+
         const uint8_t push1 = 1;
         Patch(0x72594B, &push1, 1);
         static const uint8_t kNop8[8] = {0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90};

@@ -13,10 +13,11 @@
 //     1000 ms 0x10336340: when the tracked quest changed since the last tick, clear the visited list;
 //   glue Lua init (FUN_102787e0 list, 0x103350C0): cancel the three timers.
 // The two Lua-init lists run from the original's detour on 0x855060 (the script state's library
-// setup); here they ride the world-entry and glue-screen lifecycle, which bracket the same moments.
+// setup); here they are AscBindings' world / glue "registered" lists, which run from the same detour.
 //
 // The visited list is the client's CVar int list (the wrapper at 0x766F70 next / 0x766720 append):
 // { CVar*, index = 2, char[256], status }, values < 0xC4604, header 0x0176, at most the last 20 ids.
+#include <Ascension/AscClientOptions.hpp>
 #include <Ascension/AscDbc.hpp>
 #include <Ascension/AscLog.hpp>
 #include <Client/CDataStore.hpp>
@@ -357,16 +358,16 @@ namespace
             }
     }
 
-    void OnEnterWorld()
+    void OnWorldLuaInit()   // 0x103345A0 (FUN_102787c0 list): tracker cleared, fresh, no last quest
     {
-        if (!g_visited)
-            g_visited = CVar::Lookup("VisitedSuperTracks");
-        // 0x103345A0 (world Lua init): tracker cleared, fresh, no last quest.
         g_track.quest = 0;
         g_track.target = Target{};
         g_track.fresh = true;
         g_lastQuest = 0;
-        // 0x103362A0: the three timers.
+    }
+
+    void OnEnterWorld()   // 0x103362A0 (FUN_10278510): the three timers
+    {
         g_timers[0] = AscRuntime::Schedule(1000, ResolveTick, nullptr);
         g_timers[1] = AscRuntime::Schedule(100, ArrivalTick, nullptr);
         g_timers[2] = AscRuntime::Schedule(1000, QuestChangeTick, nullptr);
@@ -551,11 +552,19 @@ namespace
         {"C_SuperTrack", "SetSuperTrackedQuestID", SetSuperTrackedQuestID},
         {"C_SuperTrack", "PositionFrame", PositionFrame},
     };
+    int __cdecl AcceptAnyValue() { return 1; }   // 0x102A0990
+
     void Init()   // 0x10334FB0
     {
+        // FUN_10114540 with &0x10D3C1A4 as the output slot: no help, flags 0x21, default "", category 4.
+        // The world registration writes the new CVar* into g_visited each time it runs.
+        AscClientOptions::CVarSpec visited{"VisitedSuperTracks", "", 0x21, 4, reinterpret_cast<void*>(&AcceptAnyValue)};
+        visited.out = reinterpret_cast<void**>(&g_visited);
+        AscClientOptions::QueueWorldCVar(visited);
         sDC.AddPacketHandler(0x740, CNetClientCustomPacket((void*)&OnSetPosition, nullptr));
+        AscBindings::OnWorldRegistered(OnWorldLuaInit);
         AscRuntime::OnEnterWorld(OnEnterWorld);
-        AscRuntime::OnGlueScreen(StopTimers);
+        AscBindings::OnGlueRegistered(StopTimers);
     }
 
     AscBindings::Module s_module(kBindings, sizeof(kBindings) / sizeof(kBindings[0]), Init);

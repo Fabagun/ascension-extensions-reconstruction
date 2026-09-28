@@ -70,7 +70,7 @@ who does want the original can go straight to it in the decompile.
   the global of the same name.
 
 
-**Totals:** 1345 Lua bindings, 533 server packets handled, 151 client packets sent, 259 events fired, 93 CVars registered, 347 client hooks, across 135 modules.
+**Totals:** 1346 Lua bindings, 533 server packets handled, 151 client packets sent, 259 events fired, 93 CVars registered, 347 client hooks, across 135 modules.
 
 ## Contents
 
@@ -1958,6 +1958,12 @@ Every native the DLL registers, by namespace. **State**: `glue` (login / realm /
 |---|---|---|---|---|---|
 | `1` | world | () | ? | — | [AscGraphics](#ascgraphics) |
 
+### manastormObjectiveIconCulling
+
+| Name | State | Args | Returns | Original | Module |
+|---|---|---|---|---|---|
+| `0` | world |  |  | — | [AscManastorm](#ascmanastorm) |
+
 ### nameplateDistance
 
 | Name | State | Args | Returns | Original | Module |
@@ -3288,44 +3294,44 @@ The attach init's own client fixes -- hooks installed by FUN_10a66d40 (hook cens
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x4181B0` | Detour | 1061 |  |
-| `0x424B50` | Detour | 1046 |  |
-| `0x4D5F70` | ReplaceFunction | 1030 |  |
-| `0x53D580` | Detour | 1057 |  |
-| `0x584600` | Detour | 1072 |  |
-| `0x58A550` | Detour | 1047 |  |
-| `0x58CA70` | Detour | 1048 |  |
-| `0x5940E0` | Detour | 1049 |  |
-| `0x598830` | Detour | 1053 |  |
-| `0x5AB120` | Detour | 1034 |  |
-| `0x620EE0` | Detour | 1050 |  |
-| `0x6904D0` | Detour | 1055 |  |
-| `0x6B0F90` | ReplaceFunction | 1031 |  |
-| `0x6B1080` | Detour | 1056 |  |
-| `0x6D23C0` | Detour | 1032 |  |
-| `0x6DC3F0` | Detour | 1070 |  |
-| `0x6E7B00` | Detour | 1033 |  |
-| `0x6F9260` | Detour | 1036 |  |
-| `0x70B960` | Detour | 1051 |  |
-| `0x70CDF0` | Detour | 1063 |  |
-| `0x718A00` | Detour | 1052 |  |
-| `0x71B7F0` | Detour | 1064 |  |
-| `0x720010` | Detour | 1069 |  |
-| `0x729C70` | Detour | 1067 |  |
-| `0x730050` | Detour | 1035 |  |
-| `0x743530` | Detour | 1066 |  |
-| `0x744A50` | Detour | 1043 |  |
-| `0x751F70` | Detour | 1068 |  |
-| `0x754D00` | Detour | 1058 |  |
-| `0x76A630` | Detour | 1054 |  |
-| `0x76DDE0` | ReplaceFunction | 1065 |  |
-| `0x7F3B60` | Detour | 1037 |  |
-| `0x805D70` | Detour | 1071 |  |
-| `0x806030` | Detour | 1038 |  |
-| `0x81B380` | Detour | 1059 |  |
-| `0x81F970` | Detour | 1044 |  |
-| `0x84E400` | Detour | 1062 |  |
-| `0x8A65E0` | Detour | 1060 |  |
+| `0x4181B0` | Detour | 1065 |  |
+| `0x424B50` | Detour | 1050 |  |
+| `0x4D5F70` | ReplaceFunction | 1034 |  |
+| `0x53D580` | Detour | 1061 |  |
+| `0x584600` | Detour | 1076 |  |
+| `0x58A550` | Detour | 1051 |  |
+| `0x58CA70` | Detour | 1052 |  |
+| `0x5940E0` | Detour | 1053 |  |
+| `0x598830` | Detour | 1057 |  |
+| `0x5AB120` | Detour | 1038 |  |
+| `0x620EE0` | Detour | 1054 |  |
+| `0x6904D0` | Detour | 1059 |  |
+| `0x6B0F90` | ReplaceFunction | 1035 |  |
+| `0x6B1080` | Detour | 1060 |  |
+| `0x6D23C0` | Detour | 1036 |  |
+| `0x6DC3F0` | Detour | 1074 |  |
+| `0x6E7B00` | Detour | 1037 |  |
+| `0x6F9260` | Detour | 1040 |  |
+| `0x70B960` | Detour | 1055 |  |
+| `0x70CDF0` | Detour | 1067 |  |
+| `0x718A00` | Detour | 1056 |  |
+| `0x71B7F0` | Detour | 1068 |  |
+| `0x720010` | Detour | 1073 |  |
+| `0x729C70` | Detour | 1071 |  |
+| `0x730050` | Detour | 1039 |  |
+| `0x743530` | Detour | 1070 |  |
+| `0x744A50` | Detour | 1047 |  |
+| `0x751F70` | Detour | 1072 |  |
+| `0x754D00` | Detour | 1062 |  |
+| `0x76A630` | Detour | 1058 |  |
+| `0x76DDE0` | ReplaceFunction | 1069 |  |
+| `0x7F3B60` | Detour | 1041 |  |
+| `0x805D70` | Detour | 1075 |  |
+| `0x806030` | Detour | 1042 |  |
+| `0x81B380` | Detour | 1063 |  |
+| `0x81F970` | Detour | 1048 |  |
+| `0x84E400` | Detour | 1066 |  |
+| `0x8A65E0` | Detour | 1064 |  |
 
 ### AscAttachLate
 
@@ -5308,25 +5314,25 @@ The original's render module: installer FUN_10265d20 (SetRenderOcclusion's regis
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `entityShadows.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `entityCulling.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `portalCulling.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `terrainCulling.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `lightCulling.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `wmoCulling.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `fogOverride.0` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `fogDensity.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `fogDistance.498` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `antiportal.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `lightLimitFix.0` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `ambientGlow.1` | world |  →  | — | nullptr, false |  |
-| `ambientShade.1` | world |  →  | — | nullptr, false |  |
-| `lightLinearAttenuation.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `lightQuadraticAttenuation.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `overrideDayProgress.0` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `animateClouds.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `lodObjectCull.1` | world | () → ? | — | AscGraphics.cpp:287 `Cb` |  |
-| `SetRenderOcclusion` | world | (bool) → 0 | `0x1026A510` | AscGraphics.cpp:670 `SetRenderOcclusion` | handler_SetRenderOcclusion (FUN_1026a510): exactly one argument, else ignored; returns nothing. |
+| `entityShadows.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `entityCulling.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `portalCulling.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `terrainCulling.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `lightCulling.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `wmoCulling.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `fogOverride.0` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `fogDensity.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `fogDistance.498` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `antiportal.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `lightLimitFix.0` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `ambientGlow.1` | world |  →  | — | nullptr, false, true |  |
+| `ambientShade.1` | world |  →  | — | nullptr, false, true |  |
+| `lightLinearAttenuation.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `lightQuadraticAttenuation.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `overrideDayProgress.0` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `animateClouds.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `lodObjectCull.1` | world | () → ? | — | AscGraphics.cpp:288 `Cb` |  |
+| `SetRenderOcclusion` | world | (bool) → 0 | `0x1026A510` | AscGraphics.cpp:671 `SetRenderOcclusion` | handler_SetRenderOcclusion (FUN_1026a510): exactly one argument, else ignored; returns nothing. |
 
 **Server packets handled**
 
@@ -5364,15 +5370,15 @@ The original's render module: installer FUN_10265d20 (SetRenderOcclusion's regis
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x681580` | ReplaceFunction | 698 |  |
-| `0x6815C0` | ReplaceFunction | 697 |  |
-| `0x780770` | ReplaceFunction | 691 |  |
-| `0x7EB180` | Detour | 685 |  |
-| `0x7EB210` | Detour | 684 |  |
-| `0x7F1010` | Detour | 690 |  |
-| `0x7F1CD0` | Detour | 689 |  |
-| `0x834A40` | Detour | 682 |  |
-| `0x834AB0` | Detour | 683 |  |
+| `0x681580` | ReplaceFunction | 704 |  |
+| `0x6815C0` | ReplaceFunction | 703 |  |
+| `0x780770` | ReplaceFunction | 697 |  |
+| `0x7EB180` | Detour | 691 |  |
+| `0x7EB210` | Detour | 690 |  |
+| `0x7F1010` | Detour | 696 |  |
+| `0x7F1CD0` | Detour | 695 |  |
+| `0x834A40` | Detour | 688 | FUN_10265d20's FUN_10114540 half, in its order: no help, flags 1, category 1. |
+| `0x834AB0` | Detour | 689 | FUN_10265d20's FUN_10114540 half, in its order: no help, flags 1, category 1. |
 
 ### AscGroupFinder
 
@@ -5716,30 +5722,31 @@ C_Manastorm over ManastormMgr (FUN_102a4760, static 0x10BE31A8; module init 0x10
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `C_Manastorm.Enter` | world | (number) → 0..1 | `0x102A68F0` | AscManastorm.cpp:678 `Enter` | ---- bindings ------------------------------------------------------------------------------------ — sends `0x651` CMSG_ENTER_MANASTORM |
-| `C_Manastorm.Leave` | world | () → 1 | `0x102A69F0` | AscManastorm.cpp:687 `Leave` | sends `0x665` CMSG_LEAVE_MANASTORM |
-| `C_Manastorm.CanEnter` | world | (number) → 0..3 | `0x102A6380` | AscManastorm.cpp:694 `CanEnter` |  |
-| `C_Manastorm.CanLeave` | world | () → 2 | `0x102A6790` | AscManastorm.cpp:745 `CanLeave` |  |
-| `C_Manastorm.GetEnterableLevels` | world | () → 1 | `0x102A5690` | AscManastorm.cpp:763 `GetEnterableLevels` | 1, 6, 11, ... up to the group's highest completed level + 1 (at least 1). |
-| `C_Manastorm.IsInManastorm` | world | () → 1 | `0x102A6280` | AscManastorm.cpp:779 `IsInManastorm` |  |
-| `C_Manastorm.GetActiveLevel` | world | () → 1 | `0x102A5080` | AscManastorm.cpp:785 `GetActiveLevel` |  |
-| `C_Manastorm.GetActiveManastormID` | world | () → 1 | `0x102A50A0` | AscManastorm.cpp:791 `GetActiveManastormID` |  |
-| `C_Manastorm.GetBoss` | world | () → 4 | `0x102A55B0` | AscManastorm.cpp:805 `GetBoss` | Boss (Manastorm +0xC), chaotic link, then spell 93459's +0x140 / +0x144 plus one, times the link. |
-| `C_Manastorm.GetMaxCompletedLevels` | world | (string) → 0..5 | `0x102A5A70` | AscManastorm.cpp:824 `GetMaxCompletedLevels` | GetMaxCompletedLevels(unit): all types, then solo/duo/trio/group each with its end-game twin. |
-| `C_Manastorm.GetActiveManastormType` | world | () → 1 | `0x102A50C0` | AscManastorm.cpp:797 `GetActiveManastormType` |  |
-| `C_Manastorm.GetExperienceModifier` | world | () → 0..2 | `0x102A58D0` | AscManastorm.cpp:846 `GetExperienceModifier` | The first ManastormModifiers row for (a, b): +0x2C and +0x34. |
-| `C_Manastorm.GetStageBonusExperience` | world | () → 2 | `0x102A6180` | AscManastorm.cpp:867 `GetStageBonusExperience` | The active Manastorm's modifier row (+4 = Manastorm +8, +8 = active level): +0x2C * Manastorm +0x18 and +0x34 * Manastorm +0x20. |
-| `C_Manastorm.GetRewardModifier` | world | (number) → 0..6 | `0x102A5DC0` | AscManastorm.cpp:889 `GetRewardModifier` | GetRewardModifier(id): Manastorm +0x10 / +0x14 (1.0 without a row), the group modifier -- the ManastormPlayerGroupModifiers row with the largest size (+4) not above the group and, among those, the largest +8 below 2 -- and the two products. |
-| `C_Manastorm.ShowObjectiveIcon` | world | () → 0 | `0x102A6BF0` | AscManastorm.cpp:925 `ShowObjectiveIcon` |  |
-| `C_Manastorm.GetManastormCacheInfo` | world | () → 3 | `0x102A5A20` | AscManastorm.cpp:931 `GetManastormCacheInfo` |  |
-| `C_Manastorm.GetNumLoadoutSlots` | world | () → 1 | `0x102A5CE0` | AscManastorm.cpp:939 `GetNumLoadoutSlots` |  |
-| `C_Manastorm.GetLoadoutSpellAtIndex` | world | (number) → 0..1 | `0x102A59B0` | AscManastorm.cpp:945 `GetLoadoutSpellAtIndex` |  |
-| `C_Manastorm.SetLoadoutSpellAtIndex` | world | () → 0..1 | `0x102A6AC0` | AscManastorm.cpp:957 `SetLoadoutSpellAtIndex` | sends `0x689` CMSG_SET_MANASTORM_LOADOUT_SLOT |
-| `C_Manastorm.CanSetLoadoutSpellAtIndex` | world | () → 0..2 | `0x102A4F60` | AscManastorm.cpp:968 `CanSetLoadoutSpellAtIndex` |  |
-| `C_Manastorm.GetAvailableLoadoutSpells` | world | () → 2 | `0x102A51F0` | AscManastorm.cpp:985 `GetAvailableLoadoutSpells` | Every SpellCustomAttr row flagged 0x80 (+0x14) whose spell is the highest rank the player knows: first the ones some slot accepts, then the rest. |
-| `C_Manastorm.GetRewardVisibility` | world | (number) → 0..1 | `0x102A5FA0` | AscManastorm.cpp:1044 `GetRewardVisibility` | GetRewardVisibility(guid[, item]): every item's table keyed by item id, or the one item (nil). |
-| `C_Manastorm.IsRewardLocked` | world | () → 0..3 | `0x102A62B0` | AscManastorm.cpp:1083 `IsRewardLocked` |  |
-| `C_Manastorm.GetRewardLimitProgress` | world | () → 0..5 | `0x102A5D00` | AscManastorm.cpp:1109 `GetRewardLimitProgress` | Earned, max, remaining, seconds remaining (nil if 0), locked -- or nil without a limit (max 0). |
+| `manastormObjectiveIconCulling.0` | world |  →  | — | 1, 4, reinterpret_cast<void*>(&AcceptAnyValue) |  |
+| `C_Manastorm.Enter` | world | (number) → 0..1 | `0x102A68F0` | AscManastorm.cpp:679 `Enter` | ---- bindings ------------------------------------------------------------------------------------ — sends `0x651` CMSG_ENTER_MANASTORM |
+| `C_Manastorm.Leave` | world | () → 1 | `0x102A69F0` | AscManastorm.cpp:688 `Leave` | sends `0x665` CMSG_LEAVE_MANASTORM |
+| `C_Manastorm.CanEnter` | world | (number) → 0..3 | `0x102A6380` | AscManastorm.cpp:695 `CanEnter` |  |
+| `C_Manastorm.CanLeave` | world | () → 2 | `0x102A6790` | AscManastorm.cpp:746 `CanLeave` |  |
+| `C_Manastorm.GetEnterableLevels` | world | () → 1 | `0x102A5690` | AscManastorm.cpp:764 `GetEnterableLevels` | 1, 6, 11, ... up to the group's highest completed level + 1 (at least 1). |
+| `C_Manastorm.IsInManastorm` | world | () → 1 | `0x102A6280` | AscManastorm.cpp:780 `IsInManastorm` |  |
+| `C_Manastorm.GetActiveLevel` | world | () → 1 | `0x102A5080` | AscManastorm.cpp:786 `GetActiveLevel` |  |
+| `C_Manastorm.GetActiveManastormID` | world | () → 1 | `0x102A50A0` | AscManastorm.cpp:792 `GetActiveManastormID` |  |
+| `C_Manastorm.GetBoss` | world | () → 4 | `0x102A55B0` | AscManastorm.cpp:806 `GetBoss` | Boss (Manastorm +0xC), chaotic link, then spell 93459's +0x140 / +0x144 plus one, times the link. |
+| `C_Manastorm.GetMaxCompletedLevels` | world | (string) → 0..5 | `0x102A5A70` | AscManastorm.cpp:825 `GetMaxCompletedLevels` | GetMaxCompletedLevels(unit): all types, then solo/duo/trio/group each with its end-game twin. |
+| `C_Manastorm.GetActiveManastormType` | world | () → 1 | `0x102A50C0` | AscManastorm.cpp:798 `GetActiveManastormType` |  |
+| `C_Manastorm.GetExperienceModifier` | world | () → 0..2 | `0x102A58D0` | AscManastorm.cpp:847 `GetExperienceModifier` | The first ManastormModifiers row for (a, b): +0x2C and +0x34. |
+| `C_Manastorm.GetStageBonusExperience` | world | () → 2 | `0x102A6180` | AscManastorm.cpp:868 `GetStageBonusExperience` | The active Manastorm's modifier row (+4 = Manastorm +8, +8 = active level): +0x2C * Manastorm +0x18 and +0x34 * Manastorm +0x20. |
+| `C_Manastorm.GetRewardModifier` | world | (number) → 0..6 | `0x102A5DC0` | AscManastorm.cpp:890 `GetRewardModifier` | GetRewardModifier(id): Manastorm +0x10 / +0x14 (1.0 without a row), the group modifier -- the ManastormPlayerGroupModifiers row with the largest size (+4) not above the group and, among those, the largest +8 below 2 -- and the two products. |
+| `C_Manastorm.ShowObjectiveIcon` | world | () → 0 | `0x102A6BF0` | AscManastorm.cpp:926 `ShowObjectiveIcon` |  |
+| `C_Manastorm.GetManastormCacheInfo` | world | () → 3 | `0x102A5A20` | AscManastorm.cpp:932 `GetManastormCacheInfo` |  |
+| `C_Manastorm.GetNumLoadoutSlots` | world | () → 1 | `0x102A5CE0` | AscManastorm.cpp:940 `GetNumLoadoutSlots` |  |
+| `C_Manastorm.GetLoadoutSpellAtIndex` | world | (number) → 0..1 | `0x102A59B0` | AscManastorm.cpp:946 `GetLoadoutSpellAtIndex` |  |
+| `C_Manastorm.SetLoadoutSpellAtIndex` | world | () → 0..1 | `0x102A6AC0` | AscManastorm.cpp:958 `SetLoadoutSpellAtIndex` | sends `0x689` CMSG_SET_MANASTORM_LOADOUT_SLOT |
+| `C_Manastorm.CanSetLoadoutSpellAtIndex` | world | () → 0..2 | `0x102A4F60` | AscManastorm.cpp:969 `CanSetLoadoutSpellAtIndex` |  |
+| `C_Manastorm.GetAvailableLoadoutSpells` | world | () → 2 | `0x102A51F0` | AscManastorm.cpp:986 `GetAvailableLoadoutSpells` | Every SpellCustomAttr row flagged 0x80 (+0x14) whose spell is the highest rank the player knows: first the ones some slot accepts, then the rest. |
+| `C_Manastorm.GetRewardVisibility` | world | (number) → 0..1 | `0x102A5FA0` | AscManastorm.cpp:1045 `GetRewardVisibility` | GetRewardVisibility(guid[, item]): every item's table keyed by item id, or the one item (nil). |
+| `C_Manastorm.IsRewardLocked` | world | () → 0..3 | `0x102A62B0` | AscManastorm.cpp:1084 `IsRewardLocked` |  |
+| `C_Manastorm.GetRewardLimitProgress` | world | () → 0..5 | `0x102A5D00` | AscManastorm.cpp:1110 `GetRewardLimitProgress` | Earned, max, remaining, seconds remaining (nil if 0), locked -- or nil without a limit (max 0). |
 
 **Server packets handled**
 
@@ -5763,6 +5770,12 @@ C_Manastorm over ManastormMgr (FUN_102a4760, static 0x10BE31A8; module init 0x10
 **Client packets sent:** `0x651` CMSG_ENTER_MANASTORM, `0x665` CMSG_LEAVE_MANASTORM, `0x689` CMSG_SET_MANASTORM_LOADOUT_SLOT
 
 **Events fired:** `ACTIVE_MANASTORM_UPDATED`, `ENTER_MANASTORM_RESULT`, `LEAVE_MANASTORM_RESULT`, `MANASTORM_CACHE_INFO_UPDATED`, `MANASTORM_CHAOTIC_LINK_UPDATED`, `MANASTORM_COMPLETED_LEVELS_UPDATED`, `MANASTORM_FAILED`, `MANASTORM_LEVEL_COMPLETED`, `MANASTORM_LEVEL_UNLOCKED`, `MANASTORM_LOADOUT_RESULT`, `MANASTORM_LOADOUT_UPDATE`, `MANASTORM_REWARD_VISIBILITY_UPDATED`
+
+**CVars registered** (the original's name, default, flags, category)
+
+| CVar | Default | Flags | Category |
+|---|---|---|---|
+| `manastormObjectiveIconCulling` | `0` | 1 | 4 |
 
 ### AscMemoryBridge
 
@@ -6090,7 +6103,7 @@ The original's nameplate module: installer FUN_102bf920 (called from the attach 
 | `nameplateShowPersonal.0` | world |  →  | — | nullptr |  |
 | `nameplatePersonalPosition.2` | world |  →  | — | reinterpret_cast<void*>(&OnPersonalPosition) |  |
 | `nameplateInCombatOnly.0` | world |  →  | — | nullptr |  |
-| `GetNamePlateForUnit` | world | (string) → 0..1 | `0x102BF780` | AscNamePlates.cpp:472 `GetNamePlateForUnit` | Exactly one argument (a unit token), else nothing. The first unit whose GUID matches decides: its registry entry's plate frame (its Lua object created through 0x819880 if it has none yet), or nothing. |
+| `GetNamePlateForUnit` | world | (string) → 0..1 | `0x102BF780` | AscNamePlates.cpp:473 `GetNamePlateForUnit` | Exactly one argument (a unit token), else nothing. The first unit whose GUID matches decides: its registry entry's plate frame (its Lua object created through 0x819880 if it has none yet), or nothing. |
 
 **Events fired:** `NAME_PLATE_UNIT_ADDED`, `NAME_PLATE_UNIT_REMOVED`
 
@@ -6115,15 +6128,15 @@ The original's nameplate module: installer FUN_102bf920 (called from the attach 
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x60ABF0` | Detour | 625 |  |
-| `0x715C30` | Detour | 621 |  |
-| `0x7256C0` | Detour | 618 |  |
-| `0x725840` | Detour | 619 |  |
-| `0x725890` | Detour | 610 |  |
-| `0x72B060` | Detour | 611 |  |
-| `0x98E910` | Detour | 622 |  |
-| `0x98E9F0` | Detour | 609 |  |
-| `0x9900E0` | Detour | 620 |  |
+| `0x60ABF0` | Detour | 630 |  |
+| `0x715C30` | Detour | 626 |  |
+| `0x7256C0` | Detour | 623 |  |
+| `0x725840` | Detour | 624 |  |
+| `0x725890` | Detour | 615 |  |
+| `0x72B060` | Detour | 616 |  |
+| `0x98E910` | Detour | 627 |  |
+| `0x98E9F0` | Detour | 614 |  |
+| `0x9900E0` | Detour | 625 |  |
 
 ### AscObjectAddon
 
@@ -6212,8 +6225,8 @@ SMSG_PATCH_* handlers that AscDbcPatch.generated.inc does not cover: registered 
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x712400` | Detour | 297 | 0x6FB GAMEOBJECT_DISPLAY_INFO_ADDON (FUN_1020c190): {id, C string}; then every game object's texture. |
-| `0x713F50` | Detour | 296 | 0x6FB GAMEOBJECT_DISPLAY_INFO_ADDON (FUN_1020c190): {id, C string}; then every game object's texture. |
+| `0x712400` | Detour | 298 | 0x6FB GAMEOBJECT_DISPLAY_INFO_ADDON (FUN_1020c190): {id, C string}; then every game object's texture. |
+| `0x713F50` | Detour | 297 | 0x6FB GAMEOBJECT_DISPLAY_INFO_ADDON (FUN_1020c190): {id, C string}; then every game object's texture. |
 
 ### AscPlayerPoll
 
@@ -6711,12 +6724,12 @@ Four single-hook installers. FUN_10111c60 0x5C2030 (__cdecl(a, b)): runs with th
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x454070` | Detour | 198 |  |
-| `0x5ADA20` | Detour | 205 |  |
-| `0x5C2030` | Detour | 199 |  |
-| `0x6B2F60` | Detour | 208 |  |
-| `0x6E09E0` | ReplaceFunction | 200 |  |
-| `0x805F60` | ReplaceFunction | 204 |  |
+| `0x454070` | Detour | 199 |  |
+| `0x5ADA20` | Detour | 207 |  |
+| `0x5C2030` | Detour | 200 |  |
+| `0x6B2F60` | Detour | 210 |  |
+| `0x6E09E0` | ReplaceFunction | 201 |  |
+| `0x805F60` | ReplaceFunction | 206 |  |
 
 ### AscSpecs
 
@@ -6887,7 +6900,7 @@ The original's spell-visual installer FUN_10322fb0: server-assigned spell visual
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `hideOtherPlayerHarmfulSpellVisuals.0` | world |  →  | — | 1, 1, nullptr |  |
+| `hideOtherPlayerHarmfulSpellVisuals.0` | world |  →  | — | 1, 1, nullptr, nullptr, false, &g_option |  |
 
 **Server packets handled**
 
@@ -6907,30 +6920,30 @@ The original's spell-visual installer FUN_10322fb0: server-assigned spell visual
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x7022D0` | Detour | 297 |  |
-| `0x702DB0` | Detour | 298 |  |
-| `0x705100` | Detour | 303 |  |
-| `0x720F80` | Detour | 296 |  |
+| `0x7022D0` | Detour | 295 |  |
+| `0x702DB0` | Detour | 296 |  |
+| `0x705100` | Detour | 301 |  |
+| `0x720F80` | Detour | 294 |  |
 
 ### AscSuperTrack
 
 `src/Ascension/AscSuperTrack.cpp`
 
-C_SuperTrack. The tracker is the static at 0x10BCC640: +0 quest id, then the target at 0x10BCC644 (FUN_10217xxx methods run on it; a SuperTrack.dbc row when it came from the DBC): +0 SuperTrack id, +4 map id (-1 = none), +8/+0xC/+0x10 x/y/z (z 0 = "the player's z + 2"), +0x14 arrival radius, +0x18 next SuperTrack id in the chain, +0x1C ?. Cleared value: map -1, position 0, radius 5.5. Setters fire SUPER_TRACKING_CHANGED. Module init (0x10334FB0): the C_SuperTrack library, the event, the "VisitedSuperTracks" CVar (flags 0x21, default ""), SMSG 0x740, and three lifecycle callbacks -- world Lua init (FUN_102787c0 list, 0x103345A0): tracker cleared, +0x24 "fresh" flag set, last quest 0; world entry (FUN_10278510, 0x103362A0): three client timers, each re-arming itself -- 1000 ms 0x10336410: re-resolve the tracked quest's target (FUN_10336440, no event); 100 ms 0x103362F0: target state 4 (inside its radius) -> add its SuperTrack id to the visited list; 1000 ms 0x10336340: when the tracked quest changed since the last tick, clear the visited list; glue Lua init (FUN_102787e0 list, 0x103350C0): cancel the three timers. The two Lua-init lists run from the original's detour on 0x855060 (the script state's library setup); here they ride the world-entry and glue-screen lifecycle, which bracket the same moments. The visited list is the client's CVar int list (the wrapper at 0x766F70 next / 0x766720 append): { CVar*, index = 2, char[256], status }, values < 0xC4604, header 0x0176, at most the last 20 ids.
+C_SuperTrack. The tracker is the static at 0x10BCC640: +0 quest id, then the target at 0x10BCC644 (FUN_10217xxx methods run on it; a SuperTrack.dbc row when it came from the DBC): +0 SuperTrack id, +4 map id (-1 = none), +8/+0xC/+0x10 x/y/z (z 0 = "the player's z + 2"), +0x14 arrival radius, +0x18 next SuperTrack id in the chain, +0x1C ?. Cleared value: map -1, position 0, radius 5.5. Setters fire SUPER_TRACKING_CHANGED. Module init (0x10334FB0): the C_SuperTrack library, the event, the "VisitedSuperTracks" CVar (flags 0x21, default ""), SMSG 0x740, and three lifecycle callbacks -- world Lua init (FUN_102787c0 list, 0x103345A0): tracker cleared, +0x24 "fresh" flag set, last quest 0; world entry (FUN_10278510, 0x103362A0): three client timers, each re-arming itself -- 1000 ms 0x10336410: re-resolve the tracked quest's target (FUN_10336440, no event); 100 ms 0x103362F0: target state 4 (inside its radius) -> add its SuperTrack id to the visited list; 1000 ms 0x10336340: when the tracked quest changed since the last tick, clear the visited list; glue Lua init (FUN_102787e0 list, 0x103350C0): cancel the three timers. The two Lua-init lists run from the original's detour on 0x855060 (the script state's library setup); here they are AscBindings' world / glue "registered" lists, which run from the same detour. The visited list is the client's CVar int list (the wrapper at 0x766F70 next / 0x766720 append): { CVar*, index = 2, char[256], status }, values < 0xC4604, header 0x0176, at most the last 20 ids.
 
 **Lua API**
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `C_SuperTrack.ClearSuperTracker` | world | () → 0 | `0x10335130` | AscSuperTrack.cpp:433 `ClearSuperTracker` |  |
-| `C_SuperTrack.IsSuperTrackingAnything` | world | () → 1 | `0x103353D0` | AscSuperTrack.cpp:440 `IsSuperTrackingAnything` |  |
-| `C_SuperTrack.GetTargetState` | world | () → 1 | `0x103353B0` | AscSuperTrack.cpp:454 `GetTargetState` |  |
-| `C_SuperTrack.GetSuperTrackedWorldPosition` | world | () → 1..4 | `0x10335280` | AscSuperTrack.cpp:460 `GetSuperTrackedWorldPosition` |  |
-| `C_SuperTrack.GetSuperTrackedPosition` | world | () → 1..3 | `0x10335170` | AscSuperTrack.cpp:485 `GetSuperTrackedPosition` | FUN_102179e0: world -> screen through the world frame *(0xB7436C) (0x4F6D20), then the client's coordinate conversions 0x493D70 / 0x493E00. |
-| `C_SuperTrack.SetSuperTrackedPosition` | world | (number, number, number, number) → 0 | `0x10335FB0` | AscSuperTrack.cpp:510 `SetSuperTrackedPosition` | FUN_10335fb0: (x, y, z, map); radius 5.5. |
-| `C_SuperTrack.SetSuperTrackedCorpse` | world | (bool) → 0 | `0x10335EB0` | AscSuperTrack.cpp:526 `SetSuperTrackedCorpse` | FUN_10335eb0: the current map (0xBD088C) and the position at 0xBD0A58. |
-| `C_SuperTrack.SetSuperTrackedQuestID` | world | (number) → 0 | `0x10336140` | AscSuperTrack.cpp:393 `SetSuperTrackedQuestID` | FUN_10336140: (questID) -- tracker cleared to the quest, its target resolved, event fired. |
-| `C_SuperTrack.PositionFrame` | world | (bool) → 0 | `0x10335400` | AscSuperTrack.cpp:410 `PositionFrame` | FUN_10335400: PositionFrame(bool). true: client flag 0xD3F798 = 0 and the two x87 blocks at 0x49DDBF (0x1C bytes) and 0x49DDE5 (0x1F) become NOPs; false: flag = 1 and the stock bytes go back. (The original writes through a hash-resolved NtProtectVirtualMemory, RWX then restore.) |
+| `C_SuperTrack.ClearSuperTracker` | world | () → 0 | `0x10335130` | AscSuperTrack.cpp:434 `ClearSuperTracker` |  |
+| `C_SuperTrack.IsSuperTrackingAnything` | world | () → 1 | `0x103353D0` | AscSuperTrack.cpp:441 `IsSuperTrackingAnything` |  |
+| `C_SuperTrack.GetTargetState` | world | () → 1 | `0x103353B0` | AscSuperTrack.cpp:455 `GetTargetState` |  |
+| `C_SuperTrack.GetSuperTrackedWorldPosition` | world | () → 1..4 | `0x10335280` | AscSuperTrack.cpp:461 `GetSuperTrackedWorldPosition` |  |
+| `C_SuperTrack.GetSuperTrackedPosition` | world | () → 1..3 | `0x10335170` | AscSuperTrack.cpp:486 `GetSuperTrackedPosition` | FUN_102179e0: world -> screen through the world frame *(0xB7436C) (0x4F6D20), then the client's coordinate conversions 0x493D70 / 0x493E00. |
+| `C_SuperTrack.SetSuperTrackedPosition` | world | (number, number, number, number) → 0 | `0x10335FB0` | AscSuperTrack.cpp:511 `SetSuperTrackedPosition` | FUN_10335fb0: (x, y, z, map); radius 5.5. |
+| `C_SuperTrack.SetSuperTrackedCorpse` | world | (bool) → 0 | `0x10335EB0` | AscSuperTrack.cpp:527 `SetSuperTrackedCorpse` | FUN_10335eb0: the current map (0xBD088C) and the position at 0xBD0A58. |
+| `C_SuperTrack.SetSuperTrackedQuestID` | world | (number) → 0 | `0x10336140` | AscSuperTrack.cpp:394 `SetSuperTrackedQuestID` | FUN_10336140: (questID) -- tracker cleared to the quest, its target resolved, event fired. |
+| `C_SuperTrack.PositionFrame` | world | (bool) → 0 | `0x10335400` | AscSuperTrack.cpp:411 `PositionFrame` | FUN_10335400: PositionFrame(bool). true: client flag 0xD3F798 = 0 and the two x87 blocks at 0x49DDBF (0x1C bytes) and 0x49DDE5 (0x1F) become NOPs; false: flag = 1 and the stock bytes go back. (The original writes through a hash-resolved NtProtectVirtualMemory, RWX then restore.) |
 
 **Server packets handled**
 
@@ -6939,6 +6952,12 @@ C_SuperTrack. The tracker is the static at 0x10BCC640: +0 quest id, then the tar
 | `0x740` | SMSG_SUPER_TRACKER_SET_POSITION | `OnSetPosition` | SMSG 0x740 SUPER_TRACKER_SET_POSITION (0x10334EC0): i32 map, f32 x, y, z; quest 0, id 0, radius 5.5, next 0 (+0x1C untouched). |
 
 **Events fired:** `SUPER_TRACKING_CHANGED`
+
+**CVars registered** (the original's name, default, flags, category)
+
+| CVar | Default | Flags | Category |
+|---|---|---|---|
+| `VisitedSuperTracks` | `` | 0x21 | 4 |
 
 ### AscTemplates
 
@@ -7217,11 +7236,11 @@ The unit-select module (installer FUN_102daaf0): AoE radius indicators, quest-un
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `aoeRadiusIndicatorSelf.0` | world |  →  | — | 1, 3, nullptr |  |
-| `aoeRadiusIndicatorEnemy.0` | world |  →  | — | 1, 3, nullptr |  |
-| `aoeRadiusIndicatorFriendly.0` | world |  →  | — | 1, 3, nullptr |  |
-| `showQuestUnitCircles.1` | world |  →  | — | 1, 4, nullptr |  |
-| `ObjectSelectionCircleSelf.0` | world |  →  | — | 1, 4, nullptr |  |
+| `aoeRadiusIndicatorSelf.0` | world |  →  | — | 1, 3, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_self)) |  |
+| `aoeRadiusIndicatorEnemy.0` | world |  →  | — | 1, 3, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_enemy)) |  |
+| `aoeRadiusIndicatorFriendly.0` | world |  →  | — | 1, 3, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_friendly)) |  |
+| `showQuestUnitCircles.1` | world |  →  | — | 1, 4, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_quest)) |  |
+| `ObjectSelectionCircleSelf.0` | world |  →  | — | 1, 4, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_circle)) |  |
 | `AutoInteractCursorTime.0` | world |  →  | — | 1, 3, nullptr |  |
 
 **CVars registered** (the original's name, default, flags, category)
@@ -7240,9 +7259,9 @@ The unit-select module (installer FUN_102daaf0): AoE radius indicators, quest-un
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x727400` | Detour | 410 |  |
-| `0x72B7E0` | ReplaceFunction | 409 |  |
-| `0x7460C0` | Detour | 406 |  |
+| `0x727400` | Detour | 409 |  |
+| `0x72B7E0` | ReplaceFunction | 408 |  |
+| `0x7460C0` | Detour | 405 |  |
 
 ### AscUnitTokens
 
@@ -7519,17 +7538,15 @@ The original's detour on the client's glue CVar registration 0x401B60 (FUN_10114
 
 | CVar | Default | Flags | Category |
 |---|---|---|---|
-| `VisitedSuperTracks` | `` | 0x21 | 4 |
 | `cursorSizePreferred` | `0` | 1 | 1 |
 | `loadUnknownAddOns` | `1` | 1 | 5 |
-| `manastormObjectiveIconCulling` | `0` | 1 | 4 |
 | `useRaidVideoSettings` | `0` | 1 | 1 |
 
 **Client hooks**
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x401B60` | Detour | 21 | FUN_101141e0; 6 bytes: push ebp / mov ebp,esp / sub esp,0x20). Until 2026-09-27 the scaffold rewrote the call at 0x404147 instead. |
+| `0x401B60` | Detour | 20 | FUN_101141e0; 6 bytes: push ebp / mov ebp,esp / sub esp,0x20). Until 2026-09-27 the scaffold rewrote the call at 0x404147 instead. |
 
 ### RealmInfo
 

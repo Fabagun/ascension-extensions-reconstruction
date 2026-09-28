@@ -1,7 +1,6 @@
 #include <Client/CVar.hpp>
 #include <Ascension/AscLog.hpp>
 #include <Ascension/AscRuntime.hpp>
-#include <Ascension/AscNamePlates.hpp>
 #include <Ascension/AscGraphics.hpp>
 #include <Ascension/AscClientOptions.hpp>
 #include <Data/Enums.hpp>
@@ -37,11 +36,21 @@ void CVar::RegisterWorldQueue()
     size_t optCount = 0;
     const AscClientOptions::CVarSpec* opts = AscClientOptions::CVars(optCount);
     for (size_t i = 0; i < optCount; ++i)
-        Register(opts[i].name, nullptr, opts[i].flags, opts[i].defaultValue, opts[i].callback, opts[i].category, false, 0, false);
+    {
+        const int32_t cvar = Register(opts[i].name, nullptr, opts[i].flags, opts[i].defaultValue, opts[i].callback, opts[i].category, false, 0, false);
+        if (opts[i].out)
+            *opts[i].out = reinterpret_cast<void*>(cvar);
+    }
+    // 0x10114090: each queued entry's CVar* goes back into its output slot, every time this runs.
     size_t queuedCount = 0;
     const AscClientOptions::CVarSpec* queued = AscClientOptions::QueuedWorldCVars(queuedCount);
     for (size_t i = 0; i < queuedCount; ++i)
-        Register(queued[i].name, queued[i].help, queued[i].flags, queued[i].defaultValue, queued[i].callback, queued[i].category, queued[i].a7, 0, false);
+    {
+        const int32_t cvar = Register(queued[i].name, queued[i].help, queued[i].flags, queued[i].defaultValue, queued[i].callback,
+                                      queued[i].category, queued[i].a7, 0, false);
+        if (queued[i].out)
+            *queued[i].out = reinterpret_cast<void*>(cvar);
+    }
 }
 
 // (aoeRadiusIndicator* / showQuestUnitCircles are the unit-select module's, queued exactly by AscUnitSelect.cpp.)
@@ -77,8 +86,6 @@ int __cdecl AscCursor_SizePreferred(void*, const char*, const char*, void*);   /
 void* AscRaidVideo_Callback();                                                // AscRaidVideo.cpp
 const char* AscRaidVideo_Name(size_t i, const char** defaultValue);
 
-static int __cdecl AcceptAnyValue() { return 1; }   // 0x102A0990
-
 void CVar::FillCustomGlueCVarVector()
 {
     // CVars Ascension's SharedXML options panels expect (OptionsPanelTemplates.lua:391 "Couldn't find CVar").
@@ -95,24 +102,16 @@ void CVar::FillCustomGlueCVarVector()
     // default "1", no callback, category 5. At 0 the addon-load hook (AscAddonTaint, 0x5F7E90) refuses
     // addons the server does not list.
     AddToGlueCVarVector("loadUnknownAddOns", nullptr, 1, "1", nullptr, 5, false, 0, false);
-    // C_SuperTrack's visited-node list (0x10334FB0 -> FUN_10114540): no help, flags 0x21, default "",
-    // an always-accept callback (0x102A0990), category 4.
-    AddToGlueCVarVector("VisitedSuperTracks", nullptr, 0x21, "", reinterpret_cast<void*>(&AcceptAnyValue), 4, false, 0, false);
-    // C_Manastorm's module init (0x102A4540 -> FUN_10114540, storage 0x10BE3190): no help, flags 1,
-    // default "0", the same always-accept callback, category 4. Nothing in the plain code reads it.
-    AddToGlueCVarVector("manastormObjectiveIconCulling", nullptr, 1, "0", reinterpret_cast<void*>(&AcceptAnyValue), 4, false, 0, false);
-    // The nameplate module's twelve (FUN_102bf920 -> FUN_10114540): no help, flags 0x21, category 4,
-    // with the original's callbacks. They replace seven placeholders the panel sweep had registered.
-    size_t plateCount = 0;
-    const AscNamePlates::CVarSpec* plates = AscNamePlates::CVars(plateCount);
-    for (size_t i = 0; i < plateCount; ++i)
-        AddToGlueCVarVector(plates[i].name, nullptr, 0x21, plates[i].defaultValue, plates[i].callback, 4, false, 0, false);
-    // The render module's nineteen (FUN_10265d20 -> FUN_10114540 / FUN_101145c0): no help, flags 1,
-    // category 1, with the original's callbacks. They replace three placeholders registered earlier.
+    // FUN_10114540 registrations -- C_SuperTrack's VisitedSuperTracks, C_Manastorm's
+    // manastormObjectiveIconCulling, the nameplate module's twelve and fourteen of the render module's --
+    // are queued by their modules and registered after world load (RegisterWorldQueue).
+    // The render module's five FUN_101145c0 CVars (FUN_10265d20): no help, flags 1, category 1, with the
+    // original's callbacks.
     size_t gfxCount = 0;
     const AscGraphics::CVarSpec* gfx = AscGraphics::CVars(gfxCount);
     for (size_t i = 0; i < gfxCount; ++i)
-        AddToGlueCVarVector(gfx[i].name, nullptr, 1, gfx[i].defaultValue, gfx[i].callback, 1, gfx[i].a7, 0, false);
+        if (!gfx[i].worldList)
+            AddToGlueCVarVector(gfx[i].name, nullptr, 1, gfx[i].defaultValue, gfx[i].callback, 1, gfx[i].a7, 0, false);
     // The attach init's option CVars (FUN_10a66100 -> FUN_10114540), with the original's flags, defaults,
     // categories and callbacks. They replace the placeholders the sweeps had registered for them.
     // (Registered by RegisterWorldQueue, after 0x51D9B0, like the original.)

@@ -19,6 +19,7 @@
 // The CVar callbacks' byte strings were taken by running each original callback under Unicorn for
 // several values (tools/emulate_dll_fn.py), then checked against its decompile for the conditions.
 // The CVars themselves are queued in CVar.cpp from AscGraphics::CVars().
+#include <Ascension/AscClientOptions.hpp>
 #include <Ascension/AscCrashContext.hpp>
 #include <Ascension/AscGraphics.hpp>
 #include <Ascension/AscBindings.hpp>
@@ -287,25 +288,25 @@ namespace
 
     template <class F> void* Cb(F f) { return reinterpret_cast<void*>(f); }
     const AscGraphics::CVarSpec kCVars[] = {
-        {"entityShadows", "1", Cb(&OnEntityShadows), false},
-        {"entityCulling", "1", Cb(&OnEntityCulling), false},
-        {"portalCulling", "1", Cb(&OnPortalCulling), false},
-        {"terrainCulling", "1", Cb(&OnTerrainCulling), false},
-        {"lightCulling", "1", Cb(&OnLightCulling), false},
-        {"wmoCulling", "1", Cb(&OnWmoCulling), false},
-        {"fogOverride", "0", Cb(&OnFogOverride), true},
-        {"fogDensity", "1", Cb(&OnFogDensity), false},
-        {"fogDistance", "498", Cb(&OnFogDistance), false},
-        {"antiportal", "1", Cb(&OnAntiportal), false},
-        {"lightLimitFix", "0", Cb(&OnLightLimitFix), false},
-        {"ambientGlow", "1", nullptr, false},
-        {"ambientShade", "1", nullptr, false},
-        {"lightLinearAttenuation", "1", Cb(&OnLightAttenuation), false},
-        {"lightQuadraticAttenuation", "1", Cb(&OnLightAttenuation), false},
-        {"overrideDayProgress", "0", Cb(&OnOverrideDayProgress), false},
-        {"animateClouds", "1", Cb(&OnAnimateClouds), false},
-        {"lodObjectCull", "1", Cb(&OnLodObjectCull), false},
-        {"mistDensity", "12.0", Cb(&OnMistDensity), false},
+        {"entityShadows", "1", Cb(&OnEntityShadows), false, false},
+        {"entityCulling", "1", Cb(&OnEntityCulling), false, true},
+        {"portalCulling", "1", Cb(&OnPortalCulling), false, true},
+        {"terrainCulling", "1", Cb(&OnTerrainCulling), false, true},
+        {"lightCulling", "1", Cb(&OnLightCulling), false, true},
+        {"wmoCulling", "1", Cb(&OnWmoCulling), false, true},
+        {"fogOverride", "0", Cb(&OnFogOverride), true, false},
+        {"fogDensity", "1", Cb(&OnFogDensity), false, true},
+        {"fogDistance", "498", Cb(&OnFogDistance), false, false},
+        {"antiportal", "1", Cb(&OnAntiportal), false, true},
+        {"lightLimitFix", "0", Cb(&OnLightLimitFix), false, true},
+        {"ambientGlow", "1", nullptr, false, true},
+        {"ambientShade", "1", nullptr, false, true},
+        {"lightLinearAttenuation", "1", Cb(&OnLightAttenuation), false, true},
+        {"lightQuadraticAttenuation", "1", Cb(&OnLightAttenuation), false, true},
+        {"overrideDayProgress", "0", Cb(&OnOverrideDayProgress), false, true},
+        {"animateClouds", "1", Cb(&OnAnimateClouds), false, false},
+        {"lodObjectCull", "1", Cb(&OnLodObjectCull), false, false},
+        {"mistDensity", "12.0", Cb(&OnMistDensity), false, true},
     };
 
     // ---- detours --------------------------------------------------------------------------------
@@ -677,6 +678,11 @@ namespace
     void Init()
     {
         PatchValue<float>(0x9E8CFC, 1400.0f);
+
+        // FUN_10265d20's FUN_10114540 half, in its order: no help, flags 1, category 1.
+        for (const AscGraphics::CVarSpec& c : kCVars)
+            if (c.worldList)
+                AscClientOptions::QueueWorldCVar({c.name, c.defaultValue, 1, 1, c.callback, nullptr, c.a7});
 
         typedef void* V;
         g_lightNew = reinterpret_cast<LightNew_t>(AscRuntime::Detour(0x834A40, 7, reinterpret_cast<V>(&LightNewDetour)));

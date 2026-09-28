@@ -40,6 +40,7 @@
 //
 // Deviation: GetMaxCompletedLevels with a unit token that does not resolve reads an uninitialised GUID
 // in the original; 0 here.
+#include <Ascension/AscClientOptions.hpp>
 #include <Ascension/AscBindings.hpp>
 #include <Ascension/AscCAMgr.hpp>
 #include <Ascension/AscChallenge.hpp>
@@ -1129,8 +1130,13 @@ namespace
         return 5;
     }
 
+    int __cdecl AcceptAnyValue() { return 1; }   // 0x102A0990
+
     void Init()   // 0x102A4540
     {
+        // FUN_10114540 (storage 0x10BE3190, which nothing in the plain code reads): no help, flags 1,
+        // default "0", an always-accept callback (0x102A0990), category 4.
+        AscClientOptions::QueueWorldCVar({"manastormObjectiveIconCulling", "0", 1, 4, reinterpret_cast<void*>(&AcceptAnyValue)});
         sDC.AddPacketHandler(0x652, CNetClientCustomPacket((void*)&OnEnterResult, nullptr));
         sDC.AddPacketHandler(0x666, CNetClientCustomPacket((void*)&OnLeaveResult, nullptr));
         sDC.AddPacketHandler(0x65D, CNetClientCustomPacket((void*)&OnUpdateMaxCompletedLevel, nullptr));
