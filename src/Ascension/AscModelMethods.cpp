@@ -49,7 +49,9 @@ namespace
     }
 
     // ---- client CM2Model calls ------------------------------------------------------------------------
-    typedef void(__cdecl* AnimCallback)(void*, void* model, uint32_t anim, void*, void*, uint32_t arg);
+    // The client calls it with the model first (0x832229: model +4, +8, +0x10 anim, +0x14, &+0x18, +0x24 arg, ...);
+    // the original's callbacks read the model from their first argument.
+    typedef void(__cdecl* AnimCallback)(void* model, void*, uint32_t anim, void*, void*, uint32_t arg);
     void SetCallback(void* m, AnimCallback fn, uint32_t arg)   // 0x823FE0
     {
         reinterpret_cast<void(__thiscall*)(void*, AnimCallback, uint32_t, int)>(0x823FE0)(m, fn, arg, 0);
@@ -115,7 +117,7 @@ namespace
 
     // ---- kit player -----------------------------------------------------------------------------------
     // 0x10309DE0: an attached effect's animation ended -- loop its "stand" (0x9F) or replay.
-    void __cdecl OnEffectAnimEnd(void*, void* model, uint32_t anim, void*, void*, uint32_t)
+    void __cdecl OnEffectAnimEnd(void* model, void*, uint32_t anim, void*, void*, uint32_t)
     {
         SetCallback(model, nullptr, 0);
         if (HasAnim(model, 0x9F))
@@ -191,7 +193,7 @@ namespace
     }
 
     // 0x103080F0: the cast finished -- back to stand, every effect point cleared.
-    void __cdecl OnCastEnd(void*, void* model, uint32_t, void*, void*, uint32_t visual)
+    void __cdecl OnCastEnd(void* model, void*, uint32_t, void*, void*, uint32_t visual)
     {
         if (visual == 0 || !SpellVisual(visual))
             return;
@@ -202,7 +204,7 @@ namespace
     }
 
     // 0x10309D50: the precast animation ended -- play cast + impact.
-    void __cdecl OnPrecastEnd(void*, void* model, uint32_t anim, void*, void*, uint32_t visual)
+    void __cdecl OnPrecastEnd(void* model, void*, uint32_t anim, void*, void*, uint32_t visual)
     {
         if (visual == 0)
             return;
