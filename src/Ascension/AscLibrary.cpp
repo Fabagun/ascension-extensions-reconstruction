@@ -10,7 +10,20 @@ using namespace AscScript;
 
 namespace
 {
-    std::vector<std::string> g_loaded;
+    std::vector<std::string> g_loaded;   // DAT_10d3d7dc..e0
+
+    // The list names libraries loaded into the CURRENT Lua state. A /reload or a world re-entry builds a new
+    // state with none of them, so the list starts empty with each new state (the original empties it at the
+    // top of FUN_10a66100; how often that runs is not visible in the plain code, but ElvUI survives /reload
+    // on the original, so it must be per state). Kept across states, IsLibraryLoaded answers true
+    // for a library the new state lacks, LibStub skips LoadLibrary, and every addon that asks for it fails
+    // ("Cannot find a library instance", ElvUI after /reload, 2026-09-28).
+    void ForgetLibraries() { g_loaded.clear(); }
+    void Init()
+    {
+        AscBindings::OnGlueRegistered(&ForgetLibraries);
+        AscBindings::OnWorldRegistered(&ForgetLibraries);
+    }
 
     bool Loaded(const std::string& name) { return std::find(g_loaded.begin(), g_loaded.end(), name) != g_loaded.end(); }
 
@@ -79,5 +92,5 @@ namespace
         {nullptr, "LoadLibrary", LoadLibraryXml},
         {nullptr, "SaveSavedVariables", SaveSavedVariables},
     };
-    AscBindings::Module s_module(kBindings, sizeof(kBindings) / sizeof(kBindings[0]));
+    AscBindings::Module s_module(kBindings, sizeof(kBindings) / sizeof(kBindings[0]), &Init);
 }

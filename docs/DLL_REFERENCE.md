@@ -5612,9 +5612,9 @@ Addon-file helpers: LoadLibrary / IsLibraryLoaded -- XML libraries under Interfa
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `IsLibraryLoaded` | both | (string) → 1 | `0x10A4E870` | AscLibrary.cpp:38 `IsLibraryLoaded` |  |
-| `LoadLibrary` | both | (string) → 0 | `0x10A6FCC0` | AscLibrary.cpp:20 `LoadLibraryXml` | FUN_10a6fcc0: "Interface\LibraryXML\<name>.toc" through the client's TOC loader (0x814340, with *0xAF5718 and an out buffer). The taint source 0xD4139C is cleared for the load when 0xD413A0 is set and 0xD413A4 is not, then restored. not "LoadLibrary": that is a Windows.h macro |
-| `SaveSavedVariables` | world | (string) → 0 | `0x10A70BF0` | AscLibrary.cpp:48 `SaveSavedVariables` | FUN_10a70bf0: write only one addon's SavedVariables. Every other addon whose saved-variables record (0x55F4D0 on 0xC2491C) has its +0x18 "dirty" flag set is cleared, 0x5F5620 saves, then those flags are restored and the named addon's is set. |
+| `IsLibraryLoaded` | both | (string) → 1 | `0x10A4E870` | AscLibrary.cpp:51 `IsLibraryLoaded` |  |
+| `LoadLibrary` | both | (string) → 0 | `0x10A6FCC0` | AscLibrary.cpp:33 `LoadLibraryXml` | FUN_10a6fcc0: "Interface\LibraryXML\<name>.toc" through the client's TOC loader (0x814340, with *0xAF5718 and an out buffer). The taint source 0xD4139C is cleared for the load when 0xD413A0 is set and 0xD413A4 is not, then restored. not "LoadLibrary": that is a Windows.h macro |
+| `SaveSavedVariables` | world | (string) → 0 | `0x10A70BF0` | AscLibrary.cpp:61 `SaveSavedVariables` | FUN_10a70bf0: write only one addon's SavedVariables. Every other addon whose saved-variables record (0x55F4D0 on 0xC2491C) has its +0x18 "dirty" flag set is cleared, 0x5F5620 saves, then those flags are restored and the named addon's is set. |
 
 ### AscLoadingScreen
 
