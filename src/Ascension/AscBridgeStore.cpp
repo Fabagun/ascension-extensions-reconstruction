@@ -3,8 +3,8 @@
 //   Run: the original hooks the client's DBC initialisation 0x634E00 (FUN_10276640 over hook object
 //   0x10BCB58C): original first, then every callback in the set 0x10BE2A6C. Its DBC manager
 //   (0x101CF430 -> FUN_101d3d20) is one of them; the other (0x10A3AB70) lives in the protected region.
-//   Only the manager's bridged loads are reproduced here; its other DBCs are still read on demand by
-//   AscDbc.
+//   Only the manager's bridged loads are reproduced here, plus its HD model tables (AscHdDbc.cpp); its
+//   other DBCs are still read on demand by AscDbc.
 //
 //   Loader (FUN_101fd240 Creature, FUN_101fded0 Quest; store objects 0x10BE045C / 0x10BE0414, table
 //   singletons FUN_100c3da0 0x10BDB468 / FUN_101dc820 0x10BE0928): WDBC with the expected field count
@@ -38,6 +38,7 @@
 #include <windows.h>
 
 namespace AscAnimationCount { void Apply(); }
+namespace AscHdDbc { void Apply(); }
 
 namespace
 {
@@ -889,6 +890,7 @@ namespace
         Load(g_quest, "DBFilesClient\\Quest.dbc", 0x1D, 0x74);
         Load(g_itemAddon, "DBFilesClient\\ItemAddon.dbc", 0x30, 0xC0);
         Load(g_vanity, "DBFilesClient\\VanityCollection.dbc", 0x4C, 0x134);
+        AscHdDbc::Apply();            // 0x101D9251..0x101D9BA3, see AscHdDbc.cpp
         // Later in FUN_101d3d20 (0x101D9BCD..0x101D9D59): extra server indexes, {4} on the tables of
         // singletons 0x10BDEDE0 (ItemAddon) and 0x10BE08D0 (VanityCollection), then {4} (entry) on Creature's -- the
         // key FUN_100b8cc0 queries by. Sent even when the table is 0, as the original.

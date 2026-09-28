@@ -70,7 +70,7 @@ who does want the original can go straight to it in the decompile.
   the global of the same name.
 
 
-**Totals:** 1345 Lua bindings, 533 server packets handled, 151 client packets sent, 259 events fired, 93 CVars registered, 347 client hooks, across 133 modules.
+**Totals:** 1345 Lua bindings, 533 server packets handled, 151 client packets sent, 259 events fired, 93 CVars registered, 347 client hooks, across 135 modules.
 
 ## Contents
 
@@ -3174,6 +3174,14 @@ FUN_10321ac0 (world entry) clears an unordered_map at 0x10BE4430 that only its s
 
 **Events fired:** `UNIT_POWER_ALTERNATIVE_UPDATE`
 
+### AscAnimationCount
+
+`src/Ascension/AscAnimationCount.cpp`
+
+The client's animation count (FUN_10a51180, reached through 0x10A3AB70 in the 0x634E00 set -- see AscBridgeStore.cpp). The client hard-codes stock AnimationData.dbc's 506 rows (0x1FA) as an immediate in 44 places (bounds checks and array sizes); after the DBCs load, each becomes the loaded row count (AnimationData's container 0xAD30C8, +8 = rows), so Ascension's extra animations are accepted. The original writes each dword through NtProtectVirtualMemory, one site at a time, in this order.
+
+**Runs from:** `AscAnimationCount::Apply()`, called from [AscBridgeStore](#ascbridgestore) (`0x634E00`)
+
 ### AscAppearance
 
 `src/Ascension/AscAppearance.cpp`
@@ -3506,7 +3514,7 @@ Exact transcriptions of the original Extensions.dll's Lua bindings. Each functio
 
 `src/Ascension/AscBridgeStore.cpp`
 
-The MemoryBridge-backed DBC stores -- see AscBridgeStore.hpp. Run: the original hooks the client's DBC initialisation 0x634E00 (FUN_10276640 over hook object 0x10BCB58C): original first, then every callback in the set 0x10BE2A6C. Its DBC manager (0x101CF430 -> FUN_101d3d20) is one of them; the other (0x10A3AB70) lives in the protected region. Only the manager's bridged loads are reproduced here; its other DBCs are still read on demand by AscDbc. Loader (FUN_101fd240 Creature, FUN_101fded0 Quest; store objects 0x10BE045C / 0x10BE0414, table singletons FUN_100c3da0 0x10BDB468 / FUN_101dc820 0x10BE0928): WDBC with the expected field count and row size -> CreateTable(record size, count) -> rows packed into a VirtualAlloc'd array (tracking the largest / smallest id) -> string block via 0x68 at offset 0 -> (Creature only) record name pointers made relative to the string block -> records via 0x66 -> server index 0x6A(table, 0) -> temporaries freed (FUN_101dc3c0), file closed, loaded = 1. Any failure resets the store (FUN_101daee0 / FUN_101db1b0). Cache (FUN_100bf700; Creature 0x10BDB4C0, Quest FUN_101dc4a0): at most 0x400 records and 0x200000 bytes, evicted least-recently-used first; a (field offset, key) -> record index of at most 0x1000 entries, trimmed oldest first (FUN_100cba60) and purged of a record when it is evicted.
+The MemoryBridge-backed DBC stores -- see AscBridgeStore.hpp. Run: the original hooks the client's DBC initialisation 0x634E00 (FUN_10276640 over hook object 0x10BCB58C): original first, then every callback in the set 0x10BE2A6C. Its DBC manager (0x101CF430 -> FUN_101d3d20) is one of them; the other (0x10A3AB70) lives in the protected region. Only the manager's bridged loads are reproduced here, plus its HD model tables (AscHdDbc.cpp); its other DBCs are still read on demand by AscDbc. Loader (FUN_101fd240 Creature, FUN_101fded0 Quest; store objects 0x10BE045C / 0x10BE0414, table singletons FUN_100c3da0 0x10BDB468 / FUN_101dc820 0x10BE0928): WDBC with the expected field count and row size -> CreateTable(record size, count) -> rows packed into a VirtualAlloc'd array (tracking the largest / smallest id) -> string block via 0x68 at offset 0 -> (Creature only) record name pointers made relative to the string block -> records via 0x66 -> server index 0x6A(table, 0) -> temporaries freed (FUN_101dc3c0), file closed, loaded = 1. Any failure resets the store (FUN_101daee0 / FUN_101db1b0). Cache (FUN_100bf700; Creature 0x10BDB4C0, Quest FUN_101dc4a0): at most 0x400 records and 0x200000 bytes, evicted least-recently-used first; a (field offset, key) -> record index of at most 0x1000 entries, trimmed oldest first (FUN_100cba60) and purged of a record when it is evicted.
 
 **Server packets handled**
 
@@ -3521,7 +3529,7 @@ The MemoryBridge-backed DBC stores -- see AscBridgeStore.hpp. Run: the original 
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x634E00` | Detour | 913 |  |
+| `0x634E00` | Detour | 915 |  |
 
 ### AscBugTracker
 
@@ -5408,6 +5416,14 @@ C_GroupFinder over GroupFinderMgr (FUN_10272490, static 0x10BE2770), transcribed
 **Client packets sent:** `0x57C` CMSG_GROUP_FINDER_CREATE_LISTING, `0x57D` CMSG_GROUP_FINDER_UPDATE_LISTING, `0x57E` CMSG_GROUP_FINDER_REMOVE_LISTING, `0x57F` CMSG_GROUP_FINDER_QUERY_LISTINGS, `0x584` CMSG_SUGGESTED_GROUP_INVITE, `0x586` CMSG_REQUEST_GROUP_INVITE, `0x59E` CMSG_GROUP_FINDER_REQUEST_GROUP_INVITE
 
 **Events fired:** `GROUP_FINDER_ACTIVITY_CREATED`, `GROUP_FINDER_ACTIVITY_CREATION_FAILED`, `GROUP_FINDER_ACTIVITY_DELISTED`, `GROUP_FINDER_ACTIVITY_DELIST_FAILED`, `GROUP_FINDER_ACTIVITY_UPDATED`, `GROUP_FINDER_ACTIVITY_UPDATE_FAILED`, `GROUP_FINDER_LISTED_ACTIVITIES_UPDATED`, `REQUEST_GROUP_FINDER_INVITE`, `REQUEST_GROUP_INVITE`, `SUGGESTED_GROUP_INVITE`
+
+### AscHdDbc
+
+`src/Ascension/AscHdDbc.cpp`
+
+The HD model tables (FUN_101d3d20, 0x101D9251..0x101D9BA3, run from the 0x634E00 set -- see AscBridgeStore.cpp). When Data\Patch-Q.mpq opens and the command line does not say "-hd 0", ten DBFilesClient\HD*.dbc files load into the DLL's own WowClientDB stores (FUN_101f3b50-style loaders over FUN_10204750-style readers; stores 0x10BDFB04..0x10BDFC48), then each is written over the client's rows (FUN_1020cae0-style appliers). Nothing else reads the stores. Loader: WDBC signature, record count (kept once read, even when a later check fails), the expected field count and row size, string block size; rows are read field by field, and every string column becomes a pointer into the store's string block (null when the block is), which is read last and never freed. The original logs each failure; its id index (+0x20) is built but unused. Appliers: the client row with the HD row's id is overwritten whole, string pointers included. CharacterFacialHairStyles has no id: its HD file prepends one, and every client row whose (race, sex, variation) matches HD fields 1..3 takes HD fields 4..8 as its five geosets.
+
+**Runs from:** `AscHdDbc::Apply()`, called from [AscBridgeStore](#ascbridgestore) (`0x634E00`)
 
 ### AscHighRisk
 
