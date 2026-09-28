@@ -28,6 +28,13 @@ who does want the original can go straight to it in the decompile.
   `Fatal`) and dropped without being read. Client packets are built with `AscScript::Packet(op)`, little-endian:
   `U8`/`U16`/`U32`/`U64`, `F32`, `Str` (NUL-terminated) and `Data`. Most variable-length strings are written as
   `u32 length` + bytes, **without** a terminator.
+- **CVars.** The DLL registers its 93 CVars on one of two lists, as the original does. **Glue** CVars
+  (`FUN_101145c0`, 19) are registered with the client's own at startup and exist from the login screen on.
+  **World** CVars (`FUN_10114540`, 74) are registered after each world load, so they exist only in game.
+  Per-character ones (flags `0x21`) are deleted when you log out and created again on the next world entry.
+  Every registration writes the new `CVar*` into its entry's output slot (the original's global, the **Slot**
+  column), so code that reads a CVar reads that slot, never a pointer it looked up once. A pointer kept
+  across a logout points at freed memory.
 - **Events.** The DLL fires FrameXML events (`AscRuntime::Signal(name, fmt, ...)`). Its custom event names are
   appended to the client's own event table at registration (detour on `0x81B5F0`), so `RegisterEvent` works for
   them like for stock events.

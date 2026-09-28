@@ -32,6 +32,13 @@ who does want the original can go straight to it in the decompile.
   `Fatal`) and dropped without being read. Client packets are built with `AscScript::Packet(op)`, little-endian:
   `U8`/`U16`/`U32`/`U64`, `F32`, `Str` (NUL-terminated) and `Data`. Most variable-length strings are written as
   `u32 length` + bytes, **without** a terminator.
+- **CVars.** The DLL registers its 93 CVars on one of two lists, as the original does. **Glue** CVars
+  (`FUN_101145c0`, 19) are registered with the client's own at startup and exist from the login screen on.
+  **World** CVars (`FUN_10114540`, 74) are registered after each world load, so they exist only in game.
+  Per-character ones (flags `0x21`) are deleted when you log out and created again on the next world entry.
+  Every registration writes the new `CVar*` into its entry's output slot (the original's global, the **Slot**
+  column), so code that reads a CVar reads that slot, never a pointer it looked up once. A pointer kept
+  across a logout points at freed memory.
 - **Events.** The DLL fires FrameXML events (`AscRuntime::Signal(name, fmt, ...)`). Its custom event names are
   appended to the client's own event table at registration (detour on `0x81B5F0`), so `RegisterEvent` works for
   them like for stock events.
@@ -3166,11 +3173,11 @@ Alpha ambience sounds (installer FUN_1031e8c0). CVar useAlphaAmbienceSound (FUN_
 |---|---|---|---|---|---|
 | `useAlphaAmbienceSound.0` | world |  →  | — | 1, 7, reinterpret_cast<void*>(&OnChanged) |  |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `useAlphaAmbienceSound` | `0` | 1 | 7 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `useAlphaAmbienceSound` | `0` | 1 | 7 | world | `0x10BE4128` |
 
 ### AscAlternatePower
 
@@ -3800,22 +3807,22 @@ Action camera, camera target focus and camera M2 collision (module init FUN_1019
 | `cameraM2Collision.1` | world |  →  | — | 0x21, 4, reinterpret_cast<void*>(&OnM2Collision) |  |
 | `autoTarget.1` | world |  →  | — | 1, 4, reinterpret_cast<void*>(&OnAutoTarget) |  |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `ActionCam` | `0` | 1 | 4 |
-| `autoTarget` | `1` | 1 | 4 |
-| `cameraActionAngle` | `4.0` | 1 | 4 |
-| `cameraActionDist` | `1.25` | 1 | 4 |
-| `cameraActionHeadBobs` | `0` | 1 | 4 |
-| `cameraActionZ` | `0.05` | 1 | 4 |
-| `cameraM2Collision` | `1` | 0x21 | 4 |
-| `cameraM2CollisionAlpha` | `0.5` | 0x21 | 4 |
-| `cameraTargetFocusEnemyEnable` | `0` | 1 | 4 |
-| `cameraTargetFocusInteractEnable` | `0` | 1 | 4 |
-| `cameraTargetFocusTurnSpeed` | `3.15` | 1 | 4 |
-| `cameraZoomFactor` | `1.0` | 1 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `ActionCam` | `0` | 1 | 4 | world | `0x10BDECF0` |
+| `autoTarget` | `1` | 1 | 4 | world | `0x10BDED1C` |
+| `cameraActionAngle` | `4.0` | 1 | 4 | world | `0x10BDED0C` |
+| `cameraActionDist` | `1.25` | 1 | 4 | world | `0x10BDED08` |
+| `cameraActionHeadBobs` | `0` | 1 | 4 | world | `0x10BDECFC` |
+| `cameraActionZ` | `0.05` | 1 | 4 | world | `0x10BDED10` |
+| `cameraM2Collision` | `1` | 0x21 | 4 | world | `0x10BDECF4` |
+| `cameraM2CollisionAlpha` | `0.5` | 0x21 | 4 | world | `0x10BDECF8` |
+| `cameraTargetFocusEnemyEnable` | `0` | 1 | 4 | world | `0x10BDED04` |
+| `cameraTargetFocusInteractEnable` | `0` | 1 | 4 | world | `0x10BDED00` |
+| `cameraTargetFocusTurnSpeed` | `3.15` | 1 | 4 | world | `0x10BDED14` |
+| `cameraZoomFactor` | `1.0` | 1 | 4 | world | `0x10BDED18` |
 
 **Client hooks**
 
@@ -4413,30 +4420,30 @@ The attach init's (FUN_10a66100) option CVars and the hooks that read them (inst
 
 **Events fired:** `TRADE_REQUEST`
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `CombatLogMelee` | `1` | 0x21 | 3 |
-| `ObjectSelectionCircleMode` | `0` | 1 | 4 |
-| `ObjectSelectionCircleTexture` | `2` | 1 | 4 |
-| `Sound_EnableFall` | `1` | 1 | 7 |
-| `UnitNameAllNPC` | `0` | 1 | 4 |
-| `UnitNameGO` | `0` | 1 | 4 |
-| `UnitNameHostileNPC` | `1` | 1 | 4 |
-| `UnitNameInteractiveNPC` | `0` | 1 | 4 |
-| `UnitNameQuestNPC` | `1` | 1 | 4 |
-| `WorldTextScale` | `1.0` | 1 | 4 |
-| `absorbSoundOnSpellHit` | `0` | 1 | 3 |
-| `autoAcceptTrades` | `1` | 1 | 4 |
-| `autoAssistCast` | `0` | 1 | 3 |
-| `cameraShake` | `1` | 1 | 4 |
-| `chatBubblesNameplate` | `1` | 1 | 4 |
-| `flashWindow` | `0` | 1 | 4 |
-| `hideDangerousEnemyLevel` | `1` | 0x21 | 4 |
-| `holdToCast` | `0` | 1 | 3 |
-| `lootArtScale` | `1.0` | 1 | 4 |
-| `targetName` | `1` | 1 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `CombatLogMelee` | `1` | 0x21 | 3 | world | `0x10D3D9D8` |
+| `ObjectSelectionCircleMode` | `0` | 1 | 4 | world | `0x10D3DA14` |
+| `ObjectSelectionCircleTexture` | `2` | 1 | 4 | world | `0x10D3D9D0` |
+| `Sound_EnableFall` | `1` | 1 | 7 | world | `0x10D3DC3C` |
+| `UnitNameAllNPC` | `0` | 1 | 4 | world | `0x10D3DC38` |
+| `UnitNameGO` | `0` | 1 | 4 | world | `0x10D3DA24` |
+| `UnitNameHostileNPC` | `1` | 1 | 4 | world | `0x10D3DC34` |
+| `UnitNameInteractiveNPC` | `0` | 1 | 4 | world | `0x10D3DA2C` |
+| `UnitNameQuestNPC` | `1` | 1 | 4 | world | `0x10D3DC30` |
+| `WorldTextScale` | `1.0` | 1 | 4 | world | `0x10D3DA1C` |
+| `absorbSoundOnSpellHit` | `0` | 1 | 3 | world | `0x10D3D9D4` |
+| `autoAcceptTrades` | `1` | 1 | 4 | world | `0x10D3DC44` |
+| `autoAssistCast` | `0` | 1 | 3 | world | `0x10D3DA20` |
+| `cameraShake` | `1` | 1 | 4 | world | `0x10D3DA28` |
+| `chatBubblesNameplate` | `1` | 1 | 4 | world | `0x10D3D828` |
+| `flashWindow` | `0` | 1 | 4 | world | `0x10D3D72C` |
+| `hideDangerousEnemyLevel` | `1` | 0x21 | 4 | world | `0x10D3DA00` |
+| `holdToCast` | `0` | 1 | 3 | world | `0x10D3D9FC` |
+| `lootArtScale` | `1.0` | 1 | 4 | world | `0x10D3DA10` |
+| `targetName` | `1` | 1 | 4 | world | `0x10D3D82C` |
 
 **Client hooks**
 
@@ -5342,29 +5349,29 @@ The original's render module: installer FUN_10265d20 (SetRenderOcclusion's regis
 | `0x9D2` | SMSG_PATCH_OCCLUSION_VOLUME | `OnPatchVolume` | SMSG_PATCH_OCCLUSION_VOLUME (0x9D2, FUN_101e2810): {u32 id, u32 unused, u32 map, u32 flags, name}. |
 | `0x9D3` | SMSG_PATCH_OCCLUSION_VOLUME_POINTS | `OnPatchVolumePoint` | SMSG_PATCH_OCCLUSION_VOLUME_POINTS (0x9D3, FUN_101e2990): {u32 id, u32 volume, float x, y, z}. |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `ambientGlow` | `1` | 1 | 1 |
-| `ambientShade` | `1` | 1 | 1 |
-| `animateClouds` | `1` | 1 | 1 |
-| `antiportal` | `1` | 1 | 1 |
-| `entityCulling` | `1` | 1 | 1 |
-| `entityShadows` | `1` | 1 | 1 |
-| `fogDensity` | `1` | 1 | 1 |
-| `fogDistance` | `498` | 1 | 1 |
-| `fogOverride` | `0` | 1 | 1 |
-| `lightCulling` | `1` | 1 | 1 |
-| `lightLimitFix` | `0` | 1 | 1 |
-| `lightLinearAttenuation` | `1` | 1 | 1 |
-| `lightQuadraticAttenuation` | `1` | 1 | 1 |
-| `lodObjectCull` | `1` | 1 | 1 |
-| `mistDensity` | `12.0` | 1 | 1 |
-| `overrideDayProgress` | `0` | 1 | 1 |
-| `portalCulling` | `1` | 1 | 1 |
-| `terrainCulling` | `1` | 1 | 1 |
-| `wmoCulling` | `1` | 1 | 1 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `ambientGlow` | `1` | 1 | 1 | world | `0x10BE26FC` |
+| `ambientShade` | `1` | 1 | 1 | world | `0x10BE26DC` |
+| `animateClouds` | `1` | 1 | 1 | glue | `0x10BE2700` |
+| `antiportal` | `1` | 1 | 1 | world | `0x10BE26F4` |
+| `entityCulling` | `1` | 1 | 1 | world | `0x10BE26F0` |
+| `entityShadows` | `1` | 1 | 1 | glue | `0x10BE26EC` |
+| `fogDensity` | `1` | 1 | 1 | world | `0x10BE26D4` |
+| `fogDistance` | `498` | 1 | 1 | glue | `0x10BE26D8` |
+| `fogOverride` | `0` | 1 | 1 | glue | `0x10BE26D0` |
+| `lightCulling` | `1` | 1 | 1 | world | `0x10BE26CC` |
+| `lightLimitFix` | `0` | 1 | 1 | world | `0x10BE26F8` |
+| `lightLinearAttenuation` | `1` | 1 | 1 | world | `0x10BE26E0` |
+| `lightQuadraticAttenuation` | `1` | 1 | 1 | world | `0x10BE26E4` |
+| `lodObjectCull` | `1` | 1 | 1 | glue | `0x10BE2704` |
+| `mistDensity` | `12.0` | 1 | 1 | world | `0x10BE2708` |
+| `overrideDayProgress` | `0` | 1 | 1 | world | `0x10BE26E8` |
+| `portalCulling` | `1` | 1 | 1 | world | `0x10BE26C0` |
+| `terrainCulling` | `1` | 1 | 1 | world | `0x10BE26C4` |
+| `wmoCulling` | `1` | 1 | 1 | world | `0x10BE26C8` |
 
 **Client hooks**
 
@@ -5771,11 +5778,11 @@ C_Manastorm over ManastormMgr (FUN_102a4760, static 0x10BE31A8; module init 0x10
 
 **Events fired:** `ACTIVE_MANASTORM_UPDATED`, `ENTER_MANASTORM_RESULT`, `LEAVE_MANASTORM_RESULT`, `MANASTORM_CACHE_INFO_UPDATED`, `MANASTORM_CHAOTIC_LINK_UPDATED`, `MANASTORM_COMPLETED_LEVELS_UPDATED`, `MANASTORM_FAILED`, `MANASTORM_LEVEL_COMPLETED`, `MANASTORM_LEVEL_UNLOCKED`, `MANASTORM_LOADOUT_RESULT`, `MANASTORM_LOADOUT_UPDATE`, `MANASTORM_REWARD_VISIBILITY_UPDATED`
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `manastormObjectiveIconCulling` | `0` | 1 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `manastormObjectiveIconCulling` | `0` | 1 | 4 | world | `0x10BE3190` |
 
 ### AscMemoryBridge
 
@@ -6107,22 +6114,22 @@ The original's nameplate module: installer FUN_102bf920 (called from the attach 
 
 **Events fired:** `NAME_PLATE_UNIT_ADDED`, `NAME_PLATE_UNIT_REMOVED`
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `nameplateAngle` | `0.0` | 0x21 | 4 |
-| `nameplateDistance` | `1681` | 0x21 | 4 |
-| `nameplateFadeIn` | `1` | 0x21 | 4 |
-| `nameplateFixedVerticalOffset` | `0` | 0x21 | 4 |
-| `nameplateInCombatOnly` | `0` | 0x21 | 4 |
-| `nameplateIntersectOpacity` | `0.5` | 0x21 | 4 |
-| `nameplateIntersectUseCamera` | `0` | 0x21 | 4 |
-| `nameplatePersonalPosition` | `2` | 0x21 | 4 |
-| `nameplateShowDead` | `0` | 0x21 | 4 |
-| `nameplateShowNeutral` | `1` | 0x21 | 4 |
-| `nameplateShowPersonal` | `0` | 0x21 | 4 |
-| `nameplateVerticalOffset` | `0.0` | 0x21 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `nameplateAngle` | `0.0` | 0x21 | 4 | world | `0x10BE3498` |
+| `nameplateDistance` | `1681` | 0x21 | 4 | world | `0x10BE3494` |
+| `nameplateFadeIn` | `1` | 0x21 | 4 | world | `0x10BE34A4` |
+| `nameplateFixedVerticalOffset` | `0` | 0x21 | 4 | world | `0x10BE3490` |
+| `nameplateInCombatOnly` | `0` | 0x21 | 4 | world | `0x10BE34B8` |
+| `nameplateIntersectOpacity` | `0.5` | 0x21 | 4 | world | `0x10BE349C` |
+| `nameplateIntersectUseCamera` | `0` | 0x21 | 4 | world | `0x10BE34A0` |
+| `nameplatePersonalPosition` | `2` | 0x21 | 4 | world | `0x10BE34B4` |
+| `nameplateShowDead` | `0` | 0x21 | 4 | world | `0x10BE34AC` |
+| `nameplateShowNeutral` | `1` | 0x21 | 4 | world | `0x10BE34A8` |
+| `nameplateShowPersonal` | `0` | 0x21 | 4 | world | `0x10BE34B0` |
+| `nameplateVerticalOffset` | `0.0` | 0x21 | 4 | world | `0x10BE348C` |
 
 **Client hooks**
 
@@ -6326,21 +6333,21 @@ The network profiler -- LogOpcodes / ResetOpcodeLogging / SetOpcodeLoggingEnable
 
 Raid video settings (installer FUN_102dc960): a second set of eleven graphics CVars applied inside raids and battlegrounds (Map.dbc +8 == 2 / 3) while useRaidVideoSettings is on. CVars (FUN_101145c0 -> glue vector, CVar.cpp): useRaidVideoSettings "0" and the eleven <name>_raid, all flags 1, category 1, callback FUN_102dcdb0. Callback (FUN_102dcdb0): only with useRaidVideoSettings on and the player in a raid / battleground. For a <name>_raid CVar the new value goes straight to <name>; for useRaidVideoSettings itself every _raid value is applied. Every other 0x6DF050 call (FUN_102dd130): with useRaidVideoSettings on, in a raid / battleground the flag 0x10BE38E0 is set and each base CVar's current string POINTER (+0x28) is kept (0x10BE38B4..DC) before the _raid value is set; elsewhere the flag is cleared and the restore below runs. Restore (FUN_102dcb90; also every glue screen): each base CVar set back from its kept pointer. 0x766640 (the Config.wtf line writer, __cdecl(name, value, c); FUN_102dc5f0, chained on the same address as AscCVarHooks): with the flag set, a base CVar's line is written with the kept value. The base CVars are reached through the client's own CVar pointers (0xCD8580 ...) for the first eight and by name for fogDistance / entityShadows / animateClouds, as in the original.
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `animateClouds_raid` | `0` | 1 | 1 |
-| `entityShadows_raid` | `0` | 1 | 1 |
-| `environmentDetail_raid` | `0.75` | 1 | 1 |
-| `extShadowQuality_raid` | `0` | 1 | 1 |
-| `farclip_raid` | `507` | 1 | 1 |
-| `fogDistance_raid` | `548` | 1 | 1 |
-| `groundEffectDensity_raid` | `24` | 1 | 1 |
-| `groundEffectDist_raid` | `80.0` | 1 | 1 |
-| `particleDensity_raid` | `0.4` | 1 | 1 |
-| `projectedTextures_raid` | `1` | 1 | 1 |
-| `textureFilteringMode_raid` | `1` | 1 | 1 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `animateClouds_raid` | `0` | 1 | 1 | glue | `0x10BE38B0` |
+| `entityShadows_raid` | `0` | 1 | 1 | glue | `0x10BE38AC` |
+| `environmentDetail_raid` | `0.75` | 1 | 1 | glue | `0x10BE3894` |
+| `extShadowQuality_raid` | `0` | 1 | 1 | glue | `0x10BE3890` |
+| `farclip_raid` | `507` | 1 | 1 | glue | `0x10BE3888` |
+| `fogDistance_raid` | `548` | 1 | 1 | glue | `0x10BE38A8` |
+| `groundEffectDensity_raid` | `24` | 1 | 1 | glue | `0x10BE3898` |
+| `groundEffectDist_raid` | `80.0` | 1 | 1 | glue | `0x10BE389C` |
+| `particleDensity_raid` | `0.4` | 1 | 1 | glue | `0x10BE388C` |
+| `projectedTextures_raid` | `1` | 1 | 1 | glue | `0x10BE38A4` |
+| `textureFilteringMode_raid` | `1` | 1 | 1 | glue | `0x10BE38A0` |
 
 **Client hooks**
 
@@ -6713,12 +6720,12 @@ Four single-hook installers. FUN_10111c60 0x5C2030 (__cdecl(a, b)): runs with th
 | `SpellQueueWindow.400` | world |  →  | — | 1, 3, nullptr |  |
 | `bankEquipmentManager.0` | world |  →  | — | 1, 4, reinterpret_cast<void*>(&BankManagerChanged) |  |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `SpellQueueWindow` | `400` | 1 | 3 |
-| `bankEquipmentManager` | `0` | 1 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `SpellQueueWindow` | `400` | 1 | 3 | world | `0x10BE4468` |
+| `bankEquipmentManager` | `0` | 1 | 4 | world | `0x10BE24E0` |
 
 **Client hooks**
 
@@ -6840,11 +6847,11 @@ Spell shadows -- the cone indicator for directional ground-target spells (instal
 |---|---|---|---|---|---|
 | `SpellShadowShowBad.1` | world |  →  | — | 1, 4, nullptr |  |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `SpellShadowShowBad` | `1` | 1 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `SpellShadowShowBad` | `1` | 1 | 4 | world | `0x10BE442C` |
 
 **Client hooks**
 
@@ -6869,12 +6876,12 @@ Spell text the original DLL builds from Spell.dbc, transcribed from the decompil
 | `C_Format.Format` | both | (string, bool, number, number) → 0..2 | `0x101ACB30` | AscSpellText.cpp:716 `Format` | C_Format.Format(text [, full [, stripQuotes [, spellId]]]) -> text, {collected} (FUN_101acb30) |
 | `GetSpellDescription` | both | (number, bool) → 1 | `0x10A4DD90` | AscSpellText.cpp:741 `GetSpellDescription` | GetSpellDescription([spellId [, full]]) (FUN_10a4dd90 -> FUN_101ac910(spell, full, 0, 0)) |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `extendedTooltips` | `0` | 1 | 3 |
-| `simplifiedTooltips` | `0` | 1 | 3 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `extendedTooltips` | `0` | 1 | 3 | world | `0x10BDEF10` |
+| `simplifiedTooltips` | `0` | 1 | 3 | world | `0x10BDEF14` |
 
 ### AscSpellTokens
 
@@ -6910,11 +6917,11 @@ The original's spell-visual installer FUN_10322fb0: server-assigned spell visual
 
 **Client packets sent:** `0x9C7` CMSG_MISSILE_FIRE_POSITION
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `hideOtherPlayerHarmfulSpellVisuals` | `0` | 1 | 1 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `hideOtherPlayerHarmfulSpellVisuals` | `0` | 1 | 1 | world | `0x10BE4478` |
 
 **Client hooks**
 
@@ -6953,11 +6960,11 @@ C_SuperTrack. The tracker is the static at 0x10BCC640: +0 quest id, then the tar
 
 **Events fired:** `SUPER_TRACKING_CHANGED`
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `VisitedSuperTracks` | `` | 0x21 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `VisitedSuperTracks` | `` | 0x21 | 4 | world | `0x10D3C1A4` |
 
 ### AscTemplates
 
@@ -7243,17 +7250,17 @@ The unit-select module (installer FUN_102daaf0): AoE radius indicators, quest-un
 | `ObjectSelectionCircleSelf.0` | world |  →  | — | 1, 4, nullptr, nullptr, false, reinterpret_cast<void**>(const_cast<CVar**>(&g_circle)) |  |
 | `AutoInteractCursorTime.0` | world |  →  | — | 1, 3, nullptr |  |
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `AutoInteractCursorTime` | `0` | 1 | 3 |
-| `AutoInteractTurnSpeed` | `3.15` | 1 | 3 |
-| `ObjectSelectionCircleSelf` | `0` | 1 | 4 |
-| `aoeRadiusIndicatorEnemy` | `0` | 1 | 3 |
-| `aoeRadiusIndicatorFriendly` | `0` | 1 | 3 |
-| `aoeRadiusIndicatorSelf` | `0` | 1 | 3 |
-| `showQuestUnitCircles` | `1` | 1 | 4 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `AutoInteractCursorTime` | `0` | 1 | 3 | world | `0x10BE3874` |
+| `AutoInteractTurnSpeed` | `3.15` | 1 | 3 | world | `0x10BE3870` |
+| `ObjectSelectionCircleSelf` | `0` | 1 | 4 | world | `0x10BE3848` |
+| `aoeRadiusIndicatorEnemy` | `0` | 1 | 3 | world | `0x10BE383C` |
+| `aoeRadiusIndicatorFriendly` | `0` | 1 | 3 | world | `0x10BE3840` |
+| `aoeRadiusIndicatorSelf` | `0` | 1 | 3 | world | `0x10BE3838` |
+| `showQuestUnitCircles` | `1` | 1 | 4 | world | `0x10BE3844` |
 
 **Client hooks**
 
@@ -7534,13 +7541,13 @@ The packet dispatch of the original's installer FUN_102c3540, transcribed (2026-
 
 The original's detour on the client's glue CVar registration 0x401B60 (FUN_10114180, installer FUN_101141e0; 6 bytes: push ebp / mov ebp,esp / sub esp,0x20). Until 2026-09-27 the scaffold rewrote the call at 0x404147 instead.
 
-**CVars registered** (the original's name, default, flags, category)
+**CVars registered** (the original's name, default, flags, category; list = glue (FUN_101145c0) or world (FUN_10114540, re-registered at every world load); slot = the global the CVar* is written into)
 
-| CVar | Default | Flags | Category |
-|---|---|---|---|
-| `cursorSizePreferred` | `0` | 1 | 1 |
-| `loadUnknownAddOns` | `1` | 1 | 5 |
-| `useRaidVideoSettings` | `0` | 1 | 1 |
+| CVar | Default | Flags | Category | List | Slot |
+|---|---|---|---|---|---|
+| `cursorSizePreferred` | `0` | 1 | 1 | glue | `0x10D3C79C` |
+| `loadUnknownAddOns` | `1` | 1 | 5 | glue | `0x10BE3F7C` |
+| `useRaidVideoSettings` | `0` | 1 | 1 | glue | `0x10BE3884` |
 
 **Client hooks**
 
