@@ -5845,9 +5845,9 @@ Loose globals from the original's misc-bindings block (handlers at 0x10a4xxxx..0
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x7D9A20` | Detour | 436 |  |
-| `0x7E2A50` | ReplaceFunction | 443 |  |
-| `0x7E6DC0` | Detour | 435 |  |
+| `0x7D9A20` | Detour | 459 |  |
+| `0x7E2A50` | ReplaceFunction | 466 |  |
+| `0x7E6DC0` | Detour | 458 |  |
 
 ### AscModelMethods
 

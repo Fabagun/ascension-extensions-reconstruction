@@ -429,9 +429,32 @@ namespace
         return 0;
     }
 
+    // FUN_101952e0 (the installer), after registering FUN_10195180: "-config v" replaces the file name the
+    // client loads its settings from -- the "Config.wtf" pushed at 0x406850 (push imm32, operand 0x406851,
+    // before the load 0x768340) is repointed at the DLL's string (0x10BCA060, initially "Config.wtf").
+    // The pointer is written before the protection result is checked; on success the old protection is
+    // put back.
+    std::string g_configFile = "Config.wtf";   // 0x10BCA060
+
+    void ApplyConfigFile()
+    {
+        const char* config = CommandLineArg("config");
+        if (!config)
+            return;
+        g_configFile = config;
+        void* at = reinterpret_cast<void*>(0x406851);
+        DWORD old;
+        const BOOL ok = VirtualProtect(at, 4, PAGE_EXECUTE_READWRITE, &old);
+        *reinterpret_cast<const char**>(at) = g_configFile.c_str();
+        if (!ok)
+            return;
+        VirtualProtect(at, 4, old, &old);
+    }
+
     void Init()
     {
         AscRuntime::OnGlueScreen(&ApplyCommandLine);
+        ApplyConfigFile();
         g_combatTextAt = reinterpret_cast<CombatTextAt_t>(AscRuntime::Detour(0x7E6DC0, 7, reinterpret_cast<void*>(&CombatTextAtDetour)));
         g_loadTile = reinterpret_cast<LoadTile_t>(AscRuntime::Detour(0x7D9A20, 9, reinterpret_cast<void*>(&LoadTileDetour)));
         sDC.AddPacketHandler(0x672, CNetClientCustomPacket((void*)&OnFriendStatusOffline, nullptr));

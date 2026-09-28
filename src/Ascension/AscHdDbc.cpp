@@ -43,17 +43,18 @@ namespace
         Store store;
     };
 
+    // Store, loader, applier.
     Table g_tables[] = {
-        {"DBFilesClient\\HDCreatureDisplayInfo.dbc", 0x10, 0x40, 0xAD34B8, {0x18, 0x1C, 0x20, 0x24}},     // 0x10BDFB70
-        {"DBFilesClient\\HDCreatureDisplayInfoExtra.dbc", 0x15, 0x54, 0xAD3494, {0x50}},                  // 0x10BDFB94
-        {"DBFilesClient\\HDCreatureModelData.dbc", 0x1C, 0x70, 0xAD3500, {0x8}},                          // 0x10BDFBB8
-        {"DBFilesClient\\HDSpellVisualEffectName.dbc", 0x7, 0x1C, 0xAD4A18, {0x4, 0x8}},                  // 0x10BDFC24
-        {"DBFilesClient\\HDSpellVisualKitModelAttach.dbc", 0xA, 0x28, 0xAD4A84, {}},                      // 0x10BDFC48
-        {"DBFilesClient\\HDCharacterFacialHairStyles.dbc", 0x9, 0x24, 0xAD3398, {}},                      // 0x10BDFB04
-        {"DBFilesClient\\HDCharHairGeosets.dbc", 0x6, 0x18, 0xAD3308, {}},                                // 0x10BDFB28
-        {"DBFilesClient\\HDCharSections.dbc", 0xA, 0x28, 0xAD332C, {0x10, 0x14, 0x18}},                   // 0x10BDFB4C
-        {"DBFilesClient\\HDEmotesTextSound.dbc", 0x5, 0x14, 0xAD37AC, {}},                                // 0x10BDFBDC
-        {"DBFilesClient\\HDHelmetGeosetVisData.dbc", 0x8, 0x20, 0xAD3CBC, {}},                            // 0x10BDFC00
+        {"DBFilesClient\\HDCreatureDisplayInfo.dbc", 0x10, 0x40, 0xAD34B8, {0x18, 0x1C, 0x20, 0x24}},     // 0x10BDFB70 FUN_101f3b50 FUN_1020cae0
+        {"DBFilesClient\\HDCreatureDisplayInfoExtra.dbc", 0x15, 0x54, 0xAD3494, {0x50}},                  // 0x10BDFB94 FUN_101f3fc0 FUN_1020cd50
+        {"DBFilesClient\\HDCreatureModelData.dbc", 0x1C, 0x70, 0xAD3500, {0x8}},                          // 0x10BDFBB8 FUN_101f4430 FUN_1020d090
+        {"DBFilesClient\\HDSpellVisualEffectName.dbc", 0x7, 0x1C, 0xAD4A18, {0x4, 0x8}},                  // 0x10BDFC24 FUN_101f4d10 FUN_1020d660
+        {"DBFilesClient\\HDSpellVisualKitModelAttach.dbc", 0xA, 0x28, 0xAD4A84, {}},                      // 0x10BDFC48 FUN_101ec7f0 FUN_1020d7d0
+        {"DBFilesClient\\HDCharacterFacialHairStyles.dbc", 0x9, 0x24, 0xAD3398, {}},                      // 0x10BDFB04 FUN_101f36e0 FUN_1020c940
+        {"DBFilesClient\\HDCharHairGeosets.dbc", 0x6, 0x18, 0xAD3308, {}},                                // 0x10BDFB28 FUN_101f2e00 FUN_1020c620
+        {"DBFilesClient\\HDCharSections.dbc", 0xA, 0x28, 0xAD332C, {0x10, 0x14, 0x18}},                   // 0x10BDFB4C FUN_101f3270 FUN_1020c740
+        {"DBFilesClient\\HDEmotesTextSound.dbc", 0x5, 0x14, 0xAD37AC, {}},                                // 0x10BDFBDC FUN_101e9b90 FUN_1020d4a0
+        {"DBFilesClient\\HDHelmetGeosetVisData.dbc", 0x8, 0x20, 0xAD3CBC, {}},                            // 0x10BDFC00 FUN_101f48a0 FUN_1020d500
     };
     const uint32_t kFacialHair = 5;
 
