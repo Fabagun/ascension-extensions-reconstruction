@@ -12,7 +12,9 @@
 namespace AscWidget { void ApplyPatches(); }
 #include <Ascension/NetPatch.hpp>
 #include <Misc/Util.hpp>
+#include <csignal>
 #include <cstring>
+#include <intrin.h>
 
 // The real DLL's single export; the exe never calls it but tooling looks for it.
 extern "C" __declspec(dllexport) int ClientExtensionsDummy() { return 1; }
@@ -110,10 +112,23 @@ static void ApplyPlaintextWorldHeaders()
                    "(requires server AscensionCompat.PlaintextWorldHeaders = 1)", (void*)&CipherInitDetour);
 }
 
+// FUN_10a3d070, the original's SIGABRT handler: abort() becomes a STATUS_INVALID_CRUNTIME_PARAMETER exception
+// (flags 0) so the client's crash handler reports it. Its one argument is read from the handler's return
+// address -- the original passes that address as the argument POINTER (push [esp]), not the value.
+static void __cdecl AbortHandler(int)
+{
+    RaiseException(0xC0000420, 0, 1, reinterpret_cast<const ULONG_PTR*>(_ReturnAddress()));
+}
+
 BOOL WINAPI DllMain(HINSTANCE hinst, DWORD reason, LPVOID)
 {
     if (reason == DLL_PROCESS_ATTACH)
     {
+        // FUN_10a79300 (the original's DllMain) opens with these three, in this order: signal(SIGABRT),
+        // Storm's application name (0x771890, used by its error reports) = "Ascension", then
+        // DisableThreadLibraryCalls.
+        signal(SIGABRT, &AbortHandler);
+        reinterpret_cast<void(__stdcall*)(const char*)>(0x771890)("Ascension");
         DisableThreadLibraryCalls(hinst);
         AscLog::Init();
         __try

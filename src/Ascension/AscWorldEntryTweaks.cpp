@@ -15,12 +15,17 @@
 //                 1 s, XOR-decodes ((byte ^ (pos + 0x78)) an embedded exe string at 0x00c79c9e
 //                 (FUN_10086e30/FUN_10087390 are plain std::string ctor/copy-ctor, not compression --
 //                 read live from the exe's own address, same as every other fixed-address read in this
-//                 codebase, so no bytes are fabricated) and checks it against an account-block list
-//                 (DAT_10d3d708..0x10d3d70c). No writer for that list exists anywhere in the decompiled
-//                 corpus and it measured empty at runtime, so it is reproduced as our own empty
-//                 std::list<std::string> -- exact algorithm, exact (empty, measured) data. On a match it
-//                 patches the per-frame tick function 0x403340 into `push 1; call ...` (a kill switch),
-//                 after the original's own (unused) GetProcAddress(kernel32, "ExitProcess") probe.
+//                 codebase, so no bytes are fabricated) and checks it against the list at
+//                 DAT_10d3d708..0x10d3d70c. DELIBERATELY INERT (user decision 2026-09-28) -- the original
+//                 differs from this code in two ways:
+//                   - the list is not empty: the static initializer FUN_10083ce0 (CRT table slot
+//                     0x10B19F10) fills it with 92 "ip:port" strings (Ascension's servers, 127.0.0.1 and
+//                     192.168.1.134 on 8085 / 8087 / 8088);
+//                   - it is an ALLOW-list: FUN_10a3c950 patches when the decoded string is NOT found.
+//                 Reproduced exactly it would kill the client on any server not on that list (our realms
+//                 on 8089+, any other host). Kept as the empty "found" test, which never fires. When it
+//                 would fire it patches the per-frame tick 0x403340 into `push 1; call ...`, after the
+//                 original's own (unused) GetProcAddress(kernel32, "ExitProcess") probe.
 //                 Installer call-site addresses for these two were not separately recorded (see the
 //                 other five below), so they are omitted from the FUN_10A...-per-line comments in Init().
 #include <Ascension/AscBindings.hpp>
@@ -88,7 +93,7 @@ namespace
     }
 
     // ---- the anti-cheat loader + account kill switch (world entry, FUN_10a3abc0 / FUN_10a4aa40) --------
-    std::list<std::string> g_blockedAccounts;   // DAT_10d3d708..0x10d3d70c: no writer found; empty as measured
+    std::list<std::string> g_blockedAccounts;   // DAT_10d3d708..0x10d3d70c: left empty (inert; see the header)
 
     std::string DecodeKillSwitchMarker()   // FUN_10086e30 + FUN_10087390 + the XOR loop in FUN_10a3c950
     {

@@ -467,6 +467,51 @@ namespace
         WriteCode(0x5A8C70, &jne, 1);
     }
 
+    // LAB_10193f70 (0x10193F70), IsItemAction(slot): true when action slot 1..144 (0xC1E358, the client's
+    // action table) holds an item action (top nibble 8). A non-number or an out-of-range slot is false.
+    int IsItemAction(lua_State* L)
+    {
+        bool item = false;
+        if (reinterpret_cast<int(__cdecl*)(lua_State*, int)>(0x84DF20)(L, 1))
+        {
+            // __dtoul3 (0x10AE6370): double -> unsigned 64-bit, low dword kept
+            const uint32_t slot = static_cast<uint32_t>(static_cast<unsigned long long>(CheckNumber(L, 1))) - 1;
+            if (slot < 0x90)
+            {
+                const uint32_t action = reinterpret_cast<const uint32_t*>(0xC1E358)[slot];
+                item = action != 0 && (action & 0xF0000000) == 0x80000000;
+            }
+        }
+        reinterpret_cast<void(__cdecl*)(lua_State*, int)>(0x84E4D0)(L, item ? 1 : 0);
+        return 1;
+    }
+
+    // FUN_10193e40 (the installer of the 0x5AAB90 hook above, called from the attach init at 0x10A662FE):
+    // IsItemAction goes into the live Lua state (0x817DB0) through FUN_100a08e0, a lua_pushcclosure +
+    // lua_setfield(LUA_GLOBALSINDEX) of a fresh `jmp` thunk. Registered once, never again: no later state
+    // has it. Our module init runs in DllMain, before FrameScript has made any state (0x817DB0 is null
+    // there -- pushing onto it was the 2026-09-28 load crash), so the one registration is made into the
+    // first glue state instead, once its natives are in.
+    bool g_isItemActionDone = false;
+    bool TryRegisterIsItemAction()
+    {
+        if (g_isItemActionDone)
+            return true;
+        lua_State* L = reinterpret_cast<lua_State*(__cdecl*)()>(0x817DB0)();
+        if (!L)
+            return false;
+        g_isItemActionDone = true;
+        reinterpret_cast<void(__cdecl*)(lua_State*, lua_CFunction, int)>(0x84E400)(L, &IsItemAction, 0);
+        reinterpret_cast<void(__cdecl*)(lua_State*, int, const char*)>(0x84E900)(L, -10002, "IsItemAction");
+        return true;
+    }
+    void RegisterIsItemActionAtGlue() { TryRegisterIsItemAction(); }
+    void RegisterIsItemAction()
+    {
+        if (!TryRegisterIsItemAction())
+            AscBindings::OnGlueRegistered(&RegisterIsItemActionAtGlue);
+    }
+
     // FUN_10172b50 on 0x6E7E00 (u32 old, u32 new): a rank replaced -- quietly when either rank is a
     // CharacterAdvancement entry or on a wildcard realm.
     int __cdecl OnSupersededSpell(AscRuntime::PacketHandler original, void* a, uint32_t opcode, uint32_t time, void* packet)
@@ -5267,6 +5312,7 @@ namespace
         AscRuntime::HookPacketHandler(0x6E7840, 7, &OnRemovedSpell);
         AscRuntime::HookPacketHandler(0x6E7E00, 6, &OnSupersededSpell);
         g_5AAB90 = reinterpret_cast<Fn5AAB90_t>(AscRuntime::Detour(0x5AAB90, 5, reinterpret_cast<void*>(&Hook5AAB90)));
+        RegisterIsItemAction();
     }
 
     const AscBindings::Binding kBindings[] = {
