@@ -6,7 +6,10 @@
 //        detour FUN_10a3d090 over 0x74F910 (the COMBAT_LOG_EVENT dispatch; hook object 0x10BCCBE4,
 //        installed from FUN_10a60cd0). Nothing ever clears either.
 //   GetErrorCallstackHeight   0x10BE3088, counted by FUN_10296df0, which REPLACES the client's script
-//        error function 0x819730 (hook object 0x10BCB934, never calls the original).
+//        error function 0x819730 (hook object 0x10BCB934, never calls the original). A second hook
+//        object on 0x819730 (0x10BCCA9C, detour FUN_10a4c5e0 from the attach init: the error text to the
+//        LUA log channel, then the chain) therefore never runs -- the live original jumps to
+//        FUN_10296df0 first -- and is not installed.
 //   SetNamePlateCastBarMode   FUN_102c1000: NOPs / restores three client code sites.
 //   SetFadeOutGameObjects     byte 0x10BCC8D9 (initially 1), returned by LAB_10a437b0, which
 //        FUN_10a3d840 writes into the game-object vtable slot 0x9F3A88 (stock: 0x8C8DE0, return 1).

@@ -2,7 +2,7 @@
 // WotLKExtensions' CVar.cpp).
 //
 //   0x4E4610  first loads "WTF\Account\<account>\config-cache.wtf" (0x766530) when an account name is
-//             known (0x6B1010)
+//             known (0x6B1010); wrapped by FUN_101952e0's "-character" select (a second hook object)
 //   0x512890  SaveGameCVars(a, file, flags): a file handle of -1 is refused with a Fatal log line; after
 //             a save with flag 0x10, lastCharacterIndex is written as the character-select index
 //             (0xAC436C) -- the one name on the DLL's list 0x10BDD188
@@ -12,6 +12,7 @@
 #include <Ascension/AscBindings.hpp>
 #include <Ascension/AscLogger.hpp>
 #include <Ascension/AscRuntime.hpp>
+#include <Ascension/AscScript.hpp>
 #include <Windows.h>
 #include <cstdio>
 #include <cstring>
@@ -49,7 +50,7 @@ namespace
             ret
         }
     }
-    int __cdecl Hook4E4610()   // FUN_10113040
+    int __cdecl ConfigCache4E4610()   // FUN_10113040
     {
         const char* account = reinterpret_cast<const char*(__cdecl*)()>(0x6B1010)();
         if (account && *account)
@@ -59,6 +60,35 @@ namespace
             reinterpret_cast<void(__cdecl*)(const char*)>(0x766530)(path);
         }
         return Original4E4610();
+    }
+
+    // LAB_10194a40 (0x10194A40; hook object 0x10BCA078, installed by FUN_101952e0) on the same target. The live
+    // original's 0x4E4610 jumps here first, so it wraps FUN_10113040. On the first call only (flag
+    // 0x10BDEC0C, set whether or not the argument is given): "-character name" picks the first character
+    // in the list 0xB6B238 (+4 count, +8 records, name at +8) with exactly that name, makes it the
+    // selection 0xAC436C and enters the world (0x4D9BD0). The original steps the records by 0x188; the
+    // client's are 0x198 (0x4D9BF7), so only the first is read correctly (IMPROVEMENTS.md).
+    bool g_characterDone = false;   // 0x10BDEC0C
+    int __cdecl Hook4E4610()
+    {
+        const int r = ConfigCache4E4610();
+        if (g_characterDone)
+            return r;
+        g_characterDone = true;
+        const char* name = AscScript::CommandLineArg("character");
+        if (!name)
+            return r;
+        const uint8_t* list = reinterpret_cast<const uint8_t*>(0xB6B238);
+        const uint32_t count = *reinterpret_cast<const uint32_t*>(list + 4);
+        const uint8_t* records = *reinterpret_cast<const uint8_t* const*>(list + 8);
+        for (uint32_t i = 0; i < count; ++i)
+            if (strcmp(reinterpret_cast<const char*>(records + i * 0x188 + 8), name) == 0)
+            {
+                *reinterpret_cast<uint32_t*>(0xAC436C) = i;
+                reinterpret_cast<void(__cdecl*)()>(0x4D9BD0)();
+                break;
+            }
+        return r;
     }
 
     int __cdecl Hook766640(const char* name, const char* value, uint32_t file)   // FUN_101140f0
