@@ -350,7 +350,7 @@ namespace
             return r;
         const uint8_t* d = *reinterpret_cast<uint8_t* const*>(unit + 8);
         const uint8_t* item = reinterpret_cast<const uint8_t*(__thiscall*)(void*, uint32_t, int, int, int, int)>(0x67CA30)(
-            *reinterpret_cast<void* const*>(0xC5D828), *reinterpret_cast<const uint32_t*>(d + 0x4EC), 0, 0, 0, 0);
+            reinterpret_cast<void*>(0xC5D828), *reinterpret_cast<const uint32_t*>(d + 0x4EC), 0, 0, 0, 0);
         if (!item || *reinterpret_cast<const uint32_t*>(item + 4) != 2 || *reinterpret_cast<const uint32_t*>(item + 8) != 2)
             return r;
         strcpy(reinterpret_cast<char*>(0xB6B600), "Item\\ObjectComponents\\Quiver\\Quiver_A.mdx");

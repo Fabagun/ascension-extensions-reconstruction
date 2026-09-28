@@ -181,8 +181,9 @@ namespace
         const uint8_t* display = *reinterpret_cast<uint8_t* const*>(go + 0x1A4);
         if (!display)
             return;
-        const uint8_t* row = AscDbc::Get("DBFilesClient/GameObjectDisplayInfoAddon.dbc").Row(*reinterpret_cast<const uint32_t*>(display + 4));
-        const char* name = row ? *reinterpret_cast<const char* const*>(row + 4) : nullptr;
+        AscDbc::Table& t = AscDbc::Get("DBFilesClient/GameObjectDisplayInfoAddon.dbc");
+        const uint8_t* row = t.Row(*reinterpret_cast<const uint32_t*>(display + 4));
+        const char* name = row ? t.Str(row, 4) : nullptr;   // our rows keep string-block offsets (AscDbc.hpp)
         if (!name || !*name)
             return;
         uint32_t flagsObj;
