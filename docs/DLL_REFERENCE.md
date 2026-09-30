@@ -5879,11 +5879,11 @@ Model widget methods the original appends to the client's Model table (hook on 0
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `#Model.SetSpell` | both | (number) → 0 | `0x10A6C1C0` | AscModelMethods.cpp:406 `SetSpell` | handler_SetSpell (0x10a6c1c0): (spell) |
-| `#Model.SetSpellVisual` | both | (number, number) → 0 | `0x10A6CA30` | AscModelMethods.cpp:416 `SetSpellVisual` | handler_SetSpellVisual (0x10a6ca30): (spell, visual) |
-| `#Model.GetSpell` | both | () → 1 | `0x10104AB0` | AscModelMethods.cpp:427 `GetSpell` | 0x10a6be90: the last spell given to any model. |
-| `#Model.SetUnitGUID` | both | SetUnitGUID(\ → 1 | `0x10A6D2C0` | AscModelMethods.cpp:462 `SetUnitGUID` | FUN_10a6d2c0: parse the GUID string (0x74D120) and hand it to the model (0x5977E0). Returns 1 without pushing, as the original does. |
-| `#Model.SetSheathe` | both | () → 0 | `0x10A6BEB0` | AscModelMethods.cpp:434 `SetSheathe` | FUN_10a6beb0: sheathe both hands' weapons (the exe's item array 0xC0E4F8) on the model. |
+| `#Model.SetSpell` | both | (number) → 0 | `0x10A6C1C0` | AscModelMethods.cpp:408 `SetSpell` | handler_SetSpell (0x10a6c1c0): (spell) |
+| `#Model.SetSpellVisual` | both | (number, number) → 0 | `0x10A6CA30` | AscModelMethods.cpp:418 `SetSpellVisual` | handler_SetSpellVisual (0x10a6ca30): (spell, visual) |
+| `#Model.GetSpell` | both | () → 1 | `0x10104AB0` | AscModelMethods.cpp:429 `GetSpell` | 0x10a6be90: the last spell given to any model. |
+| `#Model.SetUnitGUID` | both | SetUnitGUID(\ → 1 | `0x10A6D2C0` | AscModelMethods.cpp:464 `SetUnitGUID` | FUN_10a6d2c0: parse the GUID string (0x74D120) and hand it to the model (0x5977E0). Returns 1 without pushing, as the original does. |
+| `#Model.SetSheathe` | both | () → 0 | `0x10A6BEB0` | AscModelMethods.cpp:436 `SetSheathe` | FUN_10a6beb0: sheathe both hands' weapons (the exe's item array 0xC0E4F8) on the model. |
 
 ### AscModelNames
 
@@ -7437,7 +7437,7 @@ C_Wildcard, part 1: WildcardModeMgr (FUN_10a315d0, static 0x10D3D0D8) -- spent-r
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x542030` | Detour | 545 | 0x542030 begins push ebp / mov ebp,esp / sub esp,0x580: nine bytes. |
+| `0x542030` | Detour | 549 | 0x542030 begins push ebp / mov ebp,esp / sub esp,0x580: nine bytes. |
 
 ### AscWildcardSets
 
