@@ -244,7 +244,7 @@ namespace
     int CanResetAbilities(lua_State* L)   // handler_CanResetAbilities -> FUN_10155680
     {
         const AscCA::Build* b = AscCA::ActiveBuild();
-        PushBool(L, b && b->wildcard && b->u44 >= StartingCount());
+        PushBool(L, b && b->wildcard && b->u44 <= StartingCount());
         return 1;
     }
 
@@ -258,7 +258,7 @@ namespace
     bool CanShowStartingChoice()   // FUN_10a2f920
     {
         const AscCA::Build* b = AscCA::ActiveBuild();
-        return !RevealsPending() && b && b->wildcard && b->u44 >= StartingCount();
+        return !RevealsPending() && b && b->wildcard && b->u44 <= StartingCount();
     }
     int CanShowStartingChoice(lua_State* L)
     {
@@ -433,8 +433,12 @@ namespace
     }
 
     // FUN_10a2fa70 (the 1.5 s timer LAB_10a31ae0): the reveal ends, its deferred adds run, and the
-    // rapid-rolling session moves on.
-    int __cdecl RevealDone(void* param)
+    // rapid-rolling session moves on. 0x403370 calls its callback with (x, param); the thunk
+    // LAB_10a31ae0 hands FUN_10a2fa70 the second argument ([esp+8]), the entry id.
+    int __cdecl RevealDoneThunk(void*, void* param);
+    const AscRuntime::TimerFn RevealDone = reinterpret_cast<AscRuntime::TimerFn>(&RevealDoneThunk);
+
+    int __cdecl RevealDoneThunk(void*, void* param)
     {
         const uint32_t entry = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(param));
         auto it = std::find_if(g_reveals.begin(), g_reveals.end(), [&](const Reveal& r) { return r.entry == entry; });
