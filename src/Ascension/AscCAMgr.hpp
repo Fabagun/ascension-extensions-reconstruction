@@ -189,6 +189,11 @@ namespace AscCA
 
     int ActiveSpecIndex();     // FUN_1016f580: the player record's active spec, -1 without one
     Build* ActiveBuild();      // FUN_1016f390: the player's build for the active spec, else the default build
+    // The build's ability rows (types 1 and 4), what +0x44 caches. The CA update recounts +0x44 only in a
+    // pass in which no build parameter changed; when its once-per-second parameter sync is the first pass
+    // after 0x726 it skips the recount, and checks in that frame read 0. The Wildcard starting phase checks
+    // count here instead.
+    uint32_t AbilityCount(const Build& b);
     Build* PendingBuild();     // mgr +0x24, nullptr when none
     void ResetPendingBuild();  // FUN_10173d00
 
