@@ -3846,136 +3846,136 @@ CharacterAdvancementMgr (0x10bde440) -- the per-player CA builds, the entry inde
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `C_CharacterAdvancement.UnlearnAllSpells` | world | () → 1 | `0x1017FBA0` | AscCAMgr.cpp:1944 `UnlearnAllSpells` | ---- bindings ----------------------------------------------------------------------------------- — sends `0x528` CMSG_CA_UNLEARN_SPELL_ALL |
-| `C_CharacterAdvancement.UnlearnAllTalents` | world | () → 1 | `0x1017FBC0` | AscCAMgr.cpp:1945 `UnlearnAllTalents` |  |
-| `C_CharacterAdvancement.HasAnySuggestionContextOverrides` | world | () → 1 | `0x1017B8E0` | AscCAMgr.cpp:1946 `HasAnySuggestionContextOverrides` |  |
-| `C_CharacterAdvancement.IsSuggestionContextOverride` | world | C_CharacterAdvancement.IsSuggestionContextOverride(entryId) → 1 | `0x1017CCF0` | AscCAMgr.cpp:1952 `IsSuggestionContextOverride` |  |
-| `C_CharacterAdvancement.AddSuggestionContextOverride` | world | C_CharacterAdvancement.AddSuggestionContextOverride(entryId) → 0 | `0x10174230` | AscCAMgr.cpp:1962 `AddSuggestionContextOverride` |  |
-| `C_CharacterAdvancement.RemoveSuggestionContextOverride` | world | C_CharacterAdvancement.RemoveSuggestionContextOverride(entryId) → 0 | `0x1017DCE0` | AscCAMgr.cpp:1974 `RemoveSuggestionContextOverride` |  |
-| `C_CharacterAdvancement.ClearSuggestionContextOverrides` | world | () → 0 | `0x101761F0` | AscCAMgr.cpp:1985 `ClearSuggestionContextOverrides` |  |
-| `C_CharacterAdvancement.IsPendingBuildAvailable` | world | () → 1 | `0x1017CBA0` | AscCAMgr.cpp:1992 `IsPendingBuildAvailable` |  |
-| `C_CharacterAdvancement.IsActiveBuildAvailable` | world | () → 1 | `0x1017C610` | AscCAMgr.cpp:1994 `IsActiveBuildAvailable` |  |
-| `C_CharacterAdvancement.GetGlobalAEInvestment` | world | () → 1 | `0x10177680` | AscCAMgr.cpp:1995 `GetGlobalAEInvestment` |  |
-| `C_CharacterAdvancement.GetGlobalTEInvestment` | world | () → 1 | `0x101776B0` | AscCAMgr.cpp:1997 `GetGlobalTEInvestment` |  |
-| `C_CharacterAdvancement.GetRemainingAE` | world | () → 1 | `0x1017AA10` | AscCAMgr.cpp:1998 `GetRemainingAE` |  |
-| `C_CharacterAdvancement.GetRemainingTE` | world | () → 1 | `0x1017AA30` | AscCAMgr.cpp:1999 `GetRemainingTE` |  |
-| `C_CharacterAdvancement.GetExpectedAE` | world | C_CharacterAdvancement.GetExpectedAE(level) → 1 | `0x101773A0` | AscCAMgr.cpp:2000 `GetExpectedAE` |  |
-| `C_CharacterAdvancement.GetExpectedTE` | world | C_CharacterAdvancement.GetExpectedTE(level) → 1 | `0x10177400` | AscCAMgr.cpp:2009 `GetExpectedTE` |  |
-| `C_CharacterAdvancement.GetClassAEInvestment` | world | C_CharacterAdvancement.GetClassAEInvestment(classType, minInvestment) → 1 | `0x10176B30` | AscCAMgr.cpp:2018 `GetClassAEInvestment` |  |
-| `C_CharacterAdvancement.GetClassTEInvestment` | world | C_CharacterAdvancement.GetClassTEInvestment(classType, minInvestment) → 1 | `0x10176BF0` | AscCAMgr.cpp:2027 `GetClassTEInvestment` |  |
-| `C_CharacterAdvancement.GetClassPointInvestment` | world | C_CharacterAdvancement.GetClassPointInvestment(classType, minInvestment) → 1 | `0x10176B90` | AscCAMgr.cpp:2036 `GetClassPointInvestment` |  |
-| `C_CharacterAdvancement.GetTabAEInvestment` | world | C_CharacterAdvancement.GetTabAEInvestment(classType, tabType, minInvestment) → 1 | `0x1017B2B0` | AscCAMgr.cpp:2045 `GetTabAEInvestment` |  |
-| `C_CharacterAdvancement.GetTabTEInvestment` | world | C_CharacterAdvancement.GetTabTEInvestment(classType, tabType, minInvestment) → 1 | `0x1017B320` | AscCAMgr.cpp:2054 `GetTabTEInvestment` |  |
-| `C_CharacterAdvancement.GetActiveSpecID` | world | () → 1 | `0x10176400` | AscCAMgr.cpp:2063 `GetActiveSpecID` |  |
-| `C_CharacterAdvancement.IsLockedID` | world | C_CharacterAdvancement.IsLockedID(entryId) → 1 | `0x1017CA10` | AscCAMgr.cpp:2070 `IsLockedID` |  |
-| `C_CharacterAdvancement.GetEntryBySpellID` | world | C_CharacterAdvancement.GetEntryBySpellID(spellId) → 1 | `0x10177330` | AscCAMgr.cpp:2079 `GetEntryBySpellID` |  |
-| `C_CharacterAdvancement.GetEntryByInternalID` | world | C_CharacterAdvancement.GetEntryByInternalID(id) → 1 | `0x101772B0` | AscCAMgr.cpp:2088 `GetEntryByInternalID` |  |
-| `C_CharacterAdvancement.GetInternalID` | world | C_CharacterAdvancement.GetInternalID(spellId) → 1 | `0x10177D60` | AscCAMgr.cpp:2097 `GetInternalID` |  |
-| `C_CharacterAdvancement.IsAbilitySpellID` | world | (number) → 1 | `0x1017C5A0` | AscCAMgr.cpp:2135 `IsAbilitySpellID` |  |
-| `C_CharacterAdvancement.IsTalentSpellID` | world | (number) → 1 | `0x1017CF00` | AscCAMgr.cpp:2137 `IsTalentSpellID` |  |
-| `C_CharacterAdvancement.IsTalentAbilitySpellID` | world | (number) → 1 | `0x1017CE00` | AscCAMgr.cpp:2138 `IsTalentAbilitySpellID` |  |
-| `C_CharacterAdvancement.IsAbilityID` | world | (number) → 1 | `0x1017C510` | AscCAMgr.cpp:2139 `IsAbilityID` |  |
-| `C_CharacterAdvancement.IsTalentID` | world | (number) → 1 | `0x1017CE70` | AscCAMgr.cpp:2140 `IsTalentID` |  |
-| `C_CharacterAdvancement.IsTalentAbilityID` | world | (number) → 1 | `0x1017CD70` | AscCAMgr.cpp:2141 `IsTalentAbilityID` |  |
-| `C_CharacterAdvancement.IsMastery` | world | C_CharacterAdvancement.IsMastery(spellId) → 1 | `0x1017CA70` | AscCAMgr.cpp:2142 `IsMastery` |  |
-| `C_CharacterAdvancement.GetTalentEssenceCost` | world | C_CharacterAdvancement.GetTalentEssenceCost(spellId) → 1 | `0x1017B390` | AscCAMgr.cpp:2154 `GetTalentEssenceCost` |  |
-| `C_CharacterAdvancement.GetAbilityEssenceCost` | world | C_CharacterAdvancement.GetAbilityEssenceCost(spellId) → 1 | `0x10176340` | AscCAMgr.cpp:2166 `GetAbilityEssenceCost` |  |
-| `C_CharacterAdvancement.GetClassName` | world | C_CharacterAdvancement.GetClassName(classType) → 1 | `0x10176A10` | AscCAMgr.cpp:2178 `GetClassName` |  |
-| `C_CharacterAdvancement.GetTabName` | world | C_CharacterAdvancement.GetTabName(tabType) → 1 | `0x10176AA0` | AscCAMgr.cpp:2190 `GetTabName` |  |
-| `C_CharacterAdvancement.GetPendingGlobalAEInvestment` | world | () → 0..1 | `0x101797E0` | AscCAMgr.cpp:2214 `GetPendingGlobalAEInvestment` |  |
-| `C_CharacterAdvancement.GetPendingGlobalTEInvestment` | world | () → 0..1 | `0x10179820` | AscCAMgr.cpp:2223 `GetPendingGlobalTEInvestment` |  |
-| `C_CharacterAdvancement.GetPendingRemainingAE` | world | () → 0..1 | `0x10179950` | AscCAMgr.cpp:2232 `GetPendingRemainingAE` |  |
-| `C_CharacterAdvancement.GetPendingRemainingTE` | world | () → 0..1 | `0x10179990` | AscCAMgr.cpp:2241 `GetPendingRemainingTE` |  |
-| `C_CharacterAdvancement.GetPendingExpectedAE` | world | C_CharacterAdvancement.GetPendingExpectedAE(level) → 0..1 | `0x10179700` | AscCAMgr.cpp:2250 `GetPendingExpectedAE` |  |
-| `C_CharacterAdvancement.GetPendingExpectedTE` | world | C_CharacterAdvancement.GetPendingExpectedTE(level) → 0..1 | `0x10179770` | AscCAMgr.cpp:2262 `GetPendingExpectedTE` |  |
-| `C_CharacterAdvancement.GetPendingClassAEInvestment` | world | C_CharacterAdvancement.GetPendingClassAEInvestment(classType, minInvestment) → 0..1 | `0x101795B0` | AscCAMgr.cpp:2276 `GetPendingClassAEInvestment` | The per-class / per-tab pending sums return nothing (no error) without a pending build. |
-| `C_CharacterAdvancement.GetPendingClassTEInvestment` | world | C_CharacterAdvancement.GetPendingClassTEInvestment(classType, minInvestment) → 0..1 | `0x10179690` | AscCAMgr.cpp:2286 `GetPendingClassTEInvestment` |  |
-| `C_CharacterAdvancement.GetPendingClassPointInvestment` | world | C_CharacterAdvancement.GetPendingClassPointInvestment(classType, minInvestment) → 0..1 | `0x10179620` | AscCAMgr.cpp:2297 `GetPendingClassPointInvestment` |  |
-| `C_CharacterAdvancement.GetPendingTabAEInvestment` | world | C_CharacterAdvancement.GetPendingTabAEInvestment(classType, tabType, minInvestm… → 0..1 | `0x10179B70` | AscCAMgr.cpp:2348 `GetPendingTabAEInvestment` |  |
-| `C_CharacterAdvancement.IsPendingEntryID` | world | C_CharacterAdvancement.IsPendingEntryID(entryId) → 0..1 | `0x1017CBD0` | AscCAMgr.cpp:2368 `IsPendingEntryID` |  |
-| `C_CharacterAdvancement.GetPendingRankByEntryID` | world | C_CharacterAdvancement.GetPendingRankByEntryID(entryId) → 0..2 | `0x10179860` | AscCAMgr.cpp:2385 `GetPendingRankByEntryID` |  |
-| `C_CharacterAdvancement.GetLowestInvestmentRequired` | world | C_CharacterAdvancement.GetLowestInvestmentRequired(classType, tabType) → 0..2 | `0x10179180` | AscCAMgr.cpp:2402 `GetLowestInvestmentRequired` |  |
-| `C_CharacterAdvancement.GetActiveChrSpec` | world | () → 1 | `0x101763C0` | AscCAMgr.cpp:2424 `GetActiveChrSpec` | FUN_1016f480: the first ChrSpecs.dbc row whose entry (+0x70) the pending build has. |
-| `C_CharacterAdvancement.CancelPendingBuild` | world | () → 0 | `0x10175EA0` | AscCAMgr.cpp:2443 `CancelPendingBuild` | ---- pending build edits ------------------------------------------------------------------------ |
-| `C_CharacterAdvancement.ClearPendingBuild` | world | C_CharacterAdvancement.ClearPendingBuild(forReset) → 0 | `0x10175EF0` | AscCAMgr.cpp:2451 `ClearPendingBuild` | Clear (FUN_10175ef0) / ClearByTab (FUN_10176030): remove from a snapshot of the entries; with forReset, rows flagged 2 stay. |
-| `C_CharacterAdvancement.ClearPendingBuildByTab` | world | C_CharacterAdvancement.ClearPendingBuildByTab(classType, tabType, forReset) → 0 | `0x10176030` | AscCAMgr.cpp:2466 `ClearPendingBuildByTab` |  |
-| `C_CharacterAdvancement.AddByEntryID` | world | C_CharacterAdvancement.AddByEntryID(entryId, numRanks) → 0 | `0x10174140` | AscCAMgr.cpp:2552 `AddByEntryID` |  |
-| `C_CharacterAdvancement.CanAddByEntryID` | world | C_CharacterAdvancement.CanAddByEntryID(entryId, numRanks) → 0 | `0x101744B0` | AscCAMgr.cpp:2623 `CanAddByEntryID` |  |
-| `C_CharacterAdvancement.MeetsInvestmentForAddByEntryID` | world | C_CharacterAdvancement.MeetsInvestmentForAddByEntryID(entryId, numRanks) → 0 | `0x1017D870` | AscCAMgr.cpp:2639 `MeetsInvestmentForAddByEntryID` |  |
-| `C_CharacterAdvancement.IsPending` | world | () → 0..1 | `0x1017CAF0` | AscCAMgr.cpp:2677 `IsPending` |  |
-| `C_CharacterAdvancement.GetPendingSummary` | world | () → 0..1 | `0x101799D0` | AscCAMgr.cpp:2686 `GetPendingSummary` |  |
-| `C_CharacterAdvancement.RemoveByEntryID` | world | C_CharacterAdvancement.RemoveByEntryID(entryId) → 0 | `0x1017DA90` | AscCAMgr.cpp:2755 `RemoveByEntryID` |  |
-| `C_CharacterAdvancement.CanRemoveByEntryID` | world | C_CharacterAdvancement.CanRemoveByEntryID(entryId) → 0..5 | `0x10174E40` | AscCAMgr.cpp:2789 `CanRemoveByEntryID` |  |
-| `C_CharacterAdvancement.CanApplyPendingBuild` | world | () → 0..8 | `0x101745A0` | AscCAMgr.cpp:2843 `CanApplyPendingBuild` |  |
-| `C_CharacterAdvancement.CanClearPendingBuild` | world | C_CharacterAdvancement.CanClearPendingBuild(forReset) → 0..5 | `0x101748D0` | AscCAMgr.cpp:2856 `CanClearPendingBuild` |  |
-| `C_CharacterAdvancement.ApplyPendingBuild` | world | () → 0 | `0x101742C0` | AscCAMgr.cpp:2879 `ApplyPendingBuild` | ApplyPendingBuild (FUN_101742c0): CMSG 0x727 = u32 count, then per entry u32 id, u32 rank, u32 +0xC, u8 +0x10, u32 +0x18, u32 +0x1C (FUN_10166a50). — sends `0x727` unknown |
-| `C_CharacterAdvancement.GetEntriesByClass` | world | (string, string, bool) → 1 | `0x10177050` | AscCAMgr.cpp:3016 `GetEntriesByClass` |  |
-| `C_CharacterAdvancement.GetSpellsByClass` | world | (string, string, bool) → 1 | `0x1017AE50` | AscCAMgr.cpp:3021 `GetSpellsByClass` |  |
-| `C_CharacterAdvancement.GetTalentsByClass` | world | (string, string, bool) → 1 | `0x1017B620` | AscCAMgr.cpp:3025 `GetTalentsByClass` |  |
-| `C_CharacterAdvancement.GetMasteriesByClass` | world | (string, string, bool) → 1 | `0x10179260` | AscCAMgr.cpp:3029 `GetMasteriesByClass` |  |
-| `C_CharacterAdvancement.GetImplicitByClass` | world | (string, string, bool) → 1 | `0x101776E0` | AscCAMgr.cpp:3033 `GetImplicitByClass` |  |
-| `C_CharacterAdvancement.GetAllEntries` | world | () → 1 | `0x1016F5B0` | AscCAMgr.cpp:3039 `GetAllEntries` | FUN_1016f5b0: every row not hidden (class check included), in id order. |
-| `IsSpellIDKnown` | world | C_CharacterAdvancement.IsSpellIDKnown(spellId) → 1 | `0x1017CC90` | AscCAMgr.cpp:3052 `IsSpellIDKnown` | ---- known entries and spells --------------------------------------------------------------------- |
-| `CA_IsSpellKnown` | world | C_CharacterAdvancement.IsSpellIDKnown(spellId) → 1 | `0x1017CC90` | AscCAMgr.cpp:3052 `IsSpellIDKnown` | ---- known entries and spells --------------------------------------------------------------------- |
-| `C_CharacterAdvancement.IsKnownID` | world | C_CharacterAdvancement.IsKnownID(entryId) → 1 | `0x1017C830` | AscCAMgr.cpp:3060 `IsKnownID` |  |
-| `C_CharacterAdvancement.IsKnownSpellID` | world | C_CharacterAdvancement.IsKnownSpellID(spellId) → 1 | `0x1017C920` | AscCAMgr.cpp:3080 `IsKnownSpellID` |  |
-| `C_CharacterAdvancement.UnitKnownID` | world | C_CharacterAdvancement.UnitKnownID(unitToken, entryId, specialization) → 1 | `0x1017F850` | AscCAMgr.cpp:3125 `UnitKnownID` |  |
-| `C_CharacterAdvancement.UnitTalentRankByID` | world | C_CharacterAdvancement.UnitTalentRankByID(unitToken, entryId, specialization) → 1..2 | `0x1017F9D0` | AscCAMgr.cpp:3139 `UnitTalentRankByID` |  |
-| `C_CharacterAdvancement.GetTalentRankByID` | world | C_CharacterAdvancement.GetTalentRankByID(entryId) → ? | `0x1017B410` | AscCAMgr.cpp:3171 `GetTalentRankByID` |  |
-| `C_CharacterAdvancement.GetTalentRankBySpellID` | world | C_CharacterAdvancement.GetTalentRankBySpellID(spellId) → ? | `0x1017B530` | AscCAMgr.cpp:3181 `GetTalentRankBySpellID` |  |
-| `C_CharacterAdvancement.GetLearnedAE` | world | (string, string) → 1 | `0x10178DC0` | AscCAMgr.cpp:3217 `GetLearnedAE` |  |
-| `C_CharacterAdvancement.GetLearnedTE` | world | (string, string) → 1 | `0x10178FA0` | AscCAMgr.cpp:3218 `GetLearnedTE` |  |
-| `C_CharacterAdvancement.KnowsConnectedNodesFor` | world | C_CharacterAdvancement.KnowsConnectedNodesFor(entryId) → 0..1 | `0x1017CF70` | AscCAMgr.cpp:3219 `KnowsConnectedNodesFor` |  |
-| `C_CharacterAdvancement.GetKnownSpellEntries` | world | () → 1 | `0x10177DD0` | AscCAMgr.cpp:3307 `GetKnownSpellEntries` |  |
-| `C_CharacterAdvancement.GetKnownTalentEntries` | world | () → 1 | `0x101786E0` | AscCAMgr.cpp:3309 `GetKnownTalentEntries` |  |
-| `C_CharacterAdvancement.GetKnownSpellEntriesForClass` | world | (string, string) → 1 | `0x10178280` | AscCAMgr.cpp:3310 `GetKnownSpellEntriesForClass` |  |
-| `C_CharacterAdvancement.GetKnownTalentEntriesForClass` | world | (string, string) → 1 | `0x10178B90` | AscCAMgr.cpp:3314 `GetKnownTalentEntriesForClass` |  |
-| `C_Spell.HasRuneUI` | world | () → 1 | `0x10326D00` | AscCAMgr.cpp:3233 `HasRuneUI` |  |
-| `C_CharacterAdvancement.LearnID` | world | C_CharacterAdvancement.LearnID(entryId \| {entryId1, ...}) → 5 | `0x1017D140` | AscCAMgr.cpp:3371 `LearnID` |  |
-| `C_CharacterAdvancement.CanLearnID` | world | C_CharacterAdvancement.CanLearnID(entryId \| {entryId1, ...}) → 3 | `0x10174C10` | AscCAMgr.cpp:3411 `CanLearnID` |  |
-| `C_CharacterAdvancement.CanUnlearnID` | world | C_CharacterAdvancement.CanUnlearnID(entryId \| {entryId1, ...}) → 3 | `0x10175750` | AscCAMgr.cpp:3435 `CanUnlearnID` |  |
-| `C_CharacterAdvancement.LockID` | world | (number) → 1 | `0x1017D750` | AscCAMgr.cpp:3496 `LockID` | sends `0x658` CMSG_CHARACTER_ADVANCEMENT_LOCK_ENTRY |
-| `C_CharacterAdvancement.UnlockID` | world | (number) → 1 | `0x1017FEF0` | AscCAMgr.cpp:3497 `UnlockID` | sends `0x65A` CMSG_CHARACTER_ADVANCEMENT_UNLOCK_ENTRY |
-| `C_CharacterAdvancement.ShouldConfirmLearnID` | world | C_CharacterAdvancement.ShouldConfirmLearnID(entryId \| {entryId1, ...}) → ? | `0x1017EE70` | AscCAMgr.cpp:3649 `ShouldConfirmLearnID` |  |
-| `C_CharacterAdvancement.ShouldConfirmUnlearnID` | world | C_CharacterAdvancement.ShouldConfirmUnlearnID(entryId \| {entryId1, ...}) → ? | `0x1017F2E0` | AscCAMgr.cpp:3667 `ShouldConfirmUnlearnID` |  |
-| `C_CharacterAdvancement.ShouldConfirmUnlearnAllSpells` | world | () → ? | `0x1017F0C0` | AscCAMgr.cpp:3698 `ShouldConfirmUnlearnAllSpells` |  |
-| `C_CharacterAdvancement.ShouldConfirmUnlearnAllTalents` | world | () → ? | `0x1017F1D0` | AscCAMgr.cpp:3699 `ShouldConfirmUnlearnAllTalents` |  |
-| `C_CharacterAdvancement.CanUnlearnAllSpells` | world | () → 2 | `0x10175450` | AscCAMgr.cpp:3710 `CanUnlearnAllSpells` |  |
-| `C_CharacterAdvancement.CanUnlearnAllTalents` | world | () → 2 | `0x101755D0` | AscCAMgr.cpp:3711 `CanUnlearnAllTalents` |  |
-| `C_CharacterAdvancement.UnlearnID` | world | C_CharacterAdvancement.UnlearnID(entryId \| {entryId1, ...}) → 1 | `0x1017FBE0` | AscCAMgr.cpp:3716 `UnlearnID` | FUN_1017fbe0. Normal modes: remove each (with its mastery bookkeeping), re-validate the order and send the whole build as 0x727. Wildcard: one Scroll of Fortune request (CMSG 0x61D, u32 id) per id, only while no roll is running and no request is outstanding. — sends `0x61D` CMSG_WILDCARD_UNLEARN_ABILITY |
-| `C_CharacterAdvancement.GetQualityCount` | world | C_CharacterAdvancement.GetQualityCount(qualityName) → 1 | `0x10179C50` | AscCAMgr.cpp:3777 `GetQualityCount` |  |
-| `C_CharacterAdvancement.GetQualityLimit` | world | C_CharacterAdvancement.GetQualityLimit(qualityName) → 1 | `0x10179F50` | AscCAMgr.cpp:3794 `GetQualityLimit` | FUN_10179f50. Normal mode: the realm's CONFIG_..._QUALITIES_MAX_<Q>_ABILITIES_<expansion> (8/8/4/2 by default), 99 for the other qualities. Draft: Epic 6, Legendary 3, else nil. Wildcard: nil. |
-| `C_CharacterAdvancement.GetKnownSpells` | world | () → 1 | `0x101784B0` | AscCAMgr.cpp:3870 `GetKnownSpells` | FUN_101784b0: the active build's spells at their ranks -- abilities sorted, then talents and talent abilities sorted. |
-| `C_CharacterAdvancement.IsConnectionAllowed` | world | C_CharacterAdvancement.IsConnectionAllowed(fromEntryId, toEntryId) → 1 | `0x1017C640` | AscCAMgr.cpp:3896 `IsConnectionAllowed` | FUN_1017c640: `to` lists `from` among its connections (+0xE4, 15 ids) and the pending build has `from` (at max rank when `from` carries flag 0x200000). |
-| `C_CharacterAdvancement.GetClassInfo` | world | C_CharacterAdvancement.GetClassInfo(spellId) → 1..2 | `0x10176850` | AscCAMgr.cpp:3926 `GetClassInfoBySpell` | C_CharacterAdvancement.GetClassInfo(spellId) -- FUN_10176850: the class-type and tab-type names of the entry listing the spell (FUN_101498d0), "INVALID_CLASS_TYPE_{}" / "INVALID_TAB_TYPE_{}" for an unmapped value; one nil when no entry lists it. |
-| `GetClassInfo` | both | (number) → 0..3 | `0x100D8FA0` | AscCAMgr.cpp:3944 `GetClassInfo` | The global GetClassInfo -- handler_GetClassInfo (0x100D8FA0, registrar FUN_100df760): ChrClasses (container 0xAD3404) name, filename, id; three nils for an unknown class. Not the C_CA binding above. |
-| `C_CharacterAdvancement.CanUseBrowser` | world | () → 1 | `0x10175D50` | AscCAMgr.cpp:3964 `CanUseBrowser` |  |
-| `C_CharacterAdvancement.GetRootSpellTagTypes` | world | () → 1 | `0x1017AA50` | AscCAMgr.cpp:3995 `GetRootSpellTagTypes` |  |
-| `C_CharacterAdvancement.GetSpellTagTypes` | world | C_CharacterAdvancement.GetSpellTagTypes(parentTypeId) → 1 | `0x1017AD00` | AscCAMgr.cpp:4001 `GetSpellTagTypes` |  |
-| `C_CharacterAdvancement.GetSpellTagTypeDisplayInfo` | world | C_CharacterAdvancement.GetSpellTagTypeDisplayInfo(typeId) → 3 | `0x1017AB50` | AscCAMgr.cpp:4014 `GetSpellTagTypeDisplayInfo` |  |
-| `C_CharacterAdvancement.PickupSpell` | world | C_CharacterAdvancement.PickupSpell(entryId) → 0 | `0x1017D930` | AscCAMgr.cpp:4053 `PickupSpell` |  |
-| `C_CharacterAdvancement.GetSuggestedStats` | world | () → 2 | `0x1017B0D0` | AscCAMgr.cpp:1917 `GetSuggestedStats` | FUN_1017b0d0: (first stat, {stats}) with Strength, Agility, Intellect and Spirit appended when missing; nil, nil before anything is suggested. |
-| `C_CharacterAdvancement.GetCategories` | world | C_CharacterAdvancement.GetCategories([sortByRequiredLevel]) → 1 | `0x10176450` | AscCAMgr.cpp:4097 `GetCategories` | FUN_10176450: every category id, by order (LAB_10180110) or by required level then order (LAB_10180170) when the optional argument is true. |
-| `C_CharacterAdvancement.GetCategoryDisplayInfo` | world | C_CharacterAdvancement.GetCategoryDisplayInfo(categoryId) → 5 | `0x10176760` | AscCAMgr.cpp:4121 `GetCategoryDisplayInfo` | handler_GetCategoryDisplayInfo: required level, +0x14, +0x10, +0x18, flag; five nils if unknown. |
-| `C_CharacterAdvancement.CanSwitchActiveChrSpec` | world | C_CharacterAdvancement.CanSwitchActiveChrSpec(specID) → 2 | `0x10175190` | AscCAMgr.cpp:4192 `CanSwitchActiveChrSpec` | FUN_10175190: (false, NO_PENDING_BUILD) / (false, CHR_SPEC_ALREADY_ACTIVE) / (true, nil). The original also runs the switch on a throwaway copy of the pending build; nothing reads it. |
-| `C_CharacterAdvancement.SwitchActiveChrSpec` | world | C_CharacterAdvancement.SwitchActiveChrSpec(specID) → 0 | `0x1017F700` | AscCAMgr.cpp:4218 `SwitchActiveChrSpec` |  |
-| `C_CharacterAdvancement.ActivateLoadout` | world | C_CharacterAdvancement.ActivateLoadout(uuid) → 1 | `0x10173FD0` | AscCAMgr.cpp:4240 `ActivateLoadout` | Loadouts live on the server: CMSG 0x778 activate(uuid), 0x779 rename(uuid, name), 0x77A sort(uuid, u32 order). FUN_10173fd0 — sends `0x778` CMSG_CHARACTER_ADVANCEMENT_LOADOUT_ACTIVATE_REQUEST |
-| `C_CharacterAdvancement.SetLoadoutName` | world | C_CharacterAdvancement.SetLoadoutName(uuid, name) → 1 | `0x1017EB10` | AscCAMgr.cpp:4249 `SetLoadoutName` | sends `0x779` CMSG_CHARACTER_ADVANCEMENT_LOADOUT_SET_NAME_REQUEST |
-| `C_CharacterAdvancement.SetLoadoutSortOrder` | world | C_CharacterAdvancement.SetLoadoutSortOrder(uuid, sortOrder) → 1 | `0x1017ECE0` | AscCAMgr.cpp:4259 `SetLoadoutSortOrder` | sends `0x77A` CMSG_CHARACTER_ADVANCEMENT_LOADOUT_SET_SORT_ORDER_REQUEST |
-| `C_CharacterAdvancement.CanSwapEntriesByID` | world | C_CharacterAdvancement.CanSwapEntriesByID(data) → 5 | `0x10174F80` | AscCAMgr.cpp:4443 `CanSwapEntriesByID` |  |
-| `C_CharacterAdvancement.SwapEntriesByID` | world | C_CharacterAdvancement.SwapEntriesByID(data) → 0 | `0x1017F590` | AscCAMgr.cpp:4458 `SwapEntriesByID` |  |
-| `C_CharacterAdvancement.GetEntriesAvailableForSwap` | world | C_CharacterAdvancement.GetEntriesAvailableForSwap(existingEntry) → ? | `0x10176C50` | AscCAMgr.cpp:4539 `GetEntriesAvailableForSwap` |  |
-| `C_CharacterAdvancement.GetEntriesAvailableForSwapInClass` | world | C_CharacterAdvancement.GetEntriesAvailableForSwapInClass(existingEntry, classTy… → ? | `0x10176CB0` | AscCAMgr.cpp:4546 `GetEntriesAvailableForSwapInClass` |  |
-| `C_CharacterAdvancement.GetEntriesAvailableForTrade` | world | C_CharacterAdvancement.GetEntriesAvailableForTrade(desiredEntry) → 1 | `0x10176DA0` | AscCAMgr.cpp:4558 `GetEntriesAvailableForTrade` | FUN_10176da0: every pending entry of the desired one's kind that could be traded for it, at the highest workable rank (the requested one, else from its max down to 1). |
-| `C_CharacterAdvancement.InspectUnit` | world | C_CharacterAdvancement.InspectUnit(unitToken) → 1 | `0x1017C380` | AscCAMgr.cpp:4676 `InspectUnit` | sends `0x6E1` CMSG_INSPECT_CHARACTER_ADVANCEMENT |
-| `C_CharacterAdvancement.GetInspectInfo` | world | C_CharacterAdvancement.GetInspectInfo(unitToken) → 2 | `0x10177940` | AscCAMgr.cpp:4690 `GetInspectInfo` | FUN_10177940: (active spec + 1, {specs with entries, 1-based}); nil, nil for an unknown unit. |
-| `C_CharacterAdvancement.GetInspectedBuild` | world | C_CharacterAdvancement.GetInspectedBuild(unitToken, specialization) → 1 | `0x10177AE0` | AscCAMgr.cpp:5167 `GetInspectedBuild` |  |
-| `C_CharacterAdvancement.ImportPendingBuildID` | world | C_CharacterAdvancement.ImportPendingBuildID(buildID) → 0..4 | `0x1017C060` | AscCAMgr.cpp:5123 `ImportPendingBuildID` | ---- importing into the pending build ----------------------------------------------------------- FUN_1017c060: the Build Creator build with this id, built at the player's level and validated in full; on success the pending build takes its entries. (false, CA_LEARN_*, id, rank) otherwise. |
-| `C_CharacterAdvancement.ImportPendingBuild` | world | C_CharacterAdvancement.ImportPendingBuild(buildURL) → 0..4 | `0x1017B910` | AscCAMgr.cpp:5060 `ImportPendingBuild` | FUN_1017b910: a build link into the pending build. A CoA class reads the CoA link format; any other class a Build Creator link, built at the player's level. The candidate is validated in full on a copy of the pending build first. (false, reason \| CA_LEARN_*, id, rank) on failure. |
-| `C_CharacterAdvancement.GetPendingTabTEInvestment` | world | C_CharacterAdvancement.GetPendingTabTEInvestment(classType, tabType, minInvestm… → 0..1 | `0x10179BE0` | AscCAMgr.cpp:2308 `GetPendingTabTEInvestment` |  |
-| `C_CharacterAdvancement.GetQualityInfo` | world | C_CharacterAdvancement.GetQualityInfo(spellId) → 1..2 | `0x10179D90` | AscCAMgr.cpp:2321 `GetQualityInfo` | FUN_10179d90: the quality the active build gives the spell's row and what it costs; nil without a row. |
-| `C_CharacterAdvancement.ExportBuild` | world | C_CharacterAdvancement.ExportBuild(includeREs) → 1 | `0x10176220` | AscCAMgr.cpp:2340 `ExportBuild` | FUN_10176220: the active build as a build-creator link (FUN_100fc240 + FUN_100fd8f0). |
-| `CA_GetCreditAmount` | world | (number) → 0..1 | `0x101A1D90` | AscCAMgr.cpp:5203 `CA_GetCreditAmount` | CA_GetCreditAmount (FUN_101a1d90): the credit map entry for the category, 0 when absent. |
+| `C_CharacterAdvancement.UnlearnAllSpells` | world | () → 1 | `0x1017FBA0` | AscCAMgr.cpp:1954 `UnlearnAllSpells` | ---- bindings ----------------------------------------------------------------------------------- — sends `0x528` CMSG_CA_UNLEARN_SPELL_ALL |
+| `C_CharacterAdvancement.UnlearnAllTalents` | world | () → 1 | `0x1017FBC0` | AscCAMgr.cpp:1955 `UnlearnAllTalents` |  |
+| `C_CharacterAdvancement.HasAnySuggestionContextOverrides` | world | () → 1 | `0x1017B8E0` | AscCAMgr.cpp:1956 `HasAnySuggestionContextOverrides` |  |
+| `C_CharacterAdvancement.IsSuggestionContextOverride` | world | C_CharacterAdvancement.IsSuggestionContextOverride(entryId) → 1 | `0x1017CCF0` | AscCAMgr.cpp:1962 `IsSuggestionContextOverride` |  |
+| `C_CharacterAdvancement.AddSuggestionContextOverride` | world | C_CharacterAdvancement.AddSuggestionContextOverride(entryId) → 0 | `0x10174230` | AscCAMgr.cpp:1972 `AddSuggestionContextOverride` |  |
+| `C_CharacterAdvancement.RemoveSuggestionContextOverride` | world | C_CharacterAdvancement.RemoveSuggestionContextOverride(entryId) → 0 | `0x1017DCE0` | AscCAMgr.cpp:1984 `RemoveSuggestionContextOverride` |  |
+| `C_CharacterAdvancement.ClearSuggestionContextOverrides` | world | () → 0 | `0x101761F0` | AscCAMgr.cpp:1995 `ClearSuggestionContextOverrides` |  |
+| `C_CharacterAdvancement.IsPendingBuildAvailable` | world | () → 1 | `0x1017CBA0` | AscCAMgr.cpp:2002 `IsPendingBuildAvailable` |  |
+| `C_CharacterAdvancement.IsActiveBuildAvailable` | world | () → 1 | `0x1017C610` | AscCAMgr.cpp:2004 `IsActiveBuildAvailable` |  |
+| `C_CharacterAdvancement.GetGlobalAEInvestment` | world | () → 1 | `0x10177680` | AscCAMgr.cpp:2005 `GetGlobalAEInvestment` |  |
+| `C_CharacterAdvancement.GetGlobalTEInvestment` | world | () → 1 | `0x101776B0` | AscCAMgr.cpp:2007 `GetGlobalTEInvestment` |  |
+| `C_CharacterAdvancement.GetRemainingAE` | world | () → 1 | `0x1017AA10` | AscCAMgr.cpp:2008 `GetRemainingAE` |  |
+| `C_CharacterAdvancement.GetRemainingTE` | world | () → 1 | `0x1017AA30` | AscCAMgr.cpp:2009 `GetRemainingTE` |  |
+| `C_CharacterAdvancement.GetExpectedAE` | world | C_CharacterAdvancement.GetExpectedAE(level) → 1 | `0x101773A0` | AscCAMgr.cpp:2010 `GetExpectedAE` |  |
+| `C_CharacterAdvancement.GetExpectedTE` | world | C_CharacterAdvancement.GetExpectedTE(level) → 1 | `0x10177400` | AscCAMgr.cpp:2019 `GetExpectedTE` |  |
+| `C_CharacterAdvancement.GetClassAEInvestment` | world | C_CharacterAdvancement.GetClassAEInvestment(classType, minInvestment) → 1 | `0x10176B30` | AscCAMgr.cpp:2028 `GetClassAEInvestment` |  |
+| `C_CharacterAdvancement.GetClassTEInvestment` | world | C_CharacterAdvancement.GetClassTEInvestment(classType, minInvestment) → 1 | `0x10176BF0` | AscCAMgr.cpp:2037 `GetClassTEInvestment` |  |
+| `C_CharacterAdvancement.GetClassPointInvestment` | world | C_CharacterAdvancement.GetClassPointInvestment(classType, minInvestment) → 1 | `0x10176B90` | AscCAMgr.cpp:2046 `GetClassPointInvestment` |  |
+| `C_CharacterAdvancement.GetTabAEInvestment` | world | C_CharacterAdvancement.GetTabAEInvestment(classType, tabType, minInvestment) → 1 | `0x1017B2B0` | AscCAMgr.cpp:2055 `GetTabAEInvestment` |  |
+| `C_CharacterAdvancement.GetTabTEInvestment` | world | C_CharacterAdvancement.GetTabTEInvestment(classType, tabType, minInvestment) → 1 | `0x1017B320` | AscCAMgr.cpp:2064 `GetTabTEInvestment` |  |
+| `C_CharacterAdvancement.GetActiveSpecID` | world | () → 1 | `0x10176400` | AscCAMgr.cpp:2073 `GetActiveSpecID` |  |
+| `C_CharacterAdvancement.IsLockedID` | world | C_CharacterAdvancement.IsLockedID(entryId) → 1 | `0x1017CA10` | AscCAMgr.cpp:2080 `IsLockedID` |  |
+| `C_CharacterAdvancement.GetEntryBySpellID` | world | C_CharacterAdvancement.GetEntryBySpellID(spellId) → 1 | `0x10177330` | AscCAMgr.cpp:2089 `GetEntryBySpellID` |  |
+| `C_CharacterAdvancement.GetEntryByInternalID` | world | C_CharacterAdvancement.GetEntryByInternalID(id) → 1 | `0x101772B0` | AscCAMgr.cpp:2098 `GetEntryByInternalID` |  |
+| `C_CharacterAdvancement.GetInternalID` | world | C_CharacterAdvancement.GetInternalID(spellId) → 1 | `0x10177D60` | AscCAMgr.cpp:2107 `GetInternalID` |  |
+| `C_CharacterAdvancement.IsAbilitySpellID` | world | (number) → 1 | `0x1017C5A0` | AscCAMgr.cpp:2145 `IsAbilitySpellID` |  |
+| `C_CharacterAdvancement.IsTalentSpellID` | world | (number) → 1 | `0x1017CF00` | AscCAMgr.cpp:2147 `IsTalentSpellID` |  |
+| `C_CharacterAdvancement.IsTalentAbilitySpellID` | world | (number) → 1 | `0x1017CE00` | AscCAMgr.cpp:2148 `IsTalentAbilitySpellID` |  |
+| `C_CharacterAdvancement.IsAbilityID` | world | (number) → 1 | `0x1017C510` | AscCAMgr.cpp:2149 `IsAbilityID` |  |
+| `C_CharacterAdvancement.IsTalentID` | world | (number) → 1 | `0x1017CE70` | AscCAMgr.cpp:2150 `IsTalentID` |  |
+| `C_CharacterAdvancement.IsTalentAbilityID` | world | (number) → 1 | `0x1017CD70` | AscCAMgr.cpp:2151 `IsTalentAbilityID` |  |
+| `C_CharacterAdvancement.IsMastery` | world | C_CharacterAdvancement.IsMastery(spellId) → 1 | `0x1017CA70` | AscCAMgr.cpp:2152 `IsMastery` |  |
+| `C_CharacterAdvancement.GetTalentEssenceCost` | world | C_CharacterAdvancement.GetTalentEssenceCost(spellId) → 1 | `0x1017B390` | AscCAMgr.cpp:2164 `GetTalentEssenceCost` |  |
+| `C_CharacterAdvancement.GetAbilityEssenceCost` | world | C_CharacterAdvancement.GetAbilityEssenceCost(spellId) → 1 | `0x10176340` | AscCAMgr.cpp:2176 `GetAbilityEssenceCost` |  |
+| `C_CharacterAdvancement.GetClassName` | world | C_CharacterAdvancement.GetClassName(classType) → 1 | `0x10176A10` | AscCAMgr.cpp:2188 `GetClassName` |  |
+| `C_CharacterAdvancement.GetTabName` | world | C_CharacterAdvancement.GetTabName(tabType) → 1 | `0x10176AA0` | AscCAMgr.cpp:2200 `GetTabName` |  |
+| `C_CharacterAdvancement.GetPendingGlobalAEInvestment` | world | () → 0..1 | `0x101797E0` | AscCAMgr.cpp:2224 `GetPendingGlobalAEInvestment` |  |
+| `C_CharacterAdvancement.GetPendingGlobalTEInvestment` | world | () → 0..1 | `0x10179820` | AscCAMgr.cpp:2233 `GetPendingGlobalTEInvestment` |  |
+| `C_CharacterAdvancement.GetPendingRemainingAE` | world | () → 0..1 | `0x10179950` | AscCAMgr.cpp:2242 `GetPendingRemainingAE` |  |
+| `C_CharacterAdvancement.GetPendingRemainingTE` | world | () → 0..1 | `0x10179990` | AscCAMgr.cpp:2251 `GetPendingRemainingTE` |  |
+| `C_CharacterAdvancement.GetPendingExpectedAE` | world | C_CharacterAdvancement.GetPendingExpectedAE(level) → 0..1 | `0x10179700` | AscCAMgr.cpp:2260 `GetPendingExpectedAE` |  |
+| `C_CharacterAdvancement.GetPendingExpectedTE` | world | C_CharacterAdvancement.GetPendingExpectedTE(level) → 0..1 | `0x10179770` | AscCAMgr.cpp:2272 `GetPendingExpectedTE` |  |
+| `C_CharacterAdvancement.GetPendingClassAEInvestment` | world | C_CharacterAdvancement.GetPendingClassAEInvestment(classType, minInvestment) → 0..1 | `0x101795B0` | AscCAMgr.cpp:2286 `GetPendingClassAEInvestment` | The per-class / per-tab pending sums return nothing (no error) without a pending build. |
+| `C_CharacterAdvancement.GetPendingClassTEInvestment` | world | C_CharacterAdvancement.GetPendingClassTEInvestment(classType, minInvestment) → 0..1 | `0x10179690` | AscCAMgr.cpp:2296 `GetPendingClassTEInvestment` |  |
+| `C_CharacterAdvancement.GetPendingClassPointInvestment` | world | C_CharacterAdvancement.GetPendingClassPointInvestment(classType, minInvestment) → 0..1 | `0x10179620` | AscCAMgr.cpp:2307 `GetPendingClassPointInvestment` |  |
+| `C_CharacterAdvancement.GetPendingTabAEInvestment` | world | C_CharacterAdvancement.GetPendingTabAEInvestment(classType, tabType, minInvestm… → 0..1 | `0x10179B70` | AscCAMgr.cpp:2358 `GetPendingTabAEInvestment` |  |
+| `C_CharacterAdvancement.IsPendingEntryID` | world | C_CharacterAdvancement.IsPendingEntryID(entryId) → 0..1 | `0x1017CBD0` | AscCAMgr.cpp:2378 `IsPendingEntryID` |  |
+| `C_CharacterAdvancement.GetPendingRankByEntryID` | world | C_CharacterAdvancement.GetPendingRankByEntryID(entryId) → 0..2 | `0x10179860` | AscCAMgr.cpp:2395 `GetPendingRankByEntryID` |  |
+| `C_CharacterAdvancement.GetLowestInvestmentRequired` | world | C_CharacterAdvancement.GetLowestInvestmentRequired(classType, tabType) → 0..2 | `0x10179180` | AscCAMgr.cpp:2412 `GetLowestInvestmentRequired` |  |
+| `C_CharacterAdvancement.GetActiveChrSpec` | world | () → 1 | `0x101763C0` | AscCAMgr.cpp:2434 `GetActiveChrSpec` | FUN_1016f480: the first ChrSpecs.dbc row whose entry (+0x70) the pending build has. |
+| `C_CharacterAdvancement.CancelPendingBuild` | world | () → 0 | `0x10175EA0` | AscCAMgr.cpp:2453 `CancelPendingBuild` | ---- pending build edits ------------------------------------------------------------------------ |
+| `C_CharacterAdvancement.ClearPendingBuild` | world | C_CharacterAdvancement.ClearPendingBuild(forReset) → 0 | `0x10175EF0` | AscCAMgr.cpp:2461 `ClearPendingBuild` | Clear (FUN_10175ef0) / ClearByTab (FUN_10176030): remove from a snapshot of the entries; with forReset, rows flagged 2 stay. |
+| `C_CharacterAdvancement.ClearPendingBuildByTab` | world | C_CharacterAdvancement.ClearPendingBuildByTab(classType, tabType, forReset) → 0 | `0x10176030` | AscCAMgr.cpp:2476 `ClearPendingBuildByTab` |  |
+| `C_CharacterAdvancement.AddByEntryID` | world | C_CharacterAdvancement.AddByEntryID(entryId, numRanks) → 0 | `0x10174140` | AscCAMgr.cpp:2562 `AddByEntryID` |  |
+| `C_CharacterAdvancement.CanAddByEntryID` | world | C_CharacterAdvancement.CanAddByEntryID(entryId, numRanks) → 0 | `0x101744B0` | AscCAMgr.cpp:2633 `CanAddByEntryID` |  |
+| `C_CharacterAdvancement.MeetsInvestmentForAddByEntryID` | world | C_CharacterAdvancement.MeetsInvestmentForAddByEntryID(entryId, numRanks) → 0 | `0x1017D870` | AscCAMgr.cpp:2649 `MeetsInvestmentForAddByEntryID` |  |
+| `C_CharacterAdvancement.IsPending` | world | () → 0..1 | `0x1017CAF0` | AscCAMgr.cpp:2687 `IsPending` |  |
+| `C_CharacterAdvancement.GetPendingSummary` | world | () → 0..1 | `0x101799D0` | AscCAMgr.cpp:2696 `GetPendingSummary` |  |
+| `C_CharacterAdvancement.RemoveByEntryID` | world | C_CharacterAdvancement.RemoveByEntryID(entryId) → 0 | `0x1017DA90` | AscCAMgr.cpp:2765 `RemoveByEntryID` |  |
+| `C_CharacterAdvancement.CanRemoveByEntryID` | world | C_CharacterAdvancement.CanRemoveByEntryID(entryId) → 0..5 | `0x10174E40` | AscCAMgr.cpp:2799 `CanRemoveByEntryID` |  |
+| `C_CharacterAdvancement.CanApplyPendingBuild` | world | () → 0..8 | `0x101745A0` | AscCAMgr.cpp:2853 `CanApplyPendingBuild` |  |
+| `C_CharacterAdvancement.CanClearPendingBuild` | world | C_CharacterAdvancement.CanClearPendingBuild(forReset) → 0..5 | `0x101748D0` | AscCAMgr.cpp:2866 `CanClearPendingBuild` |  |
+| `C_CharacterAdvancement.ApplyPendingBuild` | world | () → 0 | `0x101742C0` | AscCAMgr.cpp:2889 `ApplyPendingBuild` | ApplyPendingBuild (FUN_101742c0): CMSG 0x727 = u32 count, then per entry u32 id, u32 rank, u32 +0xC, u8 +0x10, u32 +0x18, u32 +0x1C (FUN_10166a50). — sends `0x727` unknown |
+| `C_CharacterAdvancement.GetEntriesByClass` | world | (string, string, bool) → 1 | `0x10177050` | AscCAMgr.cpp:3026 `GetEntriesByClass` |  |
+| `C_CharacterAdvancement.GetSpellsByClass` | world | (string, string, bool) → 1 | `0x1017AE50` | AscCAMgr.cpp:3031 `GetSpellsByClass` |  |
+| `C_CharacterAdvancement.GetTalentsByClass` | world | (string, string, bool) → 1 | `0x1017B620` | AscCAMgr.cpp:3035 `GetTalentsByClass` |  |
+| `C_CharacterAdvancement.GetMasteriesByClass` | world | (string, string, bool) → 1 | `0x10179260` | AscCAMgr.cpp:3039 `GetMasteriesByClass` |  |
+| `C_CharacterAdvancement.GetImplicitByClass` | world | (string, string, bool) → 1 | `0x101776E0` | AscCAMgr.cpp:3043 `GetImplicitByClass` |  |
+| `C_CharacterAdvancement.GetAllEntries` | world | () → 1 | `0x1016F5B0` | AscCAMgr.cpp:3049 `GetAllEntries` | FUN_1016f5b0: every row not hidden (class check included), in id order. |
+| `IsSpellIDKnown` | world | C_CharacterAdvancement.IsSpellIDKnown(spellId) → 1 | `0x1017CC90` | AscCAMgr.cpp:3062 `IsSpellIDKnown` | ---- known entries and spells --------------------------------------------------------------------- |
+| `CA_IsSpellKnown` | world | C_CharacterAdvancement.IsSpellIDKnown(spellId) → 1 | `0x1017CC90` | AscCAMgr.cpp:3062 `IsSpellIDKnown` | ---- known entries and spells --------------------------------------------------------------------- |
+| `C_CharacterAdvancement.IsKnownID` | world | C_CharacterAdvancement.IsKnownID(entryId) → 1 | `0x1017C830` | AscCAMgr.cpp:3070 `IsKnownID` |  |
+| `C_CharacterAdvancement.IsKnownSpellID` | world | C_CharacterAdvancement.IsKnownSpellID(spellId) → 1 | `0x1017C920` | AscCAMgr.cpp:3090 `IsKnownSpellID` |  |
+| `C_CharacterAdvancement.UnitKnownID` | world | C_CharacterAdvancement.UnitKnownID(unitToken, entryId, specialization) → 1 | `0x1017F850` | AscCAMgr.cpp:3135 `UnitKnownID` |  |
+| `C_CharacterAdvancement.UnitTalentRankByID` | world | C_CharacterAdvancement.UnitTalentRankByID(unitToken, entryId, specialization) → 1..2 | `0x1017F9D0` | AscCAMgr.cpp:3149 `UnitTalentRankByID` |  |
+| `C_CharacterAdvancement.GetTalentRankByID` | world | C_CharacterAdvancement.GetTalentRankByID(entryId) → ? | `0x1017B410` | AscCAMgr.cpp:3181 `GetTalentRankByID` |  |
+| `C_CharacterAdvancement.GetTalentRankBySpellID` | world | C_CharacterAdvancement.GetTalentRankBySpellID(spellId) → ? | `0x1017B530` | AscCAMgr.cpp:3191 `GetTalentRankBySpellID` |  |
+| `C_CharacterAdvancement.GetLearnedAE` | world | (string, string) → 1 | `0x10178DC0` | AscCAMgr.cpp:3227 `GetLearnedAE` |  |
+| `C_CharacterAdvancement.GetLearnedTE` | world | (string, string) → 1 | `0x10178FA0` | AscCAMgr.cpp:3228 `GetLearnedTE` |  |
+| `C_CharacterAdvancement.KnowsConnectedNodesFor` | world | C_CharacterAdvancement.KnowsConnectedNodesFor(entryId) → 0..1 | `0x1017CF70` | AscCAMgr.cpp:3229 `KnowsConnectedNodesFor` |  |
+| `C_CharacterAdvancement.GetKnownSpellEntries` | world | () → 1 | `0x10177DD0` | AscCAMgr.cpp:3317 `GetKnownSpellEntries` |  |
+| `C_CharacterAdvancement.GetKnownTalentEntries` | world | () → 1 | `0x101786E0` | AscCAMgr.cpp:3319 `GetKnownTalentEntries` |  |
+| `C_CharacterAdvancement.GetKnownSpellEntriesForClass` | world | (string, string) → 1 | `0x10178280` | AscCAMgr.cpp:3320 `GetKnownSpellEntriesForClass` |  |
+| `C_CharacterAdvancement.GetKnownTalentEntriesForClass` | world | (string, string) → 1 | `0x10178B90` | AscCAMgr.cpp:3324 `GetKnownTalentEntriesForClass` |  |
+| `C_Spell.HasRuneUI` | world | () → 1 | `0x10326D00` | AscCAMgr.cpp:3243 `HasRuneUI` |  |
+| `C_CharacterAdvancement.LearnID` | world | C_CharacterAdvancement.LearnID(entryId \| {entryId1, ...}) → 5 | `0x1017D140` | AscCAMgr.cpp:3381 `LearnID` |  |
+| `C_CharacterAdvancement.CanLearnID` | world | C_CharacterAdvancement.CanLearnID(entryId \| {entryId1, ...}) → 3 | `0x10174C10` | AscCAMgr.cpp:3421 `CanLearnID` |  |
+| `C_CharacterAdvancement.CanUnlearnID` | world | C_CharacterAdvancement.CanUnlearnID(entryId \| {entryId1, ...}) → 3 | `0x10175750` | AscCAMgr.cpp:3445 `CanUnlearnID` |  |
+| `C_CharacterAdvancement.LockID` | world | (number) → 1 | `0x1017D750` | AscCAMgr.cpp:3506 `LockID` | sends `0x658` CMSG_CHARACTER_ADVANCEMENT_LOCK_ENTRY |
+| `C_CharacterAdvancement.UnlockID` | world | (number) → 1 | `0x1017FEF0` | AscCAMgr.cpp:3507 `UnlockID` | sends `0x65A` CMSG_CHARACTER_ADVANCEMENT_UNLOCK_ENTRY |
+| `C_CharacterAdvancement.ShouldConfirmLearnID` | world | C_CharacterAdvancement.ShouldConfirmLearnID(entryId \| {entryId1, ...}) → ? | `0x1017EE70` | AscCAMgr.cpp:3659 `ShouldConfirmLearnID` |  |
+| `C_CharacterAdvancement.ShouldConfirmUnlearnID` | world | C_CharacterAdvancement.ShouldConfirmUnlearnID(entryId \| {entryId1, ...}) → ? | `0x1017F2E0` | AscCAMgr.cpp:3677 `ShouldConfirmUnlearnID` |  |
+| `C_CharacterAdvancement.ShouldConfirmUnlearnAllSpells` | world | () → ? | `0x1017F0C0` | AscCAMgr.cpp:3708 `ShouldConfirmUnlearnAllSpells` |  |
+| `C_CharacterAdvancement.ShouldConfirmUnlearnAllTalents` | world | () → ? | `0x1017F1D0` | AscCAMgr.cpp:3709 `ShouldConfirmUnlearnAllTalents` |  |
+| `C_CharacterAdvancement.CanUnlearnAllSpells` | world | () → 2 | `0x10175450` | AscCAMgr.cpp:3720 `CanUnlearnAllSpells` |  |
+| `C_CharacterAdvancement.CanUnlearnAllTalents` | world | () → 2 | `0x101755D0` | AscCAMgr.cpp:3721 `CanUnlearnAllTalents` |  |
+| `C_CharacterAdvancement.UnlearnID` | world | C_CharacterAdvancement.UnlearnID(entryId \| {entryId1, ...}) → 1 | `0x1017FBE0` | AscCAMgr.cpp:3726 `UnlearnID` | FUN_1017fbe0. Normal modes: remove each (with its mastery bookkeeping), re-validate the order and send the whole build as 0x727. Wildcard: one Scroll of Fortune request (CMSG 0x61D, u32 id) per id, only while no roll is running and no request is outstanding. — sends `0x61D` CMSG_WILDCARD_UNLEARN_ABILITY |
+| `C_CharacterAdvancement.GetQualityCount` | world | C_CharacterAdvancement.GetQualityCount(qualityName) → 1 | `0x10179C50` | AscCAMgr.cpp:3787 `GetQualityCount` |  |
+| `C_CharacterAdvancement.GetQualityLimit` | world | C_CharacterAdvancement.GetQualityLimit(qualityName) → 1 | `0x10179F50` | AscCAMgr.cpp:3804 `GetQualityLimit` | FUN_10179f50. Normal mode: the realm's CONFIG_..._QUALITIES_MAX_<Q>_ABILITIES_<expansion> (8/8/4/2 by default), 99 for the other qualities. Draft: Epic 6, Legendary 3, else nil. Wildcard: nil. |
+| `C_CharacterAdvancement.GetKnownSpells` | world | () → 1 | `0x101784B0` | AscCAMgr.cpp:3880 `GetKnownSpells` | FUN_101784b0: the active build's spells at their ranks -- abilities sorted, then talents and talent abilities sorted. |
+| `C_CharacterAdvancement.IsConnectionAllowed` | world | C_CharacterAdvancement.IsConnectionAllowed(fromEntryId, toEntryId) → 1 | `0x1017C640` | AscCAMgr.cpp:3906 `IsConnectionAllowed` | FUN_1017c640: `to` lists `from` among its connections (+0xE4, 15 ids) and the pending build has `from` (at max rank when `from` carries flag 0x200000). |
+| `C_CharacterAdvancement.GetClassInfo` | world | C_CharacterAdvancement.GetClassInfo(spellId) → 1..2 | `0x10176850` | AscCAMgr.cpp:3936 `GetClassInfoBySpell` | C_CharacterAdvancement.GetClassInfo(spellId) -- FUN_10176850: the class-type and tab-type names of the entry listing the spell (FUN_101498d0), "INVALID_CLASS_TYPE_{}" / "INVALID_TAB_TYPE_{}" for an unmapped value; one nil when no entry lists it. |
+| `GetClassInfo` | both | (number) → 0..3 | `0x100D8FA0` | AscCAMgr.cpp:3954 `GetClassInfo` | The global GetClassInfo -- handler_GetClassInfo (0x100D8FA0, registrar FUN_100df760): ChrClasses (container 0xAD3404) name, filename, id; three nils for an unknown class. Not the C_CA binding above. |
+| `C_CharacterAdvancement.CanUseBrowser` | world | () → 1 | `0x10175D50` | AscCAMgr.cpp:3974 `CanUseBrowser` |  |
+| `C_CharacterAdvancement.GetRootSpellTagTypes` | world | () → 1 | `0x1017AA50` | AscCAMgr.cpp:4005 `GetRootSpellTagTypes` |  |
+| `C_CharacterAdvancement.GetSpellTagTypes` | world | C_CharacterAdvancement.GetSpellTagTypes(parentTypeId) → 1 | `0x1017AD00` | AscCAMgr.cpp:4011 `GetSpellTagTypes` |  |
+| `C_CharacterAdvancement.GetSpellTagTypeDisplayInfo` | world | C_CharacterAdvancement.GetSpellTagTypeDisplayInfo(typeId) → 3 | `0x1017AB50` | AscCAMgr.cpp:4024 `GetSpellTagTypeDisplayInfo` |  |
+| `C_CharacterAdvancement.PickupSpell` | world | C_CharacterAdvancement.PickupSpell(entryId) → 0 | `0x1017D930` | AscCAMgr.cpp:4063 `PickupSpell` |  |
+| `C_CharacterAdvancement.GetSuggestedStats` | world | () → 2 | `0x1017B0D0` | AscCAMgr.cpp:1927 `GetSuggestedStats` | FUN_1017b0d0: (first stat, {stats}) with Strength, Agility, Intellect and Spirit appended when missing; nil, nil before anything is suggested. |
+| `C_CharacterAdvancement.GetCategories` | world | C_CharacterAdvancement.GetCategories([sortByRequiredLevel]) → 1 | `0x10176450` | AscCAMgr.cpp:4107 `GetCategories` | FUN_10176450: every category id, by order (LAB_10180110) or by required level then order (LAB_10180170) when the optional argument is true. |
+| `C_CharacterAdvancement.GetCategoryDisplayInfo` | world | C_CharacterAdvancement.GetCategoryDisplayInfo(categoryId) → 5 | `0x10176760` | AscCAMgr.cpp:4131 `GetCategoryDisplayInfo` | handler_GetCategoryDisplayInfo: required level, +0x14, +0x10, +0x18, flag; five nils if unknown. |
+| `C_CharacterAdvancement.CanSwitchActiveChrSpec` | world | C_CharacterAdvancement.CanSwitchActiveChrSpec(specID) → 2 | `0x10175190` | AscCAMgr.cpp:4202 `CanSwitchActiveChrSpec` | FUN_10175190: (false, NO_PENDING_BUILD) / (false, CHR_SPEC_ALREADY_ACTIVE) / (true, nil). The original also runs the switch on a throwaway copy of the pending build; nothing reads it. |
+| `C_CharacterAdvancement.SwitchActiveChrSpec` | world | C_CharacterAdvancement.SwitchActiveChrSpec(specID) → 0 | `0x1017F700` | AscCAMgr.cpp:4228 `SwitchActiveChrSpec` |  |
+| `C_CharacterAdvancement.ActivateLoadout` | world | C_CharacterAdvancement.ActivateLoadout(uuid) → 1 | `0x10173FD0` | AscCAMgr.cpp:4250 `ActivateLoadout` | Loadouts live on the server: CMSG 0x778 activate(uuid), 0x779 rename(uuid, name), 0x77A sort(uuid, u32 order). FUN_10173fd0 — sends `0x778` CMSG_CHARACTER_ADVANCEMENT_LOADOUT_ACTIVATE_REQUEST |
+| `C_CharacterAdvancement.SetLoadoutName` | world | C_CharacterAdvancement.SetLoadoutName(uuid, name) → 1 | `0x1017EB10` | AscCAMgr.cpp:4259 `SetLoadoutName` | sends `0x779` CMSG_CHARACTER_ADVANCEMENT_LOADOUT_SET_NAME_REQUEST |
+| `C_CharacterAdvancement.SetLoadoutSortOrder` | world | C_CharacterAdvancement.SetLoadoutSortOrder(uuid, sortOrder) → 1 | `0x1017ECE0` | AscCAMgr.cpp:4269 `SetLoadoutSortOrder` | sends `0x77A` CMSG_CHARACTER_ADVANCEMENT_LOADOUT_SET_SORT_ORDER_REQUEST |
+| `C_CharacterAdvancement.CanSwapEntriesByID` | world | C_CharacterAdvancement.CanSwapEntriesByID(data) → 5 | `0x10174F80` | AscCAMgr.cpp:4453 `CanSwapEntriesByID` |  |
+| `C_CharacterAdvancement.SwapEntriesByID` | world | C_CharacterAdvancement.SwapEntriesByID(data) → 0 | `0x1017F590` | AscCAMgr.cpp:4468 `SwapEntriesByID` |  |
+| `C_CharacterAdvancement.GetEntriesAvailableForSwap` | world | C_CharacterAdvancement.GetEntriesAvailableForSwap(existingEntry) → ? | `0x10176C50` | AscCAMgr.cpp:4549 `GetEntriesAvailableForSwap` |  |
+| `C_CharacterAdvancement.GetEntriesAvailableForSwapInClass` | world | C_CharacterAdvancement.GetEntriesAvailableForSwapInClass(existingEntry, classTy… → ? | `0x10176CB0` | AscCAMgr.cpp:4556 `GetEntriesAvailableForSwapInClass` |  |
+| `C_CharacterAdvancement.GetEntriesAvailableForTrade` | world | C_CharacterAdvancement.GetEntriesAvailableForTrade(desiredEntry) → 1 | `0x10176DA0` | AscCAMgr.cpp:4568 `GetEntriesAvailableForTrade` | FUN_10176da0: every pending entry of the desired one's kind that could be traded for it, at the highest workable rank (the requested one, else from its max down to 1). |
+| `C_CharacterAdvancement.InspectUnit` | world | C_CharacterAdvancement.InspectUnit(unitToken) → 1 | `0x1017C380` | AscCAMgr.cpp:4686 `InspectUnit` | sends `0x6E1` CMSG_INSPECT_CHARACTER_ADVANCEMENT |
+| `C_CharacterAdvancement.GetInspectInfo` | world | C_CharacterAdvancement.GetInspectInfo(unitToken) → 2 | `0x10177940` | AscCAMgr.cpp:4700 `GetInspectInfo` | FUN_10177940: (active spec + 1, {specs with entries, 1-based}); nil, nil for an unknown unit. |
+| `C_CharacterAdvancement.GetInspectedBuild` | world | C_CharacterAdvancement.GetInspectedBuild(unitToken, specialization) → 1 | `0x10177AE0` | AscCAMgr.cpp:5177 `GetInspectedBuild` |  |
+| `C_CharacterAdvancement.ImportPendingBuildID` | world | C_CharacterAdvancement.ImportPendingBuildID(buildID) → 0..4 | `0x1017C060` | AscCAMgr.cpp:5133 `ImportPendingBuildID` | ---- importing into the pending build ----------------------------------------------------------- FUN_1017c060: the Build Creator build with this id, built at the player's level and validated in full; on success the pending build takes its entries. (false, CA_LEARN_*, id, rank) otherwise. |
+| `C_CharacterAdvancement.ImportPendingBuild` | world | C_CharacterAdvancement.ImportPendingBuild(buildURL) → 0..4 | `0x1017B910` | AscCAMgr.cpp:5070 `ImportPendingBuild` | FUN_1017b910: a build link into the pending build. A CoA class reads the CoA link format; any other class a Build Creator link, built at the player's level. The candidate is validated in full on a copy of the pending build first. (false, reason \| CA_LEARN_*, id, rank) on failure. |
+| `C_CharacterAdvancement.GetPendingTabTEInvestment` | world | C_CharacterAdvancement.GetPendingTabTEInvestment(classType, tabType, minInvestm… → 0..1 | `0x10179BE0` | AscCAMgr.cpp:2318 `GetPendingTabTEInvestment` |  |
+| `C_CharacterAdvancement.GetQualityInfo` | world | C_CharacterAdvancement.GetQualityInfo(spellId) → 1..2 | `0x10179D90` | AscCAMgr.cpp:2331 `GetQualityInfo` | FUN_10179d90: the quality the active build gives the spell's row and what it costs; nil without a row. |
+| `C_CharacterAdvancement.ExportBuild` | world | C_CharacterAdvancement.ExportBuild(includeREs) → 1 | `0x10176220` | AscCAMgr.cpp:2350 `ExportBuild` | FUN_10176220: the active build as a build-creator link (FUN_100fc240 + FUN_100fd8f0). |
+| `CA_GetCreditAmount` | world | (number) → 0..1 | `0x101A1D90` | AscCAMgr.cpp:5213 `CA_GetCreditAmount` | CA_GetCreditAmount (FUN_101a1d90): the credit map entry for the category, 0 when absent. |
 
 **Server packets handled**
 
@@ -4004,7 +4004,7 @@ CharacterAdvancementMgr (0x10bde440) -- the per-player CA builds, the entry inde
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x5AAB90` | Detour | 5314 |  |
+| `0x5AAB90` | Detour | 5324 |  |
 
 ### AscCanToggle
 
