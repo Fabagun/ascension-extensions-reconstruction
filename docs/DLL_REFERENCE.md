@@ -4300,7 +4300,7 @@ The client-DBC SMSG_PATCH_* handlers of the original's installer FUN_10228d30 / 
 | `0x968` | SMSG_PATCH_ITEM_RANDOM_PROPERTIES | `(table row)` | patches client DBC rows: DBFilesClient\ItemRandomProperties.dbc (row 0x20; AscClientDbcPatch table row) |
 | `0x969` | SMSG_PATCH_ITEM_PURCHASE_GROUP | `(table row)` | patches client DBC rows: DBFilesClient\ItemPurchaseGroup.dbc (row 0x28; AscClientDbcPatch table row) |
 | `0x96A` | SMSG_PATCH_ITEM_LIMIT_CATEGORY | `(table row)` | patches client DBC rows: DBFilesClient\ItemLimitCategory.dbc (row 0x10; AscClientDbcPatch table row) |
-| `0x96B` | SMSG_PATCH_ITEM_DISPLAY_INFO | `(table row)` | patches client DBC rows: DBFilesClient\ItemExtendedCost.dbc (row 0x64; AscClientDbcPatch table row) |
+| `0x96B` | SMSG_PATCH_ITEM_DISPLAY_INFO | `(table row)` | patches client DBC rows: DBFilesClient\ItemDisplayInfo.dbc (row 0x64; AscClientDbcPatch table row) |
 | `0x96C` | SMSG_PATCH_ITEM_COND_EXT_COSTS | `(table row)` | patches client DBC rows: DBFilesClient\ItemCondExtCosts.dbc (row 0x10; AscClientDbcPatch table row) |
 | `0x96D` | SMSG_PATCH_RAND_PROP_POINTS | `(table row)` | patches client DBC rows: DBFilesClient\RandPropPoints.dbc (row 0x40; AscClientDbcPatch table row) |
 | `0x96E` | SMSG_PATCH_SCALING_STAT_DISTRIBUTION | `(table row)` | patches client DBC rows: DBFilesClient\ScalingStatDistribution.dbc (row 0x58; AscClientDbcPatch table row) |
