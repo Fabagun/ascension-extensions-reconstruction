@@ -293,9 +293,11 @@ namespace
 
     // The client regenerates runes (0x728A20) only for the active player whose display power type
     // (UNIT_FIELD_BYTES_0 byte 3) matches the operand of `cmp ebx, 6` at 0x728AA1. The original writes 10
-    // there while a rune spell is known (FUN_1016d5b0) and 6 when none is (FUN_10173330). A CoA server
-    // gives the Hero its class's mana, so while a rune spell is known the check becomes `cmp ebx, ebx` and
-    // the runes regenerate whatever the display power is.
+    // there while a rune spell is known (FUN_1016d5b0) and 6 when none is (FUN_10173330). No power type 10
+    // exists (10 is the Hero class ID), so the original never regenerates runes once any rune spell is
+    // known, Death Knights included, and no server packet sets the ready mask (0xC24388) instead.
+    // Deliberate departure from the original (IMPROVEMENTS.md): while a rune spell is known the check
+    // becomes `cmp ebx, ebx` and the runes regenerate whatever the display power is.
     void SetRuneRegeneration(bool runeSpellKnown)
     {
         static const uint8_t kAlways[3] = {0x39, 0xDB, 0x90};       // cmp ebx, ebx; nop
