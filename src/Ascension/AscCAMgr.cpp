@@ -1349,6 +1349,16 @@ namespace
         g_knownSpells.clear();   // +0x3E8 (FUN_100df440)
         g_runeSpells.clear();    // +0x408
         SetRuneClass(6);         // 0x728AA3 = 6 (missing until 2026-09-27; the live audit showed 6 in the original)
+        g_knownTags.clear();     // +0x428
+        g_mgr.suggestionOverrides.clear();   // +0x44C
+        g_pendingSignal = false;             // DAT_10bde424
+        g_mgr.autoLearn = false;             // +0x458
+        ++g_pendingVersion;                  // DAT_10bde3d8
+        // +0x00 (FUN_1016d170): the player's record goes too, so the next character's first 0x725 makes a
+        // fresh one. Kept, it handed that character the previous one's builds until its own arrived.
+        Player* old = g_mgr.player;
+        g_mgr.player = nullptr;
+        delete old;
     }
 
     // ---- argument readers -------------------------------------------------------------------------
