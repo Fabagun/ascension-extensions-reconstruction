@@ -26,6 +26,14 @@ packets and fires events.
 - **Logon protocol.** The genuine DLL hooks `0x8CCE00`, `0x9A83E0` and `0x9A88C0` to replace SRP6 with
   Ascension's own logon protocol. These are **not installed**, so the client authenticates with stock SRP6
   against an ordinary AzerothCore authserver. See `src/Ascension/AscMain.cpp`.
+- **Character advancement initialization.** The native `0x726` known-entries handler synchronizes the
+  build's unit parameters before notifying listeners and cloning its pending build. Waiting for the next
+  manager tick leaves a new build at class and level zero during the first native update. This is an
+  intentional compatibility correction; it uses the existing parameter helpers, packets and Lua bindings.
+
+The portable regression in `tests/native_ca_packets.py` compiles the production native packet handlers
+against client API doubles. It covers initial state, listener timing, subsequent updates, new preset slots
+and missing local units. It does not launch the game or replace the 32-bit Windows DLL build.
 
 ## Building
 

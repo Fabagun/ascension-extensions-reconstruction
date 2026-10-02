@@ -1098,6 +1098,9 @@ namespace
         RefreshCredits();
     }
 
+    void ParamsFromUnit(Build& out, const uint8_t* unit, int32_t spec);
+    bool SyncParams(Build& b, const Build& p);
+
     // FUN_10171260: SMSG 0x726 -- the known entries of the active spec's build, diffed into events.
     void __cdecl OnKnownEntries(void* a, uint32_t opcode, uint32_t b, CDataStore* p)
     {
@@ -1119,6 +1122,14 @@ namespace
             if (created)
                 ResetPendingBuild();
             return;
+        }
+
+        if (const uint8_t* unit = ActivePlayer())
+        {
+            Build params;
+            ParamsFromUnit(params, unit, ActiveSpecIndex());
+            if (SyncParams(*build, params))
+                build->Prepare();
         }
 
         Build old(*build, true);
