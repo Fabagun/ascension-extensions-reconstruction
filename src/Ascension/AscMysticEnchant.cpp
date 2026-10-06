@@ -51,7 +51,6 @@ namespace
     const uint32_t kMysticScroll = 0xF25D0;        // "Untarnished Mystic Scroll"
     const uint32_t kMarkOfAscension = 0x5B9D2;
     const uint32_t kMysticExtract = 0x1809F;
-    const uint32_t kPresetUnlockToken = 0x1B9271;
 
     // ---- string tables (name, length) at the addresses given ------------------------------------
     // kReQualities (0x10B1B448) comes from AscCAEnums.generated.inc.
@@ -2961,15 +2960,6 @@ namespace
         M().altarOpen = true;
         AscRuntime::Signal("MYSTIC_ALTAR_USED");
     }
-    void OnItemUse(void* object)   // 0x10A42F30's first two branches
-    {
-        uint8_t* item = static_cast<uint8_t*>(object);
-        const uint32_t entry = EntryOf(item);
-        if (entry == kMysticScroll)
-            AscRuntime::Signal("MYSTIC_SCROLL_USED", "%u", entry);   // FUN_102EA3A0
-        else if (entry == kPresetUnlockToken)
-            AscRuntime::Signal("MYSTIC_ENCHANT_UNLOCK_PRESET_USED");   // FUN_102EA330
-    }
 
     void Init()   // the tail of FUN_102E9850
     {
@@ -2993,7 +2983,6 @@ namespace
         AscRuntime::OnGlueScreen(&OnGlueScreen);
         AscRuntime::OnAfter403340(&OnTick);
         AscRuntime::OnGameObjectUse(&OnGameObjectUse);
-        AscRuntime::OnItemUse(&OnItemUse);
     }
 
     const AscBindings::Binding kBindings[] = {

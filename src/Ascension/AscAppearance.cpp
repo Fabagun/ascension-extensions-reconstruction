@@ -2048,3 +2048,29 @@ void AscAppearance_ItemSetAppearancesPatched()
 
 // SMSG 0x692 (FUN_101dced0): after inserting a new Appearances.dbc row, the manager's FUN_100c6750.
 void AscAppearance_RebuildOutfits() { RebuildOutfits(); }
+
+// The item-use detour 0x10A42F30's last branch: the item's ItemAppearances row (FUN_1020fae0) names an
+// Appearances.dbc row that must be collected (FUN_100c57a0); the first of its categories +0x14..+0x1C with an
+// AppearanceCategories row ends the search, and fires UNLOCKED_APPEARANCE_ITEM_USED (FUN_100c6450,
+// "%u%s%u%s": category, its APPEARANCE_TYPE_* name, appearance, item name) when its type is 2..6.
+void AscAppearance_ItemUsed(uint32_t entry, const char* itemName)
+{
+    const uint8_t* itemAppearance = ByKey(ItemAppearances(), entry);
+    if (!itemAppearance)
+        return;
+    const uint8_t* appearance = Appearances().Row(AscDbc::Table::U32(itemAppearance, 8));
+    if (!appearance || !IsCollected(AscDbc::Table::U32(appearance, 0)))
+        return;
+    for (uint32_t off = 0x14; off < 0x20; off += 4)
+    {
+        const uint32_t category = AscDbc::Table::U32(appearance, off);
+        const uint8_t* row = Categories().Row(category);
+        if (!row)
+            continue;
+        const int type = CategoryType(row);
+        if (type >= 2 && type <= 6)
+            AscRuntime::Signal("UNLOCKED_APPEARANCE_ITEM_USED", "%u%s%u%s", category, Categories().Str(row, 4),
+                AscDbc::Table::U32(appearance, 0), itemName);
+        return;
+    }
+}

@@ -2,11 +2,12 @@
 // SMSG_PATCH_COLLECTOR_CACHE_* 0x6D9..0x6DC (AscDbcPatch). GetCollectorCacheRarityRatesInfo is in
 // AscBindings.cpp (it reads its argument and returns nothing).
 //   CollectorCacheItems      +4 type, +8, +0xC, +0x10 float, +0x14..+0x60 20 values
-//   CollectorCacheTypes      +4, +8, +0xC/+0x10/+0x14 strings
+//   CollectorCacheTypes      +4 token item, +8, +0xC/+0x10/+0x14 strings
 //   CollectorCacheRarityTypes +4 flag, +8 string
 //   CollectorCacheRarityRates +8 (1 = the row GetCollectorCacheItemInfo reports), +0xC float
 #include <Ascension/AscBindings.hpp>
 #include <Ascension/AscDbc.hpp>
+#include <Ascension/AscRuntime.hpp>
 #include <Ascension/AscScript.hpp>
 #include <vector>
 
@@ -148,4 +149,18 @@ namespace
         {"C_CollectorCache", "OpenCollectorCache", OpenCollectorCache},
     };
     AscBindings::Module s_module(kBindings, sizeof(kBindings) / sizeof(kBindings[0]));
+}
+
+// FUN_10194230, from the item-use detour 0x10A42F30 on every use: the first CollectorCacheTypes row (by id)
+// whose +4 is the item fires COLLECTOR_CACHE_TOKEN_USED("%u", row id).
+void AscCollectorCache_ItemUsed(uint32_t entry)
+{
+    AscDbc::Table& t = Types();
+    for (uint32_t id = t.MinId(); t.Loaded() && id <= t.MaxId(); ++id)
+        if (const uint8_t* row = t.Row(id))
+            if (AscDbc::Table::U32(row, 4) == entry)
+            {
+                AscRuntime::Signal("COLLECTOR_CACHE_TOKEN_USED", "%u", id);
+                return;
+            }
 }
