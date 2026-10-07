@@ -30,6 +30,11 @@ packets and fires events.
   build's unit parameters before notifying listeners and cloning its pending build. Waiting for the next
   manager tick leaves a new build at class and level zero during the first native update. This is an
   intentional compatibility correction; it uses the existing parameter helpers, packets and Lua bindings.
+- **Tooltip line insertion.** Ascension's own `Tooltip:InsertLine` / `Tooltip:InsertLines` (patch-B
+  `SharedXML\TypeExtensions\Tooltip.lua`) write inserted lines into font strings left over from a longer
+  tooltip, so a keystone tooltip shows one Dungeon Modifier of several. After the world UI loads, the DLL wraps
+  both methods so that lines past the tooltip's end are added instead (`src/Ascension/AscTooltipInsertFix.cpp`).
+  `patch-B` itself is unchanged.
 
 The portable regression in `tests/native_ca_packets.py` compiles the production native packet handlers
 against client API doubles. It covers initial state, listener timing, subsequent updates, new preset slots
