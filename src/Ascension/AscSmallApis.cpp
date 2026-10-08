@@ -291,7 +291,8 @@ namespace
                 continue;
             for (uint32_t slot = 0; slot < 25; ++slot)   // PLAYER_QUEST_LOG, 0x14 per slot
             {
-                const uint32_t logged = *reinterpret_cast<const uint16_t*>(desc + 0x278 + slot * 0x14);
+                // 32 bits, as in QuestRelevant (AscAttachFixes.cpp). The original reads the low word here too.
+                const uint32_t logged = *reinterpret_cast<const uint32_t*>(desc + 0x278 + slot * 0x14);
                 if (!logged)
                     break;
                 if (logged == e[0])

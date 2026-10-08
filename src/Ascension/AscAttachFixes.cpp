@@ -849,7 +849,9 @@ namespace
             const uint32_t quest = log[0];
             for (uint8_t slot = 0; slot < 0x19; ++slot)
             {
-                const uint32_t id = *reinterpret_cast<const uint16_t*>(fields + 0x278 + slot * 0x14);
+                // PLAYER_QUEST_LOG_x_1 is 32 bits. The original reads its low word (1008dea0 movzx word), so
+                // no quest above 65535 ever matched and custom quests drew no circle.
+                const uint32_t id = *reinterpret_cast<const uint32_t*>(fields + 0x278 + slot * 0x14);
                 if (id == 0)
                     break;
                 if (id != quest)
