@@ -170,6 +170,9 @@ namespace
         // FUN_100c3910 / FUN_102129e0
         Record* Get(uint32_t index)
         {
+            auto pinned = m_pinned.find(index);
+            if (pinned != m_pinned.end())
+                return pinned->second;
             auto it = m_records.find(index);
             if (it == m_records.end())
             {
@@ -210,7 +213,7 @@ namespace
         // FUN_100c19c0 / FUN_101dac80: only for a cached record; a key already present moves to the front.
         void Index(uint32_t field, uint32_t key, uint32_t index)
         {
-            if (m_records.find(index) == m_records.end())
+            if (m_records.find(index) == m_records.end() && m_pinned.find(index) == m_pinned.end())
                 return;
             const uint64_t k = IndexKey(field, key);
             auto old = m_index.find(k);
@@ -250,9 +253,26 @@ namespace
         // FUN_101dbdc0
         void EvictIndex(uint32_t index)
         {
+            Unpin(index);
             auto it = m_records.find(index);
             if (it != m_records.end())
                 Evict(it);
+        }
+
+        // Not in the original: a patched record MMgr64.exe refused to store. It replaces whatever the
+        // cache holds at that index, is never evicted, and answers every read of the index from then on.
+        void Pin(uint32_t index, Record* record)
+        {
+            EvictIndex(index);
+            m_pinned[index] = record;
+        }
+
+        bool IsPinned(uint32_t index) const { return m_pinned.find(index) != m_pinned.end(); }
+
+        template <class Fn> void ForEachPinned(Fn fn) const
+        {
+            for (const auto& p : m_pinned)
+                fn(p.first, *p.second);
         }
 
         // FUN_10209860's walk: the first cached record whose id (+0) is `id`.
@@ -271,6 +291,10 @@ namespace
             while (!m_records.empty())
                 Evict(m_records.begin());
             m_lru.clear();
+            while (!m_pinned.empty())
+                Unpin(m_pinned.begin()->first);
+            m_index.clear();
+            m_indexLru.clear();
         }
 
     private:
@@ -281,6 +305,26 @@ namespace
         typedef typename std::unordered_map<uint64_t, IndexSlot>::iterator IndexIt;
 
         static uint64_t IndexKey(uint32_t field, uint32_t key) { return (static_cast<uint64_t>(key) << 32) | field; }
+
+        void Unpin(uint32_t index)
+        {
+            auto it = m_pinned.find(index);
+            if (it == m_pinned.end())
+                return;
+            Release(*it->second);
+            delete it->second;
+            m_pinned.erase(it);
+            for (auto i = m_index.begin(); i != m_index.end();)
+            {
+                if (i->second.index == index)
+                {
+                    m_indexLru.erase(i->second.lru);
+                    i = m_index.erase(i);
+                }
+                else
+                    ++i;
+            }
+        }
 
         void Unindex(IndexIt it)
         {
@@ -310,6 +354,7 @@ namespace
         }
 
         std::unordered_map<uint32_t, Slot> m_records;
+        std::unordered_map<uint32_t, Record*> m_pinned;
         std::list<uint32_t> m_lru;
         std::unordered_map<uint64_t, IndexSlot> m_index;
         std::list<uint64_t> m_indexLru;
@@ -551,6 +596,51 @@ namespace
         return true;
     }
 
+    // ---- records MMgr64.exe refused to patch (not in the original) ----------------------------------
+    // The shipped MMgr64.exe rejects 0x73, so a server patch never reaches the table (IMPROVEMENTS.md).
+    // The patched record is pinned in the cache instead, and every query below consults the pinned
+    // records first: a pinned record answers for its own keys, and the table's answer for a pinned index
+    // is discarded when the pinned record no longer holds that key.
+    template <class Record> uint32_t FieldValue(const Record& r, uint32_t field)
+    {
+        uint32_t v;
+        memcpy(&v, reinterpret_cast<const uint8_t*>(&r) + field, 4);
+        return v;
+    }
+
+    template <class Record> bool PinnedIndex(const Store<Record>& s, uint32_t field, uint32_t key, uint32_t& index)
+    {
+        bool found = false;
+        s.cache.ForEachPinned([&](uint32_t i, const Record& r) {
+            if (!found && FieldValue(r, field) == key)
+            {
+                index = i;
+                found = true;
+            }
+        });
+        return found;
+    }
+
+    template <class Record> void AdjustPinnedHits(const Store<Record>& s, uint32_t field, uint32_t key, std::vector<uint32_t>& hits)
+    {
+        s.cache.ForEachPinned([&](uint32_t i, const Record& r) {
+            hits.erase(std::remove(hits.begin(), hits.end(), i), hits.end());
+            if (FieldValue(r, field) == key)
+                hits.push_back(i);
+        });
+    }
+
+    template <class Record> Record* PinnedCopy(const Record& r)
+    {
+        Record* copy = new Record(r);
+        for (uint32_t field : StringFields(static_cast<Record*>(nullptr)))
+        {
+            const char*& slot = StringSlot(copy, field);
+            slot = slot ? _strdup(slot) : nullptr;
+        }
+        return copy;
+    }
+
     // FUN_100b8cc0 / FUN_101a2690 / FUN_103298f0 (key field +4) and FUN_101d0bd0 / FUN_101d0500 /
     // FUN_101d1290 / FUN_10329f60 (id, field 0): the record whose `field` is `key`. 0x6D on that field with
     // the record's string fields as extras; the reply is total, key, u8 found, u32 index (< count), then
@@ -563,6 +653,12 @@ namespace
         RecordCache<Record>& cache = s.cache;
         if (Record* r = cache.FindIndexed(field, key))
             return r;
+        uint32_t pinned = 0;
+        if (PinnedIndex(s, field, key, pinned))
+        {
+            cache.Index(field, key, pinned);
+            return cache.Get(pinned);
+        }
         const std::vector<uint32_t>& stringFields = StringFields(static_cast<Record*>(nullptr));
         std::vector<uint8_t> out;
         if (!AscMemoryBridge::Command6D(s.table, field, std::vector<uint32_t>{key}, out, stringFields))
@@ -579,6 +675,8 @@ namespace
             return nullptr;
         if (Record* r = cache.Get(index))
         {
+            if (cache.IsPinned(index) && FieldValue(*r, field) != key)
+                return nullptr;
             cache.Index(field, key, index);
             cache.Index(0, RecordId(*r), index);
             return r;
@@ -624,6 +722,7 @@ namespace
             std::vector<uint32_t> hits;
             if (!AscMemoryBridge::Command6B(s.table, field, group, hits))
                 return false;
+            AdjustPinnedHits(s, field, group, hits);
             out.insert(out.end(), hits.begin(), hits.end());
         }
         if (out.size() > 1)
@@ -700,8 +799,13 @@ namespace
     // record whose id (+0) is `id` -- the first hit of 0x6B on field 0.
     template <class Record> bool IndexOf(Store<Record>& s, uint32_t id, uint32_t& index)
     {
+        if (PinnedIndex(s, 0, id, index))
+            return true;
         std::vector<uint32_t> hits;
-        if (!s.table || !AscMemoryBridge::Command6B(s.table, 0, id, hits) || hits.empty())
+        if (!s.table || !AscMemoryBridge::Command6B(s.table, 0, id, hits))
+            return false;
+        AdjustPinnedHits(s, 0, id, hits);
+        if (hits.empty())
             return false;
         index = hits[0];
         return true;
@@ -768,8 +872,9 @@ namespace
         }
         Record row = r;
         if (!AppendStrings(s, row) || !AscMemoryBridge::Command73(s.table, index, &row, sizeof(row)))
-            return false;
-        s.cache.EvictIndex(index);
+            s.cache.Pin(index, PinnedCopy(r));
+        else
+            s.cache.EvictIndex(index);
         if (!existing)
             ++s.count;
         else if (oldId != RecordId(r))
@@ -1036,12 +1141,13 @@ void AscBridgeStore::PatchKeystone(const uint32_t rec[3])
     }
     if (!s.table)
         return;
-    std::vector<uint32_t> hits;
-    if (AscMemoryBridge::Command6B(s.table, 0, rec[0], hits) && !hits.empty())
+    uint32_t index = 0;
+    if (IndexOf(s, rec[0], index))
         return;
     if (!AscMemoryBridge::Command73(s.table, s.count, rec, 0xC))
-        return;
-    s.cache.EvictIndex(s.count);
+        s.cache.Pin(s.count, PinnedCopy(SmallRecord{{rec[0], rec[1], rec[2]}}));
+    else
+        s.cache.EvictIndex(s.count);
     ++s.count;
     if (rec[0] < s.minId)
         s.minId = rec[0];
@@ -1136,6 +1242,19 @@ bool AscItemAddon::FetchInfo(const uint32_t* items, uint32_t n, std::unordered_m
         out.clear();
         return false;
     }
+    for (uint32_t item : unique)
+    {
+        uint32_t index = 0;
+        if (!PinnedIndex(g_itemAddon, 4, item, index))
+            continue;
+        const ItemAddonRecord* r = g_itemAddon.cache.Get(index);
+        records.erase(item);
+        Info& info = out[item];
+        info.name = r->name ? r->name : "";
+        info.description = r->description ? r->description : "";
+        info.quality = r->fields[0];
+        info.flags = r->fields[1];
+    }
     for (const auto& r : records)
     {
         Info& info = out[r.first];   // FUN_1020df00
@@ -1193,6 +1312,7 @@ std::vector<std::array<uint32_t, 3>> AscBridgeStore::SpellAffectsFor(uint32_t sp
         std::vector<uint32_t> hits;
         if (!AscMemoryBridge::Command6B(g_spellAffect.table, field, spell, hits))
             return out;
+        AdjustPinnedHits(g_spellAffect, field, spell, hits);
         indexes.insert(indexes.end(), hits.begin(), hits.end());
     }
     if (indexes.size() > 1)

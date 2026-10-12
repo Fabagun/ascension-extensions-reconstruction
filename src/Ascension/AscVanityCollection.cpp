@@ -289,7 +289,11 @@ namespace
         r.f[0x2B] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(strings[2].c_str()));
         if (!AscBridgeStore::PatchVanity(r))
             return;
-        Build();
+        // The original rebuilds unconditionally, but its patch never succeeds (MMgr64.exe refuses 0x73).
+        // Now that it does, a login stream of N rows would rebuild the 10k-item index N times; an index
+        // not built yet picks the patched rows up when it is first built (as 0x6F8 does).
+        if (g_built)
+            Build();
         AscRuntime::Signal("HOT_PATCH_VANITY_COLLECTION", "%u", r.f[1]);
     }
 
