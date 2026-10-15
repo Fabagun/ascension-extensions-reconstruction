@@ -14,4 +14,8 @@ namespace AscMysticEnchant
     bool Slotted(uint32_t spell);       // FUN_102E9680: in one of the slots (+0x0C)
     bool Collected(uint32_t spell);     // FUN_102E96B0: in the known collection (+0x00)
     bool Worldforged(uint32_t spell);   // the by-spell row's +0x1C (false without a row)
+
+    // The game-object-use detour's altar branch: FUN_102EA1A0 (the entry is a mystic altar) ->
+    // FUN_102EA2C0 (the altar is open, MYSTIC_ALTAR_USED).
+    void GameObjectUsed(uint32_t entry);
 }

@@ -2953,13 +2953,6 @@ namespace
         m.altarOpen = false;
         AscRuntime::Signal("MYSTIC_ALTAR_CLOSED");
     }
-    void OnGameObjectUse(void* object)   // 0x10A42DD0 -> FUN_102EA1A0 / FUN_102EA2C0
-    {
-        if (!IsAltar(EntryOf(static_cast<uint8_t*>(object))))
-            return;
-        M().altarOpen = true;
-        AscRuntime::Signal("MYSTIC_ALTAR_USED");
-    }
 
     void Init()   // the tail of FUN_102E9850
     {
@@ -2982,7 +2975,6 @@ namespace
         AscRuntime::OnEnterWorld(&OnEnterWorld);
         AscRuntime::OnGlueScreen(&OnGlueScreen);
         AscRuntime::OnAfter403340(&OnTick);
-        AscRuntime::OnGameObjectUse(&OnGameObjectUse);
     }
 
     const AscBindings::Binding kBindings[] = {
@@ -3064,5 +3056,12 @@ namespace AscMysticEnchant
     {
         Row r = BySpell(spell);
         return r && U32(r, 0x1C) != 0;
+    }
+    void GameObjectUsed(uint32_t entry)
+    {
+        if (!IsAltar(entry))
+            return;
+        M().altarOpen = true;
+        AscRuntime::Signal("MYSTIC_ALTAR_USED");
     }
 }
