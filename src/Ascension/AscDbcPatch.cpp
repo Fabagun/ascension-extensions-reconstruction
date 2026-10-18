@@ -5,6 +5,8 @@
 // struct's first dword as id is overwritten, or inserted (FUN_10133ac0). Pure patches come from
 // AscDbcPatch.generated.inc (tools/gen_dbc_patch.py); handlers with side effects register themselves
 // through AscDbcPatch::Register with a callback run after the row is stored.
+// AscDbcPatch::SetValidator (not in the original) lets a module refuse a row from its string fields before it
+// is stored; nothing registers one unless ASCENSION_HOT_PATCH is built (AscHotPatch, SMSG 0x5BC).
 #include <Ascension/AscDbcPatch.hpp>
 #include <Ascension/AscBindings.hpp>
 #include <Ascension/AscDbc.hpp>
@@ -37,6 +39,7 @@ namespace
     };
 
     std::map<uint32_t, Spec>& Specs() { static std::map<uint32_t, Spec> m; return m; }
+    std::map<uint32_t, Validator>& Validators() { static std::map<uint32_t, Validator> m; return m; }
 
     void __cdecl OnPatch(void*, uint32_t opcode, uint32_t, CDataStore* pkt)
     {
@@ -49,6 +52,7 @@ namespace
         std::vector<uint8_t> row(pkt->m_buffer + pkt->m_read, pkt->m_buffer + pkt->m_read + s.structSize);
         pkt->m_read += s.structSize;
         AscDbc::Table& t = AscDbc::Get(s.table);
+        std::map<uint32_t, std::string> strings;
         for (uint32_t f = 0; f < s.structSize / 4 && f < 64; ++f)
         {
             if (!(s.stringMask & (1ull << f)))
@@ -69,7 +73,14 @@ namespace
                 len = strnlen(str, static_cast<size_t>(pkt->m_size - pkt->m_read));
                 pkt->m_read += static_cast<int32_t>(len + 1);
             }
-            const uint32_t off = t.AddString(std::string(str, len).c_str());
+            strings[f] = std::string(str, len);
+        }
+        auto v = Validators().find(opcode);
+        if (v != Validators().end() && !v->second(opcode, strings))
+            return;
+        for (const auto& [f, text] : strings)
+        {
+            const uint32_t off = t.AddString(text.c_str());
             memcpy(&row[f * 4], &off, 4);
         }
         uint32_t id;
@@ -100,6 +111,11 @@ void RegisterSized(uint32_t opcode, const char* table, uint32_t structSize, uint
     Specs()[opcode] = Spec{table, structSize, stringMask, after, true};
     sDC.AddPacketHandler(opcode, CNetClientCustomPacket((void*)&OnPatch, nullptr));
 }
+}
+
+void AscDbcPatch::SetValidator(uint32_t opcode, Validator validate)
+{
+    Validators()[opcode] = validate;
 }
 
 void AscDbcPatch::RegisterInsertHook(uint32_t opcode, const char* table, uint32_t structSize, uint64_t stringMask, AfterPatch after)

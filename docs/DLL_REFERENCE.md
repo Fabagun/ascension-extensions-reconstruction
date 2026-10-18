@@ -58,7 +58,27 @@ who does want the original can go straight to it in the decompile.
 
 - **Logon protocol.** The genuine DLL hooks `0x8CCE00`, `0x9A83E0` and `0x9A88C0` to replace SRP6 with Ascension's
   own logon protocol. They are not installed by default, so the client authenticates with stock SRP6 against an AzerothCore
-  authserver (see `AscMain.cpp`, and `CLAUDE.md` G0-02).
+  authserver (see `AscMain.cpp`, and `CLAUDE.md` G0-02). A native reconstruction of that protocol is compiled in only
+  with `-DASCENSION_NATIVE_LOGON=ON` (`AscNativeLogon.cpp`, `docs/NATIVE-LOGON.md`).
+- **Tooltip line insertion.** After the world UI loads, `AscTooltipInsertFix` wraps Ascension's
+  `Tooltip:InsertLine` / `InsertLines` so lines past the tooltip's end are added instead of overwriting leftover
+  font strings (a keystone tooltip otherwise shows one Dungeon Modifier of several).
+- **Interface hot patches (build option, off by default).** Compiled in only with `-DASCENSION_HOT_PATCH=ON`
+  (`AscHotPatch`, see its module entry and the README). Not in the genuine DLL:
+  - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source
+    only (no ESC byte, `loadstring` or `string.dump`), 32 KB per patch and 128 KB per session, once per patch id and
+    content hash per Lua session, with no taint source when no addon is named or the named addon's taint at its
+    `ADDON_LOADED`.
+  - CMSG `0x8F1` announces the channel after every world entry (u32 protocol version 1, u8 mode); CMSG `0x8F2`
+    reports each patch's outcome (0 ran, 1 applied, 2 deferred, 3 skipped, 4 duplicate, 5 refused by the player,
+    6 refused by a guard, 7 error; sized detail).
+  - The player's choice (allowed by default; `/hotpatch off`, `/hotpatch ask` per realm, `/hotpatch on`) is kept
+    in `WTF\HotPatch.txt`; `/hotpatch` lists the session's patches. Lua: `C_HotPatch.GetMode`, `SetMode`,
+    `GetPatches`, `SetRealmConsent`, `OnAddonLoaded`.
+  - SMSG `0x5BC` (`ChallengeRequirementTypes`) rows are dropped unless every formatter is one `return <expression>`
+    over `value`, literals, operators and the seven functions the shipped table calls. This closes the route servers
+    used to smuggle Lua through a formatter. It uses `AscDbcPatch::SetValidator`, which is a no-op unless a module
+    registers a validator, so the default build patches rows exactly as the original.
 - **Anti-cheat.** It is loaded exactly as the original does (`DivxTac.dll` after world entry, plus the account
   kill switch). Nothing is added or removed.
 
@@ -77,7 +97,7 @@ who does want the original can go straight to it in the decompile.
   the global of the same name.
 
 
-**Totals:** 1346 Lua bindings, 533 server packets handled, 151 client packets sent, 266 events fired, 93 CVars registered, 347 client hooks, across 136 modules.
+**Totals:** 1351 Lua bindings, 534 server packets handled, 153 client packets sent, 267 events fired, 93 CVars registered, 347 client hooks, across 138 modules.
 
 ## Contents
 
@@ -1075,6 +1095,16 @@ Every native the DLL registers, by namespace. **State**: `glue` (login / realm /
 | `GetInsuranceTotalCost` | world | () | 1 | `0x10275670` | [AscHighRisk](#aschighrisk) |
 | `IsFelCommutationActive` | world | () | 1 | `0x102756B0` | [AscHighRisk](#aschighrisk) |
 | `ToggleFelCommutation` | world | (bool) | 0..1 | `0x102756D0` | [AscHighRisk](#aschighrisk) |
+
+### C_HotPatch
+
+| Name | State | Args | Returns | Original | Module |
+|---|---|---|---|---|---|
+| `GetMode` | world | () | 1 | — | [AscHotPatch](#aschotpatch) |
+| `GetPatches` | world | () | 1 | — | [AscHotPatch](#aschotpatch) |
+| `OnAddonLoaded` | world | (string) | 0 | — | [AscHotPatch](#aschotpatch) |
+| `SetMode` | world | (string) | 0 | — | [AscHotPatch](#aschotpatch) |
+| `SetRealmConsent` | world | (bool) | 0 | — | [AscHotPatch](#aschotpatch) |
 
 ### C_Item
 
@@ -2499,6 +2529,7 @@ Every server→client opcode the DLL handles (the stock client handles everythin
 | `0x77E` | SMSG_FELFORGED_RESET_PAYLOAD | [AscJson](#ascjson) |
 | `0x77F` | SMSG_CHARACTER_ADVANCEMENT_LOADOUT_ACTIVE_PAYLOAD | [AscJson](#ascjson) |
 | `0x780` | SMSG_CHARACTER_ADVANCEMENT_LOADOUT_OWNED_PAYLOAD | [AscJson](#ascjson) |
+| `0x8F0` | SMSG_HOT_PATCH (ours) | [AscHotPatch](#aschotpatch) |
 | `0x904` | SMSG_PACKET_BROADCAST | [AscEventPackets](#asceventpackets) |
 | `0x905` | SMSG_CUSTOM_ASCENSION_POINTS_UPDATE | [AscSeasonal](#ascseasonal) |
 | `0x906` | SMSG_CUSTOM_WINDOW_SET_VISIBILITY | [AscEventPackets](#asceventpackets) |
@@ -2837,6 +2868,8 @@ Every client→server opcode the DLL sends.
 | `0x778` | CMSG_CHARACTER_ADVANCEMENT_LOADOUT_ACTIVATE_REQUEST | [AscCAMgr](#asccamgr) |
 | `0x779` | CMSG_CHARACTER_ADVANCEMENT_LOADOUT_SET_NAME_REQUEST | [AscCAMgr](#asccamgr) |
 | `0x77A` | CMSG_CHARACTER_ADVANCEMENT_LOADOUT_SET_SORT_ORDER_REQUEST | [AscCAMgr](#asccamgr) |
+| `0x8F1` | CMSG_HOT_PATCH_CAPABILITY (ours) | [AscHotPatch](#aschotpatch) |
+| `0x8F2` | CMSG_HOT_PATCH_RESULT (ours) | [AscHotPatch](#aschotpatch) |
 | `0x9C6` | unknown | [AscMisc](#ascmisc) |
 | `0x9C7` | CMSG_MISSILE_FIRE_POSITION | [AscSpellVisuals](#ascspellvisuals) |
 
@@ -2958,6 +2991,7 @@ Every FrameXML event the DLL fires (register with `frame:RegisterEvent(name)`).
 | `EXTRA_ACTION_BUTTON_REMOVED` | [AscExtraActionButton](#ascextraactionbutton) |
 | `FLOAT_CONFIG_UPDATED` | [AscConfig](#ascconfig) |
 | `FRIEND_METADATA_CHANGED` | [AscFriendsMetadata](#ascfriendsmetadata) |
+| `GAMEOBJECT_USED` | [AscGameObjectUse](#ascgameobjectuse) |
 | `GAME_EVENT_ENDED` | [AscGameEvents](#ascgameevents) |
 | `GAME_EVENT_STARTED` | [AscGameEvents](#ascgameevents) |
 | `GET_ITEM_INFO_RECEIVED` | [AscItemStats](#ascitemstats) |
@@ -3549,7 +3583,7 @@ The MemoryBridge-backed DBC stores -- see AscBridgeStore.hpp. Run: the original 
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x634E00` | Detour | 915 |  |
+| `0x634E00` | Detour | 1020 |  |
 
 ### AscBugTracker
 
@@ -4909,6 +4943,14 @@ Game mode + per-specialization links -- the original's manager at 0x10be4138 (ac
 
 **Events fired:** `ASCENSION_CUSTOM_GAME_MODE_CHANGED`, `EQUIPMENT_SET_SPECIALIZATION_LINK_UPDATED`, `MYSTIC_ENCHANT_SPECIALIZATION_LINK_UPDATED`, `SPECIALIZATION_FLAGS_UPDATED`
 
+### AscGameObjectUse
+
+`src/Ascension/AscGameObjectUse.cpp`
+
+The original's detour 0x10A42DD0 over a game object's use (0x70F680): after the client function returns, the mystic-altar branch (FUN_102EA1A0 / FUN_102EA2C0), then GAMEOBJECT_USED("%u", entry) for every use. FrameXML's FelCommutationUtil toggles Fel Commutation from it (Enum.GameObject.FelCommutationPortal).
+
+**Events fired:** `GAMEOBJECT_USED`
+
 ### AscGeosets
 
 `src/Ascension/AscGeosets.cpp`
@@ -5470,6 +5512,30 @@ C_HighRisk (FUN_10275520 / handler_GetInsuranceCostPerSlot / handler_IsFelCommut
 | `0x73D` | SMSG_FEL_COMMUTATION_STATUS_UPDATE | `OnFelStatus` |  |
 
 **Client packets sent:** `0x73B` CMSG_TOGGLE_FEL_COMMUTATION_STATUS
+
+### AscHotPatch
+
+`src/Ascension/AscHotPatch.cpp`
+
+Interface hot patches: a supported channel for server-sent interface Lua, and the 0x5BC formatter check that closes the route servers used before it. Not in the genuine DLL; built only with ASCENSION_HOT_PATCH. Design and threat model: AscensionRebirth/HOT_PATCH_DESIGN.md. SMSG 0x8F0 HOT_PATCH: sized patchId, sized targetAddon, sized source (u32 length + bytes each). CMSG 0x8F1 capability, after every world entry: u32 protocol version, u8 mode (0 off, 1 ask, 2 allow). CMSG 0x8F2 result: sized patchId, u8 outcome (Outcome below), sized detail (at most 255 bytes). A patch is source only (no ESC byte, no `loadstring`, no `string.dump`), at most 32 KB, 128 KB per session. It runs once per Lua session per (patchId, content hash): the hash is kept in the Lua global AscHotPatchApplied, which a /reload or relog clears. An empty target runs at once with no taint source, the attribution the 0x5BC route measured on 2026-10-17 (issecurevariable of a pushed global: secure). A named target runs at that addon's ADDON_LOADED (or at once if loaded) with the addon's name as the taint source, so it gets exactly the trust SMSG 0x94E gave that addon. The chunk may return "applied" or "skipped: <reason>"; otherwise "ran" or "error". The player's choice is in WTF\HotPatch.txt: "mode=0\|1\|2" and one "realm=<name>=<0\|1>" line per answered realm. Without the file patches are allowed; /hotpatch off refuses them, /hotpatch ask asks once per realm, /hotpatch on allows them again. /hotpatch alone lists this session's patches. 0x5BC (ChallengeRequirementTypes): a formatter (fields 6-8) must be one `return <expression>` built from `value`, literals, operators and calls to the seven functions the shipped table uses. Anything else drops the row and the client keeps the one it had.
+
+**Lua API**
+
+| Binding | State | Args → returns | Original | Implementation | Notes |
+|---|---|---|---|---|---|
+| `C_HotPatch.SetRealmConsent` | world | (bool) → 0 | — | AscHotPatch.cpp:417 `SetRealmConsent` |  |
+| `C_HotPatch.OnAddonLoaded` | world | (string) → 0 | — | AscHotPatch.cpp:444 `OnAddonLoaded` |  |
+| `C_HotPatch.GetPatches` | world | () → 1 | — | AscHotPatch.cpp:461 `GetPatches` |  |
+| `C_HotPatch.GetMode` | world | () → 1 | — | AscHotPatch.cpp:485 `GetMode` |  |
+| `C_HotPatch.SetMode` | world | (string) → 0 | — | AscHotPatch.cpp:494 `SetMode` |  |
+
+**Server packets handled**
+
+| Opcode | Name | Handler | Notes |
+|---|---|---|---|
+| `0x8F0` | SMSG_HOT_PATCH (ours) | `OnHotPatch` |  |
+
+**Client packets sent:** `0x8F1` CMSG_HOT_PATCH_CAPABILITY (ours), `0x8F2` CMSG_HOT_PATCH_RESULT (ours)
 
 ### AscInitHooks
 
@@ -7317,15 +7383,15 @@ C_VanityCollection, part 1: the known-items set, purchases and the buff test. Ma
 | `C_VanityCollection.PurchaseWebShopItem` | both | (number) → 0..1 | `0x103312F0` | AscVanityCollection.cpp:93 `PurchaseWebShopItem` | sends `0x523` CMSG_CUSTOM_ASCENSION_POINT_SPEND_REQUEST |
 | `C_VanityCollection.RequestDelivery` | both | (number) → 0 | `0x103317C0` | AscVanityCollection.cpp:102 `RequestDelivery` | sends `0x523` CMSG_CUSTOM_ASCENSION_POINT_SPEND_REQUEST |
 | `C_VanityCollection.IsConsolidatedVanityBuff` | both | (number) → 0..1 | `0x10330F60` | AscVanityCollection.cpp:112 `IsConsolidatedVanityBuff` | FUN_10330f60: SpellCustomAttr +0x18 bit 5, and the spell's mechanic (+0xC) is not 21 (mount). |
-| `C_VanityCollection.QueryItems` | both | (string, number, number, number, number, number) → 0..1 | `0x10331420` | AscVanityCollection.cpp:485 `QueryItems` | FUN_10331420: ([text [, category [, filters [, sort [, offset [, count = 9]]]]]]) -> {total, items}; at most six arguments, nil ones default. |
-| `C_VanityCollection.GetAllItems` | both | () → 0 | `0x103309C0` | AscVanityCollection.cpp:532 `GetAllItems` |  |
-| `C_VanityCollection.GetItem` | both | (number) → 0..1 | `0x10330B40` | AscVanityCollection.cpp:539 `GetItem` |  |
-| `C_VanityCollection.GetItemByLearnedSpell` | both | (number) → 0..1 | `0x10330BB0` | AscVanityCollection.cpp:550 `GetItemByLearnedSpell` |  |
-| `C_VanityCollection.GetOwnerByContentItem` | both | (number) → 0..1 | `0x10330C50` | AscVanityCollection.cpp:564 `GetOwnerByContentItem` |  |
-| `C_VanityCollection.GetRandomItem` | both | () → 0..1 | `0x10330D00` | AscVanityCollection.cpp:579 `GetRandomItem` |  |
-| `C_VanityCollection.GetSeasonalShowcaseItems` | both | () → 0 | `0x10330D70` | AscVanityCollection.cpp:590 `GetSeasonalShowcaseItems` |  |
-| `C_VanityCollection.GetDPPrice` | both | (number) → 0..1 | `0x10330AB0` | AscVanityCollection.cpp:601 `GetDPPrice` |  |
-| `C_VanityCollection.GetVPPrice` | both | (number) → 0..1 | `0x10330E60` | AscVanityCollection.cpp:610 `GetVPPrice` |  |
+| `C_VanityCollection.QueryItems` | both | (string, number, number, number, number, number) → 0..1 | `0x10331420` | AscVanityCollection.cpp:489 `QueryItems` | FUN_10331420: ([text [, category [, filters [, sort [, offset [, count = 9]]]]]]) -> {total, items}; at most six arguments, nil ones default. |
+| `C_VanityCollection.GetAllItems` | both | () → 0 | `0x103309C0` | AscVanityCollection.cpp:536 `GetAllItems` |  |
+| `C_VanityCollection.GetItem` | both | (number) → 0..1 | `0x10330B40` | AscVanityCollection.cpp:543 `GetItem` |  |
+| `C_VanityCollection.GetItemByLearnedSpell` | both | (number) → 0..1 | `0x10330BB0` | AscVanityCollection.cpp:554 `GetItemByLearnedSpell` |  |
+| `C_VanityCollection.GetOwnerByContentItem` | both | (number) → 0..1 | `0x10330C50` | AscVanityCollection.cpp:568 `GetOwnerByContentItem` |  |
+| `C_VanityCollection.GetRandomItem` | both | () → 0..1 | `0x10330D00` | AscVanityCollection.cpp:583 `GetRandomItem` |  |
+| `C_VanityCollection.GetSeasonalShowcaseItems` | both | () → 0 | `0x10330D70` | AscVanityCollection.cpp:594 `GetSeasonalShowcaseItems` |  |
+| `C_VanityCollection.GetDPPrice` | both | (number) → 0..1 | `0x10330AB0` | AscVanityCollection.cpp:605 `GetDPPrice` |  |
+| `C_VanityCollection.GetVPPrice` | both | (number) → 0..1 | `0x10330E60` | AscVanityCollection.cpp:614 `GetVPPrice` |  |
 
 **Server packets handled**
 

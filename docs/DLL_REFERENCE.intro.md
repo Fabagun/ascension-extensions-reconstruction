@@ -54,7 +54,27 @@ who does want the original can go straight to it in the decompile.
 
 - **Logon protocol.** The genuine DLL hooks `0x8CCE00`, `0x9A83E0` and `0x9A88C0` to replace SRP6 with Ascension's
   own logon protocol. They are not installed by default, so the client authenticates with stock SRP6 against an AzerothCore
-  authserver (see `AscMain.cpp`, and `CLAUDE.md` G0-02).
+  authserver (see `AscMain.cpp`, and `CLAUDE.md` G0-02). A native reconstruction of that protocol is compiled in only
+  with `-DASCENSION_NATIVE_LOGON=ON` (`AscNativeLogon.cpp`, `docs/NATIVE-LOGON.md`).
+- **Tooltip line insertion.** After the world UI loads, `AscTooltipInsertFix` wraps Ascension's
+  `Tooltip:InsertLine` / `InsertLines` so lines past the tooltip's end are added instead of overwriting leftover
+  font strings (a keystone tooltip otherwise shows one Dungeon Modifier of several).
+- **Interface hot patches (build option, off by default).** Compiled in only with `-DASCENSION_HOT_PATCH=ON`
+  (`AscHotPatch`, see its module entry and the README). Not in the genuine DLL:
+  - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source
+    only (no ESC byte, `loadstring` or `string.dump`), 32 KB per patch and 128 KB per session, once per patch id and
+    content hash per Lua session, with no taint source when no addon is named or the named addon's taint at its
+    `ADDON_LOADED`.
+  - CMSG `0x8F1` announces the channel after every world entry (u32 protocol version 1, u8 mode); CMSG `0x8F2`
+    reports each patch's outcome (0 ran, 1 applied, 2 deferred, 3 skipped, 4 duplicate, 5 refused by the player,
+    6 refused by a guard, 7 error; sized detail).
+  - The player's choice (allowed by default; `/hotpatch off`, `/hotpatch ask` per realm, `/hotpatch on`) is kept
+    in `WTF\HotPatch.txt`; `/hotpatch` lists the session's patches. Lua: `C_HotPatch.GetMode`, `SetMode`,
+    `GetPatches`, `SetRealmConsent`, `OnAddonLoaded`.
+  - SMSG `0x5BC` (`ChallengeRequirementTypes`) rows are dropped unless every formatter is one `return <expression>`
+    over `value`, literals, operators and the seven functions the shipped table calls. This closes the route servers
+    used to smuggle Lua through a formatter. It uses `AscDbcPatch::SetValidator`, which is a no-op unless a module
+    registers a validator, so the default build patches rows exactly as the original.
 - **Anti-cheat.** It is loaded exactly as the original does (`DivxTac.dll` after world entry, plus the account
   kill switch). Nothing is added or removed.
 

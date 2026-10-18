@@ -42,6 +42,13 @@ option(GLUEMGREXTENSION "Glue-stage Lua function registration" ON)
 option(ASCENSION_NATIVE_LOGON "Install the reconstructed Ascension native logon hooks (server must speak the protocol)" OFF)
 set(ASCENSION_NATIVE_LOGON_SERVER_KEY "1a03d4c71f289f39046fad519f8af3e92b793709a8a340e492b4ff5ff55e1537" CACHE STRING "Server X25519 public key (hex, 64 chars) used by ASCENSION_NATIVE_LOGON")
 
+# --- Interface hot patches (our addition; not in the original) ---------------------------------------
+# SMSG 0x8F0 HOT_PATCH with its guards and per-realm consent, the 0x8F1/0x8F2 capability and result
+# packets, and the SMSG 0x5BC formatter check that refuses Lua smuggled through ChallengeRequirementTypes.
+# OFF by default: the exact reconstruction has none of it. See src/Ascension/AscHotPatch.cpp and
+# AscensionRebirth/HOT_PATCH_DESIGN.md.
+option(ASCENSION_HOT_PATCH "Interface hot-patch channel and the 0x5BC formatter check (not in the original)" OFF)
+
 set(UP ${CMAKE_CURRENT_SOURCE_DIR}/WotLKExtensions)
 configure_file(${UP}/cmake/PatchConfig.hpp.in ${CMAKE_BINARY_DIR}/gen/PatchConfig.hpp)
 
