@@ -88,6 +88,7 @@ Each patch:
 
 - must be source (no ESC byte, no `loadstring`, no `string.dump`), at most 32 KB, 128 KB per session;
 - runs once per patch id and content hash per Lua session (a relog or `/reload` clears it);
+- is kept until the next glue screen and runs again after a `/reload`, because the server sends patches only at login;
 - runs at once with no taint source when it names no addon, or at that addon's `ADDON_LOADED` with the addon's
   taint (so it gets exactly the trust SMSG `0x94E` gave the addon) when it names one;
 - may return `"applied"` or `"skipped: <reason>"`; the outcome goes back to the server as CMSG `0x8F2`.

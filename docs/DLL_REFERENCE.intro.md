@@ -64,7 +64,7 @@ who does want the original can go straight to it in the decompile.
   - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source
     only (no ESC byte, `loadstring` or `string.dump`), 32 KB per patch and 128 KB per session, once per patch id and
     content hash per Lua session, with no taint source when no addon is named or the named addon's taint at its
-    `ADDON_LOADED`.
+    `ADDON_LOADED`. Patches are kept until the next glue screen and run again after a `/reload`.
   - CMSG `0x8F1` announces the channel after every world entry (u32 protocol version 1, u8 mode); CMSG `0x8F2`
     reports each patch's outcome (0 ran, 1 applied, 2 deferred, 3 skipped, 4 duplicate, 5 refused by the player,
     6 refused by a guard, 7 error; sized detail).

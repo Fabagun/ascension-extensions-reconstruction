@@ -8,7 +8,9 @@
 //
 // A patch is source only (no ESC byte, no `loadstring`, no `string.dump`), at most 32 KB, 128 KB per
 // session. It runs once per Lua session per (patchId, content hash): the hash is kept in the Lua global
-// AscHotPatchApplied, which a /reload or relog clears. An empty target runs at once with no taint source,
+// AscHotPatchApplied, which a /reload or relog clears. The server sends patches only at login, so the DLL keeps
+// every patch that passed the guards until the next glue screen and runs them again in each new world Lua
+// state (/reload): consent and the run-once record are checked afresh. An empty target runs at once with no taint source,
 // the attribution the 0x5BC route measured on 2026-10-17 (issecurevariable of a pushed global: secure). A
 // named target runs at that addon's ADDON_LOADED (or at once if loaded) with the addon's name as the taint
 // source, so it gets exactly the trust SMSG 0x94E gave that addon. The chunk may return "applied" or
@@ -77,6 +79,7 @@ namespace
     std::vector<Record> g_records;
     std::deque<Patch> g_awaitingConsent;
     std::vector<Patch> g_awaitingAddon;
+    std::vector<Patch> g_received;   // this connection's patches, latest per id, replayed after a /reload
     size_t g_sessionBytes = 0;
     bool g_promptShown = false;
 
@@ -357,6 +360,24 @@ end
         AscLua::lua_settop(L, top);
     }
 
+    // The latest copy of each patch id, within the session limit, so a new Lua state can run them again.
+    void Remember(const Patch& p)
+    {
+        size_t bytes = p.source.size();
+        Patch* same = nullptr;
+        for (Patch& r : g_received)
+            if (r.id == p.id)
+                same = &r;
+            else
+                bytes += r.source.size();
+        if (bytes > kMaxSession)
+            return;
+        if (same)
+            *same = p;
+        else
+            g_received.push_back(p);
+    }
+
     void Handle(Patch p)
     {
         std::string reason;
@@ -365,6 +386,7 @@ end
             Report(p, RefusedGuard, reason);
             return;
         }
+        Remember(p);
         const Settings s = LoadSettings();
         if (s.mode == Off)
         {
@@ -543,7 +565,8 @@ end
 
     void OnEnteredWorld()
     {
-        if (NewLuaSession())
+        const bool fresh = NewLuaSession();
+        if (fresh)
         {
             g_awaitingConsent.clear();
             g_awaitingAddon.clear();
@@ -552,7 +575,16 @@ end
         }
         AscLua::Execute(kWorldLua, "AscHotPatch", nullptr);
         SendCapability();
+        if (fresh)
+        {
+            const std::vector<Patch> replay = g_received;
+            for (const Patch& p : replay)
+                Handle(p);
+        }
     }
+
+    // Leaving the world for the glue screen ends the connection's patches; the next login gets its own.
+    void OnGlueScreen() { g_received.clear(); }
 
 
     bool FormatterAllowed(const std::string& text, std::string& reason)
@@ -696,6 +728,7 @@ end
         sDC.AddPacketHandler(0x8F0, CNetClientCustomPacket((void*)&OnHotPatch, nullptr));
         AscDbcPatch::SetValidator(0x5BC, &ValidateRequirementType);
         AscRuntime::OnAfterEnterWorld(&OnEnteredWorld);
+        AscRuntime::OnGlueScreen(&OnGlueScreen);
     }
 
     const AscBindings::Binding kBindings[] = {

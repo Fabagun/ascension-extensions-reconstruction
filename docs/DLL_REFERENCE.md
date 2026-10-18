@@ -68,7 +68,7 @@ who does want the original can go straight to it in the decompile.
   - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source
     only (no ESC byte, `loadstring` or `string.dump`), 32 KB per patch and 128 KB per session, once per patch id and
     content hash per Lua session, with no taint source when no addon is named or the named addon's taint at its
-    `ADDON_LOADED`.
+    `ADDON_LOADED`. Patches are kept until the next glue screen and run again after a `/reload`.
   - CMSG `0x8F1` announces the channel after every world entry (u32 protocol version 1, u8 mode); CMSG `0x8F2`
     reports each patch's outcome (0 ran, 1 applied, 2 deferred, 3 skipped, 4 duplicate, 5 refused by the player,
     6 refused by a guard, 7 error; sized detail).
@@ -5517,17 +5517,17 @@ C_HighRisk (FUN_10275520 / handler_GetInsuranceCostPerSlot / handler_IsFelCommut
 
 `src/Ascension/AscHotPatch.cpp`
 
-Interface hot patches: a supported channel for server-sent interface Lua, and the 0x5BC formatter check that closes the route servers used before it. Not in the genuine DLL; built only with ASCENSION_HOT_PATCH. Design and threat model: AscensionRebirth/HOT_PATCH_DESIGN.md. SMSG 0x8F0 HOT_PATCH: sized patchId, sized targetAddon, sized source (u32 length + bytes each). CMSG 0x8F1 capability, after every world entry: u32 protocol version, u8 mode (0 off, 1 ask, 2 allow). CMSG 0x8F2 result: sized patchId, u8 outcome (Outcome below), sized detail (at most 255 bytes). A patch is source only (no ESC byte, no `loadstring`, no `string.dump`), at most 32 KB, 128 KB per session. It runs once per Lua session per (patchId, content hash): the hash is kept in the Lua global AscHotPatchApplied, which a /reload or relog clears. An empty target runs at once with no taint source, the attribution the 0x5BC route measured on 2026-10-17 (issecurevariable of a pushed global: secure). A named target runs at that addon's ADDON_LOADED (or at once if loaded) with the addon's name as the taint source, so it gets exactly the trust SMSG 0x94E gave that addon. The chunk may return "applied" or "skipped: <reason>"; otherwise "ran" or "error". The player's choice is in WTF\HotPatch.txt: "mode=0\|1\|2" and one "realm=<name>=<0\|1>" line per answered realm. Without the file patches are allowed; /hotpatch off refuses them, /hotpatch ask asks once per realm, /hotpatch on allows them again. /hotpatch alone lists this session's patches. 0x5BC (ChallengeRequirementTypes): a formatter (fields 6-8) must be one `return <expression>` built from `value`, literals, operators and calls to the seven functions the shipped table uses. Anything else drops the row and the client keeps the one it had.
+Interface hot patches: a supported channel for server-sent interface Lua, and the 0x5BC formatter check that closes the route servers used before it. Not in the genuine DLL; built only with ASCENSION_HOT_PATCH. Design and threat model: AscensionRebirth/HOT_PATCH_DESIGN.md. SMSG 0x8F0 HOT_PATCH: sized patchId, sized targetAddon, sized source (u32 length + bytes each). CMSG 0x8F1 capability, after every world entry: u32 protocol version, u8 mode (0 off, 1 ask, 2 allow). CMSG 0x8F2 result: sized patchId, u8 outcome (Outcome below), sized detail (at most 255 bytes). A patch is source only (no ESC byte, no `loadstring`, no `string.dump`), at most 32 KB, 128 KB per session. It runs once per Lua session per (patchId, content hash): the hash is kept in the Lua global AscHotPatchApplied, which a /reload or relog clears. The server sends patches only at login, so the DLL keeps every patch that passed the guards until the next glue screen and runs them again in each new world Lua state (/reload): consent and the run-once record are checked afresh. An empty target runs at once with no taint source, the attribution the 0x5BC route measured on 2026-10-17 (issecurevariable of a pushed global: secure). A named target runs at that addon's ADDON_LOADED (or at once if loaded) with the addon's name as the taint source, so it gets exactly the trust SMSG 0x94E gave that addon. The chunk may return "applied" or "skipped: <reason>"; otherwise "ran" or "error". The player's choice is in WTF\HotPatch.txt: "mode=0\|1\|2" and one "realm=<name>=<0\|1>" line per answered realm. Without the file patches are allowed; /hotpatch off refuses them, /hotpatch ask asks once per realm, /hotpatch on allows them again. /hotpatch alone lists this session's patches. 0x5BC (ChallengeRequirementTypes): a formatte…
 
 **Lua API**
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `C_HotPatch.SetRealmConsent` | world | (bool) → 0 | — | AscHotPatch.cpp:417 `SetRealmConsent` |  |
-| `C_HotPatch.OnAddonLoaded` | world | (string) → 0 | — | AscHotPatch.cpp:444 `OnAddonLoaded` |  |
-| `C_HotPatch.GetPatches` | world | () → 1 | — | AscHotPatch.cpp:461 `GetPatches` |  |
-| `C_HotPatch.GetMode` | world | () → 1 | — | AscHotPatch.cpp:485 `GetMode` |  |
-| `C_HotPatch.SetMode` | world | (string) → 0 | — | AscHotPatch.cpp:494 `SetMode` |  |
+| `C_HotPatch.SetRealmConsent` | world | (bool) → 0 | — | AscHotPatch.cpp:439 `SetRealmConsent` |  |
+| `C_HotPatch.OnAddonLoaded` | world | (string) → 0 | — | AscHotPatch.cpp:466 `OnAddonLoaded` |  |
+| `C_HotPatch.GetPatches` | world | () → 1 | — | AscHotPatch.cpp:483 `GetPatches` |  |
+| `C_HotPatch.GetMode` | world | () → 1 | — | AscHotPatch.cpp:507 `GetMode` |  |
+| `C_HotPatch.SetMode` | world | (string) → 0 | — | AscHotPatch.cpp:516 `SetMode` |  |
 
 **Server packets handled**
 
