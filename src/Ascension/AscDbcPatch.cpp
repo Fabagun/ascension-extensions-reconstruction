@@ -5,6 +5,8 @@
 // struct's first dword as id is overwritten, or inserted (FUN_10133ac0). Pure patches come from
 // AscDbcPatch.generated.inc (tools/gen_dbc_patch.py); handlers with side effects register themselves
 // through AscDbcPatch::Register with a callback run after the row is stored.
+// AscDbcPatch::SetValidator (not in the original) lets a module refuse a row from its string fields before it
+// is stored; nothing registers one unless ASCENSION_HOT_PATCH is built (AscHotPatch, SMSG 0x5BC).
 #include <Ascension/AscDbcPatch.hpp>
 #include <Ascension/AscBindings.hpp>
 #include <Ascension/AscDbc.hpp>

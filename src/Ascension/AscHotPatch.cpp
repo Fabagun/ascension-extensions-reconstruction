@@ -45,9 +45,6 @@ using namespace AscScript;
 
 namespace
 {
-    constexpr uint32_t kSmsgHotPatch = 0x8F0;
-    constexpr uint32_t kCmsgCapability = 0x8F1;
-    constexpr uint32_t kCmsgResult = 0x8F2;
     constexpr uint32_t kProtocolVersion = 1;
     constexpr size_t kMaxPatch = 32 * 1024;
     constexpr size_t kMaxSession = 128 * 1024;
@@ -98,7 +95,6 @@ namespace
         return buf;
     }
 
-    // --- Settings file ------------------------------------------------------------------------------------
 
     struct Settings
     {
@@ -145,7 +141,6 @@ namespace
         fclose(f);
     }
 
-    // --- Lua helpers ---------------------------------------------------------------------------------------
 
     typedef int (__cdecl* LoadBuffer_t)(lua_State*, const char*, size_t, const char*);
     typedef int (__cdecl* PCall_t)(lua_State*, int, int, int);
@@ -229,7 +224,6 @@ namespace
         AscLua::lua_settop(L, top);
     }
 
-    // --- Reporting -----------------------------------------------------------------------------------------
 
     void PutSized(Packet& packet, const std::string& s)
     {
@@ -246,14 +240,13 @@ namespace
             p.target.empty() ? "-" : p.target.c_str(), static_cast<unsigned>(p.source.size()), HexHash(p.hash).c_str(),
             kOutcomeNames[outcome], detail.empty() ? "" : " ", detail.c_str());
         g_records.push_back(Record{p.id, p.target, detail, p.source.size(), p.hash, outcome});
-        Packet packet(kCmsgResult);
+        Packet packet(0x8F2);
         PutSized(packet, p.id);
         packet.U8(outcome);
         PutSized(packet, detail);
         packet.Send();
     }
 
-    // --- Guards --------------------------------------------------------------------------------------------
 
     bool Guard(const Patch& p, std::string& reason)
     {
@@ -272,7 +265,6 @@ namespace
         return reason.empty();
     }
 
-    // --- Running -------------------------------------------------------------------------------------------
 
     void Run(const Patch& p)
     {
@@ -416,14 +408,13 @@ end
         Patch p;
         if (!sized(p.id) || !sized(p.target) || !sized(p.source))
         {
-            AscLog::Printf("hot patch: malformed SMSG 0x%X", kSmsgHotPatch);
+            AscLog::Printf("hot patch: malformed SMSG 0x8F0");
             return;
         }
         p.hash = Hash(p.source);
         Handle(std::move(p));
     }
 
-    // --- Lua surface ---------------------------------------------------------------------------------------
 
     int SetRealmConsent(lua_State* L)
     {
@@ -534,7 +525,7 @@ end
 
     void SendCapability()
     {
-        Packet packet(kCmsgCapability);
+        Packet packet(0x8F1);
         packet.U32(kProtocolVersion);
         packet.U8(LoadSettings().mode);
         packet.Send();
@@ -563,7 +554,6 @@ end
         SendCapability();
     }
 
-    // --- 0x5BC formatter check -----------------------------------------------------------------------------
 
     bool FormatterAllowed(const std::string& text, std::string& reason)
     {
@@ -703,7 +693,7 @@ end
 
     void Init()
     {
-        sDC.AddPacketHandler(kSmsgHotPatch, CNetClientCustomPacket((void*)&OnHotPatch, nullptr));
+        sDC.AddPacketHandler(0x8F0, CNetClientCustomPacket((void*)&OnHotPatch, nullptr));
         AscDbcPatch::SetValidator(0x5BC, &ValidateRequirementType);
         AscRuntime::OnAfterEnterWorld(&OnEnteredWorld);
     }
