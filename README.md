@@ -38,6 +38,10 @@ packets and fires events.
   tooltip, so a keystone tooltip shows one Dungeon Modifier of several. After the world UI loads, the DLL wraps
   both methods so that lines past the tooltip's end are added instead (`src/Ascension/AscTooltipInsertFix.cpp`).
   `patch-B` itself is unchanged.
+- **Interface hot patches.** Not in the genuine DLL. Compiled in only with `-DASCENSION_HOT_PATCH=ON` (see below):
+  a supported channel for server-sent interface Lua (SMSG `0x8F0`, with the capability and result packets
+  CMSG `0x8F1` / `0x8F2`), and a check that refuses SMSG `0x5BC` challenge requirement-type rows whose formatters
+  carry anything but a display expression. See `src/Ascension/AscHotPatch.cpp`.
 
 The portable regression in `tests/native_ca_packets.py` compiles the production native packet handlers
 against client API doubles. It covers initial state, listener timing, subsequent updates, new preset slots
@@ -69,6 +73,33 @@ cmake --build build
 
 The output is `build\Extensions.dll`. Place it next to `Ascension.exe`, which loads it itself (there is no
 injector).
+
+### Optional: interface hot-patch build
+
+```bat
+cmake -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DASCENSION_HOT_PATCH=ON -S . -B build\hp
+cmake --build build\hp
+```
+
+This compiles in `src/Ascension/AscHotPatch.cpp`. After every world entry the DLL announces CMSG `0x8F1`
+(u32 protocol version 1, u8 mode), so a server that understands it sends interface Lua as SMSG `0x8F0` (sized patch
+id, sized target addon, sized Lua; u32 length + bytes each) instead of smuggling it through a challenge formatter.
+Each patch:
+
+- must be source (no ESC byte, no `loadstring`, no `string.dump`), at most 32 KB, 128 KB per session;
+- runs once per patch id and content hash per Lua session (a relog or `/reload` clears it);
+- runs at once with no taint source when it names no addon, or at that addon's `ADDON_LOADED` with the addon's
+  taint (so it gets exactly the trust SMSG `0x94E` gave the addon) when it names one;
+- may return `"applied"` or `"skipped: <reason>"`; the outcome goes back to the server as CMSG `0x8F2`.
+
+Patches are allowed by default. `/hotpatch off` refuses them, `/hotpatch ask` asks once per realm,
+`/hotpatch on` allows them again, and `/hotpatch` alone lists this session's patches. The choice is kept in
+`WTF\HotPatch.txt`.
+
+The build also drops any SMSG `0x5BC` (`ChallengeRequirementTypes`) row whose formatter is not a single
+`return <expression>` over `value`, literals, operators and the seven functions the shipped table calls.
+`tests/hot_patch_formatter.py` checks that every shipped formatter passes and that smuggling shapes are refused
+(run it from an x86 developer prompt, or set `CXX`).
 
 ### Optional: native logon build (test against an Ascension-protocol server)
 
