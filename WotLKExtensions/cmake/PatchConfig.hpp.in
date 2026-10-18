@@ -31,3 +31,4 @@
 // Ascension native logon (see src/Ascension/AscNativeLogon.cpp)
 #cmakedefine01 ASCENSION_NATIVE_LOGON
 #cmakedefine ASCENSION_NATIVE_LOGON_SERVER_KEY "@ASCENSION_NATIVE_LOGON_SERVER_KEY@"
+#cmakedefine01 ASCENSION_HOT_PATCH
