@@ -15,7 +15,8 @@
 // "skipped: <reason>"; otherwise "ran" or "error".
 //
 // The player's choice is in WTF\HotPatch.txt: "mode=0|1|2" and one "realm=<name>=<0|1>" line per answered
-// realm. /hotpatch lists this session's patches; /hotpatch on|ask|off sets the mode.
+// realm. Without the file patches are allowed; /hotpatch off refuses them, /hotpatch ask asks once per realm,
+// /hotpatch on allows them again. /hotpatch alone lists this session's patches.
 //
 // 0x5BC (ChallengeRequirementTypes): a formatter (fields 6-8) must be one `return <expression>` built from
 // `value`, literals, operators and calls to the seven functions the shipped table uses. Anything else drops
@@ -101,7 +102,7 @@ namespace
 
     struct Settings
     {
-        Mode mode = Ask;
+        Mode mode = Allow;
         std::vector<std::pair<std::string, bool>> realms;
     };
 
