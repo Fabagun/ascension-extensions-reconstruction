@@ -56,6 +56,7 @@ namespace AscBridgeStore
     uint32_t VanityCount();
     // FUN_1032ec60's store part (SMSG 0x573): string fields are C strings on input.
     bool PatchVanity(const VanityRecord& r);
+    std::vector<bool> PatchVanityBatch(const std::vector<VanityRecord>& rows);   // not in the original: whether each row was patched
     bool VanityRecords(const uint32_t* indexes, uint32_t n, std::vector<VanityEntry>& out);   // FUN_1032dc10
     const VanityRecord* VanityAt(uint32_t index, uint32_t itemId);                          // FUN_1032e090
 

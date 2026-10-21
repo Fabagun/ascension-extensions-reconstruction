@@ -1332,6 +1332,71 @@ bool AscBridgeStore::PatchVanity(const VanityRecord& r)
     return PatchRecord(g_vanity, found ? &existing : nullptr, r);
 }
 
+// Not in the original: one frame's 0x573s together. Until MMgr64.exe refuses a vanity 0x73 each goes
+// through PatchVanity; after that, one 0x6D on the id field finds the rows of the ids not cached yet and
+// every record is pinned at its row, or appended, with no further bridge traffic.
+std::vector<bool> AscBridgeStore::PatchVanityBatch(const std::vector<VanityRecord>& rows)
+{
+    Store<VanityRecord>& s = g_vanity;
+    std::vector<bool> patched(rows.size(), false);
+    size_t next = 0;
+    for (; next < rows.size() && !s.patchRefused; ++next)
+        patched[next] = PatchVanity(rows[next]);
+    if (next == rows.size() || !s.table)
+        return patched;
+
+    std::unordered_map<uint32_t, uint32_t> rowOf;
+    std::vector<uint32_t> unknown;
+    for (size_t i = next; i < rows.size(); ++i)
+    {
+        const uint32_t id = RecordId(rows[i]);
+        uint32_t index = 0;
+        if (rowOf.count(id))
+            continue;
+        if (s.cache.IndexedAt(0, id, index) || PinnedIndex(s, 0, id, index))
+            rowOf[id] = index;
+        else
+        {
+            rowOf[id] = ~0u;
+            unknown.push_back(id);
+        }
+    }
+    if (!unknown.empty())
+    {
+        std::vector<uint8_t> reply;
+        if (!AscMemoryBridge::Command6D(s.table, 0, unknown, reply, std::vector<uint32_t>()))
+            return patched;
+        size_t pos = 0;
+        const uint32_t n = GetU32(reply, pos);
+        for (uint32_t i = 0; i < n; ++i)
+        {
+            const uint32_t id = GetU32(reply, pos);
+            if (!GetU8(reply, pos))
+                continue;
+            const uint32_t index = GetU32(reply, pos);
+            if (index >= s.count || reply.size() < pos + sizeof(VanityRecord))
+                return patched;
+            pos += sizeof(VanityRecord);
+            rowOf[id] = index;
+        }
+    }
+
+    for (size_t i = next; i < rows.size(); ++i)
+    {
+        const uint32_t id = RecordId(rows[i]);
+        uint32_t& index = rowOf[id];
+        if (index == ~0u)
+            index = s.count++;
+        s.cache.Pin(index, PinnedCopy(rows[i]));
+        if (id < s.minId)
+            s.minId = id;
+        if (id > s.maxId)
+            s.maxId = id;
+        patched[i] = true;
+    }
+    return patched;
+}
+
 // FUN_103234d0: FUN_103238b0 (0x6B on each field of FUN_102158d0's list {4} for `spell`, sorted and
 // unique when there is more than one), FUN_10325c20 (0x6F for the uncached ones), then FUN_10324420
 // per index (the cache, counted as a hit or a miss). Empty on any failure or without a table.

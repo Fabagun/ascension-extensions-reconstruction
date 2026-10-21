@@ -289,13 +289,23 @@ namespace
         p->m_read += static_cast<int32_t>(s.size() + 1);
         return s;
     }
+    // Not in the original: the 0x573s of one frame wait here and are patched together (FlushPatches) after
+    // 0x403340 or before the item index is next read, so a login stream of 10k rows costs one bridge query
+    // per frame instead of several per row.
+    struct PendingPatch
+    {
+        AscBridgeStore::VanityRecord record = {};
+        std::string strings[3];
+    };
+    std::vector<PendingPatch> g_pending;
+
     void __cdecl OnPatchVanity(void*, uint32_t, uint32_t, CDataStore* p)
     {
-        AscBridgeStore::VanityRecord r = {};
-        std::string strings[3];
+        PendingPatch& patch = g_pending.emplace_back();
+        AscBridgeStore::VanityRecord& r = patch.record;
         for (uint32_t i = 0; i < 3; ++i)
             r.f[i] = U32(p);
-        strings[0] = CStr(p);
+        patch.strings[0] = CStr(p);
         for (uint32_t i = 4; i <= 0xC; ++i)
             r.f[i] = U32(p);
         r.f[0xD] = U32(p);
@@ -304,27 +314,48 @@ namespace
             r.f[i] = U32(p);
         for (uint32_t i = 0x12; i <= 0x29; ++i)
             r.f[i] = U32(p);
-        strings[1] = CStr(p);
-        strings[2] = CStr(p);
+        patch.strings[1] = CStr(p);
+        patch.strings[2] = CStr(p);
         r.f[0x2C] = U32(p);
         for (uint32_t i = 0; i < 3; ++i)
             CStr(p);
-        r.f[3] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(strings[0].c_str()));
-        r.f[0x2A] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(strings[1].c_str()));
-        r.f[0x2B] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(strings[2].c_str()));
-        if (!AscBridgeStore::PatchVanity(r))
+    }
+
+    void FlushPatches()
+    {
+        if (g_pending.empty())
             return;
-        // The original rebuilds unconditionally, but its patch never succeeds (MMgr64.exe refuses 0x73).
-        // Now that it does, a login stream of N rows would rebuild the 10k-item index N times, which froze
-        // the client when every row carried a price; the built index takes the row in place instead, and an
-        // index not built yet picks the patched rows up when it is first built (as 0x6F8 does).
-        if (g_built)
-            Refresh(&r);
-        AscRuntime::Signal("HOT_PATCH_VANITY_COLLECTION", "%u", r.f[1]);
+        std::vector<PendingPatch> pending;
+        pending.swap(g_pending);
+        std::vector<AscBridgeStore::VanityRecord> rows;
+        rows.reserve(pending.size());
+        for (PendingPatch& patch : pending)
+        {
+            AscBridgeStore::VanityRecord r = patch.record;
+            r.f[3] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(patch.strings[0].c_str()));
+            r.f[0x2A] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(patch.strings[1].c_str()));
+            r.f[0x2B] = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(patch.strings[2].c_str()));
+            rows.push_back(r);
+        }
+        const std::vector<bool> patched = AscBridgeStore::PatchVanityBatch(rows);
+        for (size_t i = 0; i < rows.size(); ++i)
+        {
+            if (!patched[i])
+                continue;
+            // The original rebuilds unconditionally, but its patch never succeeds (MMgr64.exe refuses 0x73).
+            // Now that it does, a login stream of N rows would rebuild the 10k-item index N times, which
+            // froze the client when every row carried a price; the built index takes the row in place
+            // instead, and an index not built yet picks the patched rows up when it is first built (as
+            // 0x6F8 does).
+            if (g_built)
+                Refresh(&rows[i]);
+            AscRuntime::Signal("HOT_PATCH_VANITY_COLLECTION", "%u", rows[i].f[1]);
+        }
     }
 
     std::vector<Item*>& Items()
     {
+        FlushPatches();
         if (!g_built)
             Build();
         return g_itemList;
@@ -654,6 +685,7 @@ namespace
         sDC.AddPacketHandler(0x6F9, CNetClientCustomPacket((void*)&OnRemove, nullptr));
         sDC.AddPacketHandler(0x9D0, CNetClientCustomPacket((void*)&OnCustomizationUnlocks, nullptr));
         sDC.AddPacketHandler(0x573, CNetClientCustomPacket((void*)&OnPatchVanity, nullptr));
+        AscRuntime::OnAfter403340(&FlushPatches);
     }
 
     const AscBindings::Binding kBindings[] = {
