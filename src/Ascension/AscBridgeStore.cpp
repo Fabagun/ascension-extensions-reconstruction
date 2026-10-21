@@ -231,6 +231,16 @@ namespace
             }
         }
 
+        // Not in the original: the record index a live key maps to, without touching the statistics.
+        bool IndexedAt(uint32_t field, uint32_t key, uint32_t& index) const
+        {
+            auto it = m_index.find(IndexKey(field, key));
+            if (it == m_index.end() || (m_records.find(it->second.index) == m_records.end() && !IsPinned(it->second.index)))
+                return false;
+            index = it->second.index;
+            return true;
+        }
+
         // The index probe at the top of FUN_100b8cc0 / FUN_101d0bd0: a live hit counts as an index hit, a
         // stale key is dropped (FUN_100c2780), and anything else counts as an index miss.
         Record* FindIndexed(uint32_t field, uint32_t key)
@@ -265,9 +275,19 @@ namespace
         {
             EvictIndex(index);
             m_pinned[index] = record;
+            m_pinnedIds[RecordId(*record)] = index;
         }
 
         bool IsPinned(uint32_t index) const { return m_pinned.find(index) != m_pinned.end(); }
+
+        bool PinnedId(uint32_t id, uint32_t& index) const
+        {
+            auto it = m_pinnedIds.find(id);
+            if (it == m_pinnedIds.end())
+                return false;
+            index = it->second;
+            return true;
+        }
 
         template <class Fn> void ForEachPinned(Fn fn) const
         {
@@ -311,6 +331,9 @@ namespace
             auto it = m_pinned.find(index);
             if (it == m_pinned.end())
                 return;
+            auto id = m_pinnedIds.find(RecordId(*it->second));
+            if (id != m_pinnedIds.end() && id->second == index)
+                m_pinnedIds.erase(id);
             Release(*it->second);
             delete it->second;
             m_pinned.erase(it);
@@ -355,6 +378,7 @@ namespace
 
         std::unordered_map<uint32_t, Slot> m_records;
         std::unordered_map<uint32_t, Record*> m_pinned;
+        std::unordered_map<uint32_t, uint32_t> m_pinnedIds;   // pinned record id -> index
         std::list<uint32_t> m_lru;
         std::unordered_map<uint64_t, IndexSlot> m_index;
         std::list<uint64_t> m_indexLru;
@@ -372,6 +396,7 @@ namespace
         Record* records = nullptr;
         uint32_t table = 0, stringSize = 0;
         RecordCache<Record> cache;
+        bool patchRefused = false;   // not in the original: MMgr64.exe has refused a 0x73 for this table
     };
     Store<CreatureRecord> g_creature;
     Store<QuestRecord> g_quest;
@@ -610,6 +635,8 @@ namespace
 
     template <class Record> bool PinnedIndex(const Store<Record>& s, uint32_t field, uint32_t key, uint32_t& index)
     {
+        if (field == 0)
+            return s.cache.PinnedId(key, index);
         bool found = false;
         s.cache.ForEachPinned([&](uint32_t i, const Record& r) {
             if (!found && FieldValue(r, field) == key)
@@ -799,7 +826,7 @@ namespace
     // record whose id (+0) is `id` -- the first hit of 0x6B on field 0.
     template <class Record> bool IndexOf(Store<Record>& s, uint32_t id, uint32_t& index)
     {
-        if (PinnedIndex(s, 0, id, index))
+        if (s.cache.IndexedAt(0, id, index) || PinnedIndex(s, 0, id, index))
             return true;
         std::vector<uint32_t> hits;
         if (!s.table || !AscMemoryBridge::Command6B(s.table, 0, id, hits))
@@ -870,9 +897,16 @@ namespace
             if (!IndexOf(s, oldId, index))
                 return false;
         }
+        // Once MMgr64.exe has refused a table's 0x73 it refuses every later one, so the rest are pinned
+        // without the 0x68 string writes and the 0x73: with them (and IndexOf's 0x6B) a login stream of 10k
+        // vanity prices made six bridge round trips per row, each clearing the 1 MB request view, and froze
+        // the client for ~7 s.
         Record row = r;
-        if (!AppendStrings(s, row) || !AscMemoryBridge::Command73(s.table, index, &row, sizeof(row)))
+        if (s.patchRefused || !AppendStrings(s, row) || !AscMemoryBridge::Command73(s.table, index, &row, sizeof(row)))
+        {
+            s.patchRefused = true;
             s.cache.Pin(index, PinnedCopy(r));
+        }
         else
             s.cache.EvictIndex(index);
         if (!existing)

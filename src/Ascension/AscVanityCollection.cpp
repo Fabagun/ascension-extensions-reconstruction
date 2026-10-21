@@ -184,6 +184,25 @@ namespace
         return m;
     }
 
+    // The record's own fields of an item (FUN_1032c140's loop body); the search text still lacks the item text.
+    void Fill(Item& e, const VanityRecord* row)
+    {
+        e.id = Rec(row, 0);
+        e.itemId = Rec(row, 1);
+        e.category = Rec(row, 2);
+        e.mask = CategoryMask(row);
+        e.dp = Rec(row, 4);
+        e.sp = Rec(row, 5);
+        e.bt = Rec(row, 6);
+        e.flags = Rec(row, 0xC);
+        e.classMask = static_cast<uint64_t>(Rec(row, 0xD)) | (static_cast<uint64_t>(Rec(row, 0xE)) << 32);
+        e.raceMask = Rec(row, 0xF);
+        for (uint32_t c = 0; c < 24; ++c)
+            e.contents[c] = Rec(row, 0x12 + c);
+        e.learnedSpell = Rec(row, 0x2C);
+        e.search = RecStr(row, 0x2A) + " " + RecStr(row, 0x2B) + " " + std::to_string(e.itemId);   // FUN_1032d3e0
+    }
+
     // FUN_1032c140: every record index 0..count-1, fetched 1,000 at a time (FUN_1032dc10). A failed batch
     // abandons the build with an empty list; records not found or not offered are skipped.
     void Build()   // FUN_1032c140
@@ -208,24 +227,9 @@ namespace
             {
                 if (!v.found || !Offered(&v.record))
                     continue;
-                const VanityRecord* row = &v.record;
-                const uint32_t i = v.index;
                 Item e;
-                e.row = i;
-                e.id = Rec(row, 0);
-                e.itemId = Rec(row, 1);
-                e.category = Rec(row, 2);
-                e.mask = CategoryMask(row);
-                e.dp = Rec(row, 4);
-                e.sp = Rec(row, 5);
-                e.bt = Rec(row, 6);
-                e.flags = Rec(row, 0xC);
-                e.classMask = static_cast<uint64_t>(Rec(row, 0xD)) | (static_cast<uint64_t>(Rec(row, 0xE)) << 32);
-                e.raceMask = Rec(row, 0xF);
-                for (uint32_t c = 0; c < 24; ++c)
-                    e.contents[c] = Rec(row, 0x12 + c);
-                e.learnedSpell = Rec(row, 0x2C);
-                e.search = RecStr(row, 0x2A) + " " + RecStr(row, 0x2B) + " " + std::to_string(e.itemId);   // FUN_1032d3e0
+                e.row = v.index;
+                Fill(e, &v.record);
                 g_items.push_back(std::move(e));
             }
         }
@@ -253,6 +257,27 @@ namespace
         for (Item& e : g_items)
             g_itemList.push_back(&e);
         g_built = true;
+    }
+
+    // A patched record applied to the built index in place, keeping the item text. A record that joins the
+    // index, leaves it or names another item leaves the index to be built again on its next use.
+    void Refresh(const VanityRecord* row)
+    {
+        const bool offered = Offered(row);
+        for (Item& e : g_items)
+            if (e.id == Rec(row, 0))
+            {
+                if (e.itemId != Rec(row, 1) || !offered)
+                    g_built = false;
+                else
+                {
+                    Fill(e, row);
+                    e.search = Lower(e.name + " " + e.itemDescription + " " + e.search);
+                }
+                return;
+            }
+        if (offered)
+            g_built = false;
     }
     // SMSG 0x573 (FUN_101e55d0): the record as FUN_101d3a00 reads it -- the record's fields in order with
     // its three strings as C strings in place -- then three more C strings (read and dropped). FUN_1032ec60
@@ -290,10 +315,11 @@ namespace
         if (!AscBridgeStore::PatchVanity(r))
             return;
         // The original rebuilds unconditionally, but its patch never succeeds (MMgr64.exe refuses 0x73).
-        // Now that it does, a login stream of N rows would rebuild the 10k-item index N times; an index
-        // not built yet picks the patched rows up when it is first built (as 0x6F8 does).
+        // Now that it does, a login stream of N rows would rebuild the 10k-item index N times, which froze
+        // the client when every row carried a price; the built index takes the row in place instead, and an
+        // index not built yet picks the patched rows up when it is first built (as 0x6F8 does).
         if (g_built)
-            Build();
+            Refresh(&r);
         AscRuntime::Signal("HOT_PATCH_VANITY_COLLECTION", "%u", r.f[1]);
     }
 
