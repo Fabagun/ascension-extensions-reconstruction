@@ -84,6 +84,14 @@ who does want the original can go straight to it in the decompile.
     over `value`, literals, operators and the seven functions the shipped table calls. This closes the route servers
     used to smuggle Lua through a formatter. It uses `AscDbcPatch::SetValidator`, which is a no-op unless a module
     registers a validator, so the default build patches rows exactly as the original.
+- **Streamed client DBC rows (build option, off by default).** Compiled in only with `-DASCENSION_DBC_STREAM=ON`
+  (`AscDbcStream`). Not in the genuine DLL, which has no patch handler for these tables. SMSG `0x8F3`
+  (GameObjectDisplayInfo), `0x8F4` (Map) and `0x8F5` (MapDifficulty) each carry a batch: u32 count, then rows field
+  by field (u32, or u32-sized string). An existing id is overwritten in place, a new id gets its own row. A batch
+  grows the table's index once, with headroom, so a long stream does not copy the index per row; strings the
+  stream allocated are freed when their row is overwritten again. Objects already spawned keep their display, and
+  a Map row the loading map already used takes effect at the next load. A new map also needs its terrain in the
+  client's archives and in the server's `maps/`, `vmaps/` and `mmaps/`; streaming the row is not enough.
 - **Anti-cheat.** It is loaded exactly as the original does (`DivxTac.dll` after world entry, plus the account
   kill switch). Nothing is added or removed.
 
@@ -102,7 +110,7 @@ who does want the original can go straight to it in the decompile.
   the global of the same name.
 
 
-**Totals:** 1351 Lua bindings, 534 server packets handled, 153 client packets sent, 267 events fired, 93 CVars registered, 349 client hooks, across 139 modules.
+**Totals:** 1351 Lua bindings, 537 server packets handled, 153 client packets sent, 267 events fired, 93 CVars registered, 349 client hooks, across 140 modules.
 
 ## Contents
 
@@ -2535,6 +2543,9 @@ Every server→client opcode the DLL handles (the stock client handles everythin
 | `0x77F` | SMSG_CHARACTER_ADVANCEMENT_LOADOUT_ACTIVE_PAYLOAD | [AscJson](#ascjson) |
 | `0x780` | SMSG_CHARACTER_ADVANCEMENT_LOADOUT_OWNED_PAYLOAD | [AscJson](#ascjson) |
 | `0x8F0` | SMSG_HOT_PATCH (ours) | [AscHotPatch](#aschotpatch) |
+| `0x8F3` | SMSG_STREAM_GAMEOBJECT_DISPLAY_INFO (ours) | [AscDbcStream](#ascdbcstream) |
+| `0x8F4` | SMSG_STREAM_MAP (ours) | [AscDbcStream](#ascdbcstream) |
+| `0x8F5` | SMSG_STREAM_MAP_DIFFICULTY (ours) | [AscDbcStream](#ascdbcstream) |
 | `0x904` | SMSG_PACKET_BROADCAST | [AscEventPackets](#asceventpackets) |
 | `0x905` | SMSG_CUSTOM_ASCENSION_POINTS_UPDATE | [AscSeasonal](#ascseasonal) |
 | `0x906` | SMSG_CUSTOM_WINDOW_SET_VISIBILITY | [AscEventPackets](#asceventpackets) |
@@ -4682,6 +4693,20 @@ The CVar module's client hooks (installer FUN_101141e0; the glue registration 0x
 | `0x722` | unknown | `(table row)` | patches DBFilesClient\CharacterAdvancementEssence.dbc rows (AscDbcPatch) |
 | `0x724` | unknown | `(table row)` | patches DBFilesClient\CharacterAdvancementTabTypes.dbc rows (AscDbcPatch) |
 | `0x9D1` | SMSG_PATCH_CHR_CLASSES_ROLES | `(table row)` | patches DBFilesClient\ChrClassesRoles.dbc rows (AscDbcPatch) |
+
+### AscDbcStream
+
+`src/Ascension/AscDbcStream.cpp`
+
+Server-streamed rows for three client WowClientDB tables the original never patches: GameObjectDisplayInfo, Map and MapDifficulty. Not in the genuine DLL; built only with ASCENSION_DBC_STREAM. One packet carries a batch: u32 count, then `count` records. A record is the table's in-memory row, field by field, in order: 'd' a u32 (floats as their bits), 'z' a string as u32 length + bytes (no terminator). The row a record lands in is the same as AscClientDbcPatch's: an existing id is overwritten in place, a new id gets its own row in the container's index. SMSG 0x8F3 GameObjectDisplayInfo 0x4C id, ModelName, Sound[10], GeoBoxMin xyz, GeoBoxMax xyz, ObjectEffectPackageID SMSG 0x8F4 Map 0x48 id, Directory, InstanceType, Flags, PVP, MapName, AreaTableID, MapDescription0, MapDescription1, LoadingScreenID, MinimapIconScale, CorpseMapID, CorpseX, CorpseY, TimeOfDayOverride, ExpansionID, RaidOffset, MaxPlayers SMSG 0x8F5 MapDifficulty 0x1C id, MapID, Difficulty, Message, RaidDuration, MaxPlayers, Difficultystring Row sizes are the client's own (the struct size each table's Load checks, Ascension.exe 0x63FE70 / 0x648510 / 0x648770); the field order is the client's row reader (AscDbcReaders.generated.inc for Map/MapDifficulty). Written for streams of unknown size (the vanity-price lesson, client-ext 21f00ea / a5946de): a record costs a copy and its strings, nothing else -- no refresh, no per-row allocation of the index. AscClientDbc::Insert reallocates the whole index for every id past its end (GameObjectDisplayInfo's is ~4 MB), so a batch grows each index ONCE, with headroom above the top so a following batch usually fits without a copy. A whole packet is validated before anything is stored. Strings this file allocated are freed when their row is overwritten again (the original's …
+
+**Server packets handled**
+
+| Opcode | Name | Handler | Notes |
+|---|---|---|---|
+| `0x8F3` | SMSG_STREAM_GAMEOBJECT_DISPLAY_INFO (ours) | `OnStream` |  |
+| `0x8F4` | SMSG_STREAM_MAP (ours) | `OnStream` |  |
+| `0x8F5` | SMSG_STREAM_MAP_DIFFICULTY (ours) | `OnStream` |  |
 
 ### AscDiscord
 

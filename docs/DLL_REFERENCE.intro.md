@@ -80,6 +80,14 @@ who does want the original can go straight to it in the decompile.
     over `value`, literals, operators and the seven functions the shipped table calls. This closes the route servers
     used to smuggle Lua through a formatter. It uses `AscDbcPatch::SetValidator`, which is a no-op unless a module
     registers a validator, so the default build patches rows exactly as the original.
+- **Streamed client DBC rows (build option, off by default).** Compiled in only with `-DASCENSION_DBC_STREAM=ON`
+  (`AscDbcStream`). Not in the genuine DLL, which has no patch handler for these tables. SMSG `0x8F3`
+  (GameObjectDisplayInfo), `0x8F4` (Map) and `0x8F5` (MapDifficulty) each carry a batch: u32 count, then rows field
+  by field (u32, or u32-sized string). An existing id is overwritten in place, a new id gets its own row. A batch
+  grows the table's index once, with headroom, so a long stream does not copy the index per row; strings the
+  stream allocated are freed when their row is overwritten again. Objects already spawned keep their display, and
+  a Map row the loading map already used takes effect at the next load. A new map also needs its terrain in the
+  client's archives and in the server's `maps/`, `vmaps/` and `mmaps/`; streaming the row is not enough.
 - **Anti-cheat.** It is loaded exactly as the original does (`DivxTac.dll` after world entry, plus the account
   kill switch). Nothing is added or removed.
 

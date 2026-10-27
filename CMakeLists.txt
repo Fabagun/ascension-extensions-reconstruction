@@ -49,6 +49,11 @@ set(ASCENSION_NATIVE_LOGON_SERVER_KEY "1a03d4c71f289f39046fad519f8af3e92b793709a
 # AscensionRebirth/HOT_PATCH_DESIGN.md.
 option(ASCENSION_HOT_PATCH "Interface hot-patch channel and the 0x5BC formatter check (not in the original)" OFF)
 
+# --- Streamed client DBC rows (our addition; not in the original) -------------------------------------
+# SMSG 0x8F3 / 0x8F4 / 0x8F5: batched server rows for GameObjectDisplayInfo, Map and MapDifficulty, which the
+# original has no patch handler for. OFF by default. See src/Ascension/AscDbcStream.cpp.
+option(ASCENSION_DBC_STREAM "Server-streamed GameObjectDisplayInfo / Map / MapDifficulty rows (not in the original)" OFF)
+
 set(UP ${CMAKE_CURRENT_SOURCE_DIR}/WotLKExtensions)
 configure_file(${UP}/cmake/PatchConfig.hpp.in ${CMAKE_BINARY_DIR}/gen/PatchConfig.hpp)
 
