@@ -59,6 +59,11 @@ who does want the original can go straight to it in the decompile.
 - **Tooltip line insertion.** After the world UI loads, `AscTooltipInsertFix` wraps Ascension's
   `Tooltip:InsertLine` / `InsertLines` so lines past the tooltip's end are added instead of overwriting leftover
   font strings (a keystone tooltip otherwise shows one Dungeon Modifier of several).
+- **Indoor minimap render target.** `AscMinimapTargetKeep` keeps the indoor minimap's 256x256 render target
+  (`0xBF5F14`) made at login for the whole session instead of releasing it on each world-UI teardown (`0x57FBD0`)
+  and creating a new one (`0x5831C0`). After some reloads a new target draws another UI texture (often the calendar)
+  indoors; the login target never does. A workaround for a defect of unknown cause in the 32-bit client; the 64-bit
+  CoA64 client does not show it.
 - **Interface hot patches (build option, off by default).** Compiled in only with `-DASCENSION_HOT_PATCH=ON`
   (`AscHotPatch`, see its module entry and the README). Not in the genuine DLL:
   - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source

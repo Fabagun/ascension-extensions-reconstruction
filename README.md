@@ -38,6 +38,11 @@ packets and fires events.
   tooltip, so a keystone tooltip shows one Dungeon Modifier of several. After the world UI loads, the DLL wraps
   both methods so that lines past the tooltip's end are added instead (`src/Ascension/AscTooltipInsertFix.cpp`).
   `patch-B` itself is unchanged.
+- **Indoor minimap after a reload.** Indoors, after some `/reload`s, the minimap shows part of another UI texture
+  (often the calendar). A new indoor render target from the reload can draw the wrong texture; the one made at login
+  never does. The DLL keeps the login target for the whole session (`src/Ascension/AscMinimapTargetKeep.cpp`). The
+  cause is not known; this is a workaround for the 32-bit client only. The 64-bit CoA64 client does not show the
+  defect and does not need it.
 - **Interface hot patches.** Not in the genuine DLL. Compiled in only with `-DASCENSION_HOT_PATCH=ON` (see below):
   a supported channel for server-sent interface Lua (SMSG `0x8F0`, with the capability and result packets
   CMSG `0x8F1` / `0x8F2`), and a check that refuses SMSG `0x5BC` challenge requirement-type rows whose formatters

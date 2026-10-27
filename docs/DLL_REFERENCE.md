@@ -63,6 +63,11 @@ who does want the original can go straight to it in the decompile.
 - **Tooltip line insertion.** After the world UI loads, `AscTooltipInsertFix` wraps Ascension's
   `Tooltip:InsertLine` / `InsertLines` so lines past the tooltip's end are added instead of overwriting leftover
   font strings (a keystone tooltip otherwise shows one Dungeon Modifier of several).
+- **Indoor minimap render target.** `AscMinimapTargetKeep` keeps the indoor minimap's 256x256 render target
+  (`0xBF5F14`) made at login for the whole session instead of releasing it on each world-UI teardown (`0x57FBD0`)
+  and creating a new one (`0x5831C0`). After some reloads a new target draws another UI texture (often the calendar)
+  indoors; the login target never does. A workaround for a defect of unknown cause in the 32-bit client; the 64-bit
+  CoA64 client does not show it.
 - **Interface hot patches (build option, off by default).** Compiled in only with `-DASCENSION_HOT_PATCH=ON`
   (`AscHotPatch`, see its module entry and the README). Not in the genuine DLL:
   - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source
@@ -97,7 +102,7 @@ who does want the original can go straight to it in the decompile.
   the global of the same name.
 
 
-**Totals:** 1351 Lua bindings, 534 server packets handled, 153 client packets sent, 267 events fired, 93 CVars registered, 347 client hooks, across 138 modules.
+**Totals:** 1351 Lua bindings, 534 server packets handled, 153 client packets sent, 267 events fired, 93 CVars registered, 349 client hooks, across 139 modules.
 
 ## Contents
 
@@ -3583,7 +3588,7 @@ The MemoryBridge-backed DBC stores -- see AscBridgeStore.hpp. Run: the original 
 
 | Address | Kind | Line | Notes |
 |---|---|---|---|
-| `0x634E00` | Detour | 1020 |  |
+| `0x634E00` | Detour | 1054 |  |
 
 ### AscBugTracker
 
@@ -5879,6 +5884,19 @@ The original's MemoryBridgeClient (0x102B0000..0x102B7FFF), talking to Ascension
 |---|---|---|---|
 | `0x4067F0` | Detour | 590 |  |
 
+### AscMinimapTargetKeep
+
+`src/Ascension/AscMinimapTargetKeep.cpp`
+
+Indoors, after some /reloads, the minimap shows part of another UI texture (often the calendar) instead of the room. Players saw it on the original client; it reproduces with and without DXVK, and the 64-bit CoA64 client does not show it. Each world-UI teardown (0x57FBD0) releases the 256x256 indoor render target (the texture handle at 0xBF5F14) through 0x47BF30, and each world-UI init (0x5831C0) creates a new one. The target made at login always draws; a new target from a reload can draw the wrong texture, and drawing into the login target again fixes it. The cause is not known. Not in the genuine DLL. Applied early (IMPROVEMENTS.md, "Indoor minimap shows another texture"). The login target is kept for the whole session: the teardown takes it before the release, and the next init releases the target it has just created, puts the kept one back and asks for a redraw (0xBF5F18).
+
+**Client hooks**
+
+| Address | Kind | Line | Notes |
+|---|---|---|---|
+| `0x57FBD0` | Detour | 55 | 0x57FBD0: push ebp; mov ebp, esp; sub esp, 8 |
+| `0x5831C0` | Detour | 57 | 0x5831C0: push ebp; mov ebp, esp; push ecx; push esi |
+
 ### AscMisc
 
 `src/Ascension/AscMisc.cpp`
@@ -7383,21 +7401,21 @@ C_VanityCollection, part 1: the known-items set, purchases and the buff test. Ma
 | `C_VanityCollection.PurchaseWebShopItem` | both | (number) → 0..1 | `0x103312F0` | AscVanityCollection.cpp:93 `PurchaseWebShopItem` | sends `0x523` CMSG_CUSTOM_ASCENSION_POINT_SPEND_REQUEST |
 | `C_VanityCollection.RequestDelivery` | both | (number) → 0 | `0x103317C0` | AscVanityCollection.cpp:102 `RequestDelivery` | sends `0x523` CMSG_CUSTOM_ASCENSION_POINT_SPEND_REQUEST |
 | `C_VanityCollection.IsConsolidatedVanityBuff` | both | (number) → 0..1 | `0x10330F60` | AscVanityCollection.cpp:112 `IsConsolidatedVanityBuff` | FUN_10330f60: SpellCustomAttr +0x18 bit 5, and the spell's mechanic (+0xC) is not 21 (mount). |
-| `C_VanityCollection.QueryItems` | both | (string, number, number, number, number, number) → 0..1 | `0x10331420` | AscVanityCollection.cpp:489 `QueryItems` | FUN_10331420: ([text [, category [, filters [, sort [, offset [, count = 9]]]]]]) -> {total, items}; at most six arguments, nil ones default. |
-| `C_VanityCollection.GetAllItems` | both | () → 0 | `0x103309C0` | AscVanityCollection.cpp:536 `GetAllItems` |  |
-| `C_VanityCollection.GetItem` | both | (number) → 0..1 | `0x10330B40` | AscVanityCollection.cpp:543 `GetItem` |  |
-| `C_VanityCollection.GetItemByLearnedSpell` | both | (number) → 0..1 | `0x10330BB0` | AscVanityCollection.cpp:554 `GetItemByLearnedSpell` |  |
-| `C_VanityCollection.GetOwnerByContentItem` | both | (number) → 0..1 | `0x10330C50` | AscVanityCollection.cpp:568 `GetOwnerByContentItem` |  |
-| `C_VanityCollection.GetRandomItem` | both | () → 0..1 | `0x10330D00` | AscVanityCollection.cpp:583 `GetRandomItem` |  |
-| `C_VanityCollection.GetSeasonalShowcaseItems` | both | () → 0 | `0x10330D70` | AscVanityCollection.cpp:594 `GetSeasonalShowcaseItems` |  |
-| `C_VanityCollection.GetDPPrice` | both | (number) → 0..1 | `0x10330AB0` | AscVanityCollection.cpp:605 `GetDPPrice` |  |
-| `C_VanityCollection.GetVPPrice` | both | (number) → 0..1 | `0x10330E60` | AscVanityCollection.cpp:614 `GetVPPrice` |  |
+| `C_VanityCollection.QueryItems` | both | (string, number, number, number, number, number) → 0..1 | `0x10331420` | AscVanityCollection.cpp:546 `QueryItems` | FUN_10331420: ([text [, category [, filters [, sort [, offset [, count = 9]]]]]]) -> {total, items}; at most six arguments, nil ones default. |
+| `C_VanityCollection.GetAllItems` | both | () → 0 | `0x103309C0` | AscVanityCollection.cpp:593 `GetAllItems` |  |
+| `C_VanityCollection.GetItem` | both | (number) → 0..1 | `0x10330B40` | AscVanityCollection.cpp:600 `GetItem` |  |
+| `C_VanityCollection.GetItemByLearnedSpell` | both | (number) → 0..1 | `0x10330BB0` | AscVanityCollection.cpp:611 `GetItemByLearnedSpell` |  |
+| `C_VanityCollection.GetOwnerByContentItem` | both | (number) → 0..1 | `0x10330C50` | AscVanityCollection.cpp:625 `GetOwnerByContentItem` |  |
+| `C_VanityCollection.GetRandomItem` | both | () → 0..1 | `0x10330D00` | AscVanityCollection.cpp:640 `GetRandomItem` |  |
+| `C_VanityCollection.GetSeasonalShowcaseItems` | both | () → 0 | `0x10330D70` | AscVanityCollection.cpp:651 `GetSeasonalShowcaseItems` |  |
+| `C_VanityCollection.GetDPPrice` | both | (number) → 0..1 | `0x10330AB0` | AscVanityCollection.cpp:662 `GetDPPrice` |  |
+| `C_VanityCollection.GetVPPrice` | both | (number) → 0..1 | `0x10330E60` | AscVanityCollection.cpp:671 `GetVPPrice` |  |
 
 **Server packets handled**
 
 | Opcode | Name | Handler | Notes |
 |---|---|---|---|
-| `0x573` | SMSG_PATCH_VANITY_COLLECTION | `OnPatchVanity` | ; fires `HOT_PATCH_VANITY_COLLECTION` |
+| `0x573` | SMSG_PATCH_VANITY_COLLECTION | `OnPatchVanity` |  |
 | `0x6F7` | SMSG_LIST_KNOWN_STORE_COLLECTION_ITEMS | `OnList` |  |
 | `0x6F8` | SMSG_ADD_KNOWN_STORE_COLLECTION_ITEM | `OnAdd` |  |
 | `0x6F9` | SMSG_REMOVE_KNOWN_STORE_COLLECTION_ITEM | `OnRemove` |  |
