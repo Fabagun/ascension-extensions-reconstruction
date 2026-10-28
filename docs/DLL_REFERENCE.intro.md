@@ -64,6 +64,11 @@ who does want the original can go straight to it in the decompile.
   and creating a new one (`0x5831C0`). After some reloads a new target draws another UI texture (often the calendar)
   indoors; the login target never does. A workaround for a defect of unknown cause in the 32-bit client; the 64-bit
   CoA64 client does not show it.
+- **GetQuestTemplate field offsets.** The original reads the quest cache record's four objective texts at a
+  0x200 stride and every field after them 0x400 bytes too far, up to 0x3FC bytes past the record's end
+  (`RewardTitleId` … `RewardArenaPoints`, `CompletedText`, the `RewardFaction*` lists, `Unknown`). `AscTemplates`
+  reads them at the client's offsets (record copy `0x668290`, WDB writer `0x7F6D00`). The over-read crashed the
+  client when a record ended at unmapped memory (Callboard), and the shifted fields returned other fields' bytes.
 - **Interface hot patches (build option, off by default).** Compiled in only with `-DASCENSION_HOT_PATCH=ON`
   (`AscHotPatch`, see its module entry and the README). Not in the genuine DLL:
   - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source

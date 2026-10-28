@@ -68,6 +68,11 @@ who does want the original can go straight to it in the decompile.
   and creating a new one (`0x5831C0`). After some reloads a new target draws another UI texture (often the calendar)
   indoors; the login target never does. A workaround for a defect of unknown cause in the 32-bit client; the 64-bit
   CoA64 client does not show it.
+- **GetQuestTemplate field offsets.** The original reads the quest cache record's four objective texts at a
+  0x200 stride and every field after them 0x400 bytes too far, up to 0x3FC bytes past the record's end
+  (`RewardTitleId` … `RewardArenaPoints`, `CompletedText`, the `RewardFaction*` lists, `Unknown`). `AscTemplates`
+  reads them at the client's offsets (record copy `0x668290`, WDB writer `0x7F6D00`). The over-read crashed the
+  client when a record ended at unmapped memory (Callboard), and the shifted fields returned other fields' bytes.
 - **Interface hot patches (build option, off by default).** Compiled in only with `-DASCENSION_HOT_PATCH=ON`
   (`AscHotPatch`, see its module entry and the README). Not in the genuine DLL:
   - SMSG `0x8F0` runs server-sent interface Lua (sized patch id, sized target addon, sized Lua) under guards: source
@@ -7102,11 +7107,11 @@ GetQuestTemplate / GetCreatureTemplate / GetCreatureModelData / GetCreatureDispl
 
 | Binding | State | Args → returns | Original | Implementation | Notes |
 |---|---|---|---|---|---|
-| `GetCreatureDisplayInfo` | world | () → 0..1 | `0x100B0D70` | AscTemplates.cpp:187 `GetCreatureDisplayInfo` | CreatureDisplayInfo row, FUN_100b2d20. |
-| `GetCreatureDisplayInfoExtra` | world | () → 0..1 | `0x100B0E30` | AscTemplates.cpp:217 `GetCreatureDisplayInfoExtra` | CreatureDisplayInfoExtra row, FUN_100b3350. |
-| `GetCreatureModelData` | world | () → 0..1 | `0x100B0EF0` | AscTemplates.cpp:149 `GetCreatureModelData` | CreatureModelData row, FUN_100b39f0. GeoBoxMax* read the GeoBoxMin* columns in the original. |
-| `GetCreatureTemplate` | world | () → 0..1 | `0x1021B200` | AscTemplates.cpp:124 `GetCreatureTemplate` | Creature cache record (0x67B6A0 on 0xC5D690), FUN_1021b2d0. |
-| `GetQuestTemplate` | world | () → 0..1 | `0x1021EA50` | AscTemplates.cpp:72 `GetQuestTemplate` | Quest cache record (0x67DE90 on 0xC5DA48), FUN_1021ecb0. |
+| `GetCreatureDisplayInfo` | world | () → 0..1 | `0x100B0D70` | AscTemplates.cpp:193 `GetCreatureDisplayInfo` | CreatureDisplayInfo row, FUN_100b2d20. |
+| `GetCreatureDisplayInfoExtra` | world | () → 0..1 | `0x100B0E30` | AscTemplates.cpp:223 `GetCreatureDisplayInfoExtra` | CreatureDisplayInfoExtra row, FUN_100b3350. |
+| `GetCreatureModelData` | world | () → 0..1 | `0x100B0EF0` | AscTemplates.cpp:155 `GetCreatureModelData` | CreatureModelData row, FUN_100b39f0. GeoBoxMax* read the GeoBoxMin* columns in the original. |
+| `GetCreatureTemplate` | world | () → 0..1 | `0x1021B200` | AscTemplates.cpp:130 `GetCreatureTemplate` | Creature cache record (0x67B6A0 on 0xC5D690), FUN_1021b2d0. |
+| `GetQuestTemplate` | world | () → 0..1 | `0x1021EA50` | AscTemplates.cpp:78 `GetQuestTemplate` | Quest cache record (0x67DE90 on 0xC5DA48), FUN_1021ecb0, with one deliberate difference: the original reads the four objective texts at a 0x200 stride and everything after them 0x400 too far (RewardTitleId at +0x2494 ... Unknown at +0x2CE0). The client's record is 0x28E4 bytes (the cache keeps the id at node+0x28FC, the record being node+0x18) with 0x100-byte objective texts: see the record copy 0x668290 and the WDB… |
 
 ### AscTemporalContracts
 

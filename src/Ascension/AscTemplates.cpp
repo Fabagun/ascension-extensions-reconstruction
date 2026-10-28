@@ -68,7 +68,13 @@ namespace
             reinterpret_cast<void*>(cache), id, nullptr, nullptr, nullptr, 0));
     }
 
-    // Quest cache record (0x67DE90 on 0xC5DA48), FUN_1021ecb0.
+    // Quest cache record (0x67DE90 on 0xC5DA48), FUN_1021ecb0, with one deliberate difference: the
+    // original reads the four objective texts at a 0x200 stride and everything after them 0x400 too far
+    // (RewardTitleId at +0x2494 ... Unknown at +0x2CE0). The client's record is 0x28E4 bytes (the cache
+    // keeps the id at node+0x28FC, the record being node+0x18) with 0x100-byte objective texts: see the
+    // record copy 0x668290 and the WDB writer 0x7F6D00. The original's reads past +0x28E4 crash when a
+    // record ends at unmapped memory (Callboard, 2026-10-28). Keys and the field order are the original's;
+    // each value now comes from the field the original meant.
     int GetQuestTemplate(lua_State* L)
     {
         const uint8_t* r = CacheRecord(0x67DE90, 0xC5DA48, ArgId(L));
@@ -82,9 +88,9 @@ namespace
             {"HostileFactionAmount", 0x28}, {"RewardNextQuest", 0x2C}, {"RewardXPDifficulty", 0x30},
             {"RewardMoney", 0x34}, {"RewardBonusMoney", 0x38}, {"RewardDisplaySpell", 0x3C},
             {"RewardSpell", 0x40}, {"RewardHonor", 0x44}, {"StartItem", 0x4C}, {"Flags", 0x50},
-            {"POIContinent", 0xA4}, {"POIPriority", 0xB0}, {"RewardTitleId", 0x2494},
-            {"RequiredPlayerKills", 0x2498}, {"RewardTalents", 0x249C}, {"RewardArenaPoints", 0x24A0},
-            {"Unknown", 0x2CE0},
+            {"POIContinent", 0xA4}, {"POIPriority", 0xB0}, {"RewardTitleId", 0x2094},
+            {"RequiredPlayerKills", 0x2098}, {"RewardTalents", 0x209C}, {"RewardArenaPoints", 0x20A0},
+            {"Unknown", 0x28E0},
         };
         for (const auto& f : kInts)
             t.Int(f.key, t.At<int32_t>(r, f.off));
@@ -105,18 +111,18 @@ namespace
         t.Ints("RequiredItemCount", r + 0x1C5C, 6);
         t.Ints("ItemDrop", r + 0x1C74, 4);
         t.Ints("ItemDropCount", r + 0x1C84, 4);
-        // FUN_1021e970: four 0x200-byte objective strings from +0x1C94.
+        // FUN_1021e970: four objective strings from +0x1C94 (0x100 bytes each in the client's record).
         AscLua::lua_createtable(L, 0, 0);
         for (int i = 0; i < 4; ++i)
         {
-            t.PushFixed(reinterpret_cast<const char*>(r + 0x1C94 + i * 0x200), 0x200);
+            t.PushFixed(reinterpret_cast<const char*>(r + 0x1C94 + i * 0x100), 0x100);
             AscLua::lua_rawseti(L, -2, i + 1);
         }
         AscLua::lua_setfield(L, -2, "ObjectiveText");
-        t.Fixed("CompletedText", reinterpret_cast<const char*>(r + 0x24A4), 0x800);
-        t.Ints("RewardFactionValue", r + 0x2CA4, 5);
-        t.Ints("RewardFactionID", r + 0x2CB8, 5);
-        t.Ints("RewardFactionValueOverride", r + 0x2CCC, 5);
+        t.Fixed("CompletedText", reinterpret_cast<const char*>(r + 0x20A4), 0x800);
+        t.Ints("RewardFactionValue", r + 0x28A4, 5);
+        t.Ints("RewardFactionID", r + 0x28B8, 5);
+        t.Ints("RewardFactionValueOverride", r + 0x28CC, 5);
         return 1;
     }
 
