@@ -2034,10 +2034,12 @@ bool AscAppearance_PlayerSpellVisual(uint32_t spell, uint32_t& visual)
 }
 
 // The refreshes the SMSG_PATCH_* handlers run: 0x693 (FUN_1020fc80 then FUN_101b5660) and 0x6EC
-// (FUN_102101d0 then FUN_101b5660).
+// (FUN_102101d0 then FUN_101b5660). The original rebuilds the item index on every 0x693 row; here the
+// index is only marked stale and rebuilt by its next reader (IMPROVEMENTS.md: a login catalog of N rows
+// cost N full rebuilds).
 void AscAppearance_ItemAppearancesPatched()
 {
-    BuildItemAppearanceIndex();
+    g_itemIndexBuilt = false;
     g_setsForItemAppearanceBuilt = false;
 }
 void AscAppearance_ItemSetAppearancesPatched()
